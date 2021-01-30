@@ -7,18 +7,9 @@
     <link rel="stylesheet" href="~/dist/ITSecurityNewsMonitor.css" />
 </head>
 <body class="background-dotted">
-    <!-- Container -->
-    <div class="h-screen">
-        <!-- <div class="absolute gradient-background h-3/5 w-full z-negative"></div> -->
-        <canvas id="background-canvas" width="32" height="32" class="absolute h-3/5 w-full z-negative multi-background">
-        </canvas>
-        <!-- <canvas id="canv" width="32" height="32" class="w-full h-full"> -->
-        <div class="z-1 h-full flex justify-center items-center">
-            <div class="p-12 bg-white w-96 rounded shadow-md">
-                @RenderBody()
-            </div>
-        </div>
-    </div>
+    <partial name="_LoginPartial" />
+
+    @RenderBody()
 
     <script>
 

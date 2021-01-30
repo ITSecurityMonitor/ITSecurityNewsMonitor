@@ -1,0 +1,63 @@
+﻿@page
+@model LoginModel
+
+@{
+    ViewData["Title"] = "Log in";
+    Layout = "_IdentityLayout";
+}
+
+<!-- Title -->
+<h1 class="font-bold text-5xl mb-4">
+    Login
+</h1>
+
+<form id="account" method="post">
+    <div class="field">
+        <label asp-for="Input.Email" class="text-field-description"></label>
+        <br />
+        <input asp-for="Input.Email" class="text-field w-72" />
+    </div>
+    <div class="field mt-2">
+        <label asp-for="Input.Password" class="text-field-description"></label>
+        <br />
+        <input asp-for="Input.Password" class="text-field w-72" />
+    </div>
+    <div class="field mt-2">
+        <label asp-for="Input.RememberMe">
+            <input asp-for="Input.RememberMe" />
+            @Html.DisplayNameFor(m => m.Input.RememberMe)
+        </label>
+    </div>
+    <div class="actions mt-4">
+        <button type="submit" class="button">Log in</button>
+    </div>
+</form>
+
+<!-- Other links -->
+<div class="mt-4 text-sm">
+    <a id="forgot-password" asp-page="./ForgotPassword" class="link">Forgot your password?</a>
+    <br />
+    <a id="resend-confirmation" asp-page="./ResendEmailConfirmation" class="link">Didn't receive confirmation instructions?</a>
+    <br />
+</div>
+
+<!-- Or instead -->
+<div class="flex justify-center w-72 mt-8 mb-8">
+    <svg color="lightgray" width="10px" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="horizontal-rule" class="svg-inline--fa fa-horizontal-rule fa-w-20" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><path fill="currentColor" d="M640 239.87v31.26A15.88 15.88 0 0 1 624.14 287H15.87A15.88 15.88 0 0 1 0 271.13v-31.26A15.88 15.88 0 0 1 15.87 224h608.27A15.88 15.88 0 0 1 640 239.87z"></path></svg>
+    <svg color="lightgray" width="10px" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="horizontal-rule" class="svg-inline--fa fa-horizontal-rule fa-w-20" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><path fill="currentColor" d="M640 239.87v31.26A15.88 15.88 0 0 1 624.14 287H15.87A15.88 15.88 0 0 1 0 271.13v-31.26A15.88 15.88 0 0 1 15.87 224h608.27A15.88 15.88 0 0 1 640 239.87z"></path></svg>
+    <svg color="lightgray" width="10px" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="horizontal-rule" class="svg-inline--fa fa-horizontal-rule fa-w-20" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><path fill="currentColor" d="M640 239.87v31.26A15.88 15.88 0 0 1 624.14 287H15.87A15.88 15.88 0 0 1 0 271.13v-31.26A15.88 15.88 0 0 1 15.87 224h608.27A15.88 15.88 0 0 1 640 239.87z"></path></svg>
+    <span class="ml-2 mr-2 -mt-1 text-gray-400">or</span>
+    <svg color="lightgray" width="10px" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="horizontal-rule" class="svg-inline--fa fa-horizontal-rule fa-w-20" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><path fill="currentColor" d="M640 239.87v31.26A15.88 15.88 0 0 1 624.14 287H15.87A15.88 15.88 0 0 1 0 271.13v-31.26A15.88 15.88 0 0 1 15.87 224h608.27A15.88 15.88 0 0 1 640 239.87z"></path></svg>
+    <svg color="lightgray" width="10px" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="horizontal-rule" class="svg-inline--fa fa-horizontal-rule fa-w-20" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><path fill="currentColor" d="M640 239.87v31.26A15.88 15.88 0 0 1 624.14 287H15.87A15.88 15.88 0 0 1 0 271.13v-31.26A15.88 15.88 0 0 1 15.87 224h608.27A15.88 15.88 0 0 1 640 239.87z"></path></svg>
+    <svg color="lightgray" width="10px" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="horizontal-rule" class="svg-inline--fa fa-horizontal-rule fa-w-20" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><path fill="currentColor" d="M640 239.87v31.26A15.88 15.88 0 0 1 624.14 287H15.87A15.88 15.88 0 0 1 0 271.13v-31.26A15.88 15.88 0 0 1 15.87 224h608.27A15.88 15.88 0 0 1 640 239.87z"></path></svg>
+</div>
+
+<!-- Sign up! -->
+<div class="">
+    Dont have an account?
+    <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl" class="link text-pink-500">Sign up here.</a><br />
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

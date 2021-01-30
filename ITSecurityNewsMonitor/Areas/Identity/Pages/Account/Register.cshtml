@@ -1,0 +1,52 @@
+﻿@page
+@model RegisterModel
+@{
+    ViewData["Title"] = "Register";
+    Layout = "_IdentityLayout";
+}
+
+<!-- Title -->
+<div class="mb-4">
+    <h1 class="font-bold text-5xl">
+        Sign up
+    </h1>
+    <a href="@Url.Action("Login", "Identity")" class="link flex mt-2">
+        <svg width="13px" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="arrow-left" class="svg-inline--fa fa-arrow-left fa-w-14" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+            <path fill="currentColor" d="M257.5 445.1l-22.2 22.2c-9.4 9.4-24.6 9.4-33.9 0L7 273c-9.4-9.4-9.4-24.6 0-33.9L201.4 44.7c9.4-9.4 24.6-9.4 33.9 0l22.2 22.2c9.5 9.5 9.3 25-.4 34.3L136.6 216H424c13.3 0 24 10.7 24 24v32c0 13.3-10.7 24-24 24H136.6l120.5 114.8c9.8 9.3 10 24.8.4 34.3z"></path>
+        </svg>
+        <span class="ml-1">Back to Log in</span>
+    </a>
+</div>
+
+<form asp-route-returnUrl="@Model.ReturnUrl" method="post">
+    <div asp-validation-summary="All"></div>
+    <div class="field">
+        <label asp-for="Input.Email" class="text-field-description"></label>
+        <input asp-for="Input.Email" class="text-field w-72" />
+    </div>
+    <div class="field mt-2">
+        <label asp-for="Input.Password" class="text-field-description"></label>
+        <input asp-for="Input.Password" class="text-field w-72" />
+        <span asp-validation-for="Input.Password" class="text-field-description"></span>
+    </div>
+    <div class="field mt-2">
+        <label asp-for="Input.ConfirmPassword" class="text-field-description"></label>
+        <input asp-for="Input.ConfirmPassword" class="text-field w-72" />
+        <span asp-validation-for="Input.ConfirmPassword" class="text-field-description"></span>
+    </div>
+    <div class="actions mt-4">
+        <button type="submit" class="button">Sign up</button>
+    </div>
+</form>
+
+<!-- Other links -->
+<div class="mt-4 text-sm">
+    <a id="forgot-password" asp-page="./ForgotPassword" class="link">Forgot your password?</a>
+    <br />
+    <a id="resend-confirmation" asp-page="./ResendEmailConfirmation" class="link">Didn't receive confirmation instructions?</a>
+    <br />
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

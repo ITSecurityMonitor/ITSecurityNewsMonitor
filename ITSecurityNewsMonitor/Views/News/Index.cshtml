@@ -43,7 +43,7 @@
     </div>
 
     <div class="ml-auto flex">
-        <a href="@Url.Action("News", "Index", new { page = Model.Page > 1 ? Model.Page - 1 : 1, search = Model.Search, view = Model.SelectedView.ID })" class="ml-2 mr-1 flex @(Model.Page > 1 ? "text-gray-400 hover:text-black" : "text-gray-100 pointer-events-none")">
+        <a href="@Url.Action("News", "Index", new { page = Model.Page > 1 ? Model.Page - 1 : 1, search = Model.Search, view = Model.SelectedView?.ID })" class="ml-2 mr-1 flex @(Model.Page > 1 ? "text-gray-400 hover:text-black" : "text-gray-100 pointer-events-none")">
             <svg width="10px" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="arrow-right" class="svg-inline--fa fa-arrow-right fa-w-14" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
                 <path fill="currentColor" d="M257.5 445.1l-22.2 22.2c-9.4 9.4-24.6 9.4-33.9 0L7 273c-9.4-9.4-9.4-24.6 0-33.9L201.4 44.7c9.4-9.4 24.6-9.4 33.9 0l22.2 22.2c9.5 9.5 9.3 25-.4 34.3L136.6 216H424c13.3 0 24 10.7 24 24v32c0 13.3-10.7 24-24 24H136.6l120.5 114.8c9.8 9.3 10 24.8.4 34.3z"></path>
             </svg>
@@ -54,7 +54,7 @@
         Page @Model.Page of @Model.MaxPage
         &middot;
 
-        <a href="@Url.Action("News", "Index", new { page = Model.Page < Model.MaxPage ? Model.Page + 1 : Model.MaxPage, search = Model.Search, view = Model.SelectedView.ID })" class="ml-1 flex @(Model.Page < Model.MaxPage ? "text-gray-400 hover:text-black" : "text-gray-100 pointer-events-none")">
+        <a href="@Url.Action("News", "Index", new { page = Model.Page < Model.MaxPage ? Model.Page + 1 : Model.MaxPage, search = Model.Search, view = Model.SelectedView?.ID })" class="ml-1 flex @(Model.Page < Model.MaxPage ? "text-gray-400 hover:text-black" : "text-gray-100 pointer-events-none")">
 
             <div class="mr-1 self-center">Next</div>
             <svg width="10px" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="arrow-right" class="svg-inline--fa fa-arrow-right fa-w-14" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
@@ -199,7 +199,7 @@
 </div>
 
 <div class="px-10 pt-10 pb-16 flex">
-    <a href="@Url.Action("News", "Index", new { page = Model.Page > 1 ? Model.Page - 1 : 1, search = Model.Search, view = Model.SelectedView.ID })" class="ml-2 mr-1 flex @(Model.Page > 1 ? "text-gray-400 hover:text-black" : "text-gray-100 pointer-events-none")">
+    <a href="@Url.Action("News", "Index", new { page = Model.Page > 1 ? Model.Page - 1 : 1, search = Model.Search, view = Model.SelectedView?.ID })" class="ml-2 mr-1 flex @(Model.Page > 1 ? "text-gray-400 hover:text-black" : "text-gray-100 pointer-events-none")">
         <svg width="10px" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="arrow-right" class="svg-inline--fa fa-arrow-right fa-w-14" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
             <path fill="currentColor" d="M257.5 445.1l-22.2 22.2c-9.4 9.4-24.6 9.4-33.9 0L7 273c-9.4-9.4-9.4-24.6 0-33.9L201.4 44.7c9.4-9.4 24.6-9.4 33.9 0l22.2 22.2c9.5 9.5 9.3 25-.4 34.3L136.6 216H424c13.3 0 24 10.7 24 24v32c0 13.3-10.7 24-24 24H136.6l120.5 114.8c9.8 9.3 10 24.8.4 34.3z"></path>
         </svg>
@@ -208,7 +208,7 @@
 
     Page @Model.Page of @Model.MaxPage
 
-    <a href="@Url.Action("News", "Index", new { page = Model.Page < Model.MaxPage ? Model.Page + 1 : Model.MaxPage, search = Model.Search, view = Model.SelectedView.ID })" class="ml-1 flex @(Model.Page < Model.MaxPage ? "text-gray-400 hover:text-black" : "text-gray-100 pointer-events-none")">
+    <a href="@Url.Action("News", "Index", new { page = Model.Page < Model.MaxPage ? Model.Page + 1 : Model.MaxPage, search = Model.Search, view = Model.SelectedView?.ID })" class="ml-1 flex @(Model.Page < Model.MaxPage ? "text-gray-400 hover:text-black" : "text-gray-100 pointer-events-none")">
 
         <div class="mr-1 self-center">Next</div>
         <svg width="10px" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="arrow-right" class="svg-inline--fa fa-arrow-right fa-w-14" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">

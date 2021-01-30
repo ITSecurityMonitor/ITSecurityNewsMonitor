@@ -19,14 +19,14 @@ eval("﻿// Please see documentation at https://docs.microsoft.com/aspnet/core/c
 
 /***/ }),
 
-/***/ "./ITSecurityNewsMonitor/wwwroot/css/site.css":
-/*!****************************************************!*\
-  !*** ./ITSecurityNewsMonitor/wwwroot/css/site.css ***!
-  \****************************************************/
+/***/ "./ITSecurityNewsMonitor/wwwroot/css/site.scss":
+/*!*****************************************************!*\
+  !*** ./ITSecurityNewsMonitor/wwwroot/css/site.scss ***!
+  \*****************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n// extracted by mini-css-extract-plugin\n\n\n//# sourceURL=webpack://itsecuritynewsmonitor/./ITSecurityNewsMonitor/wwwroot/css/site.css?");
+eval("__webpack_require__.r(__webpack_exports__);\n// extracted by mini-css-extract-plugin\n\n\n//# sourceURL=webpack://itsecuritynewsmonitor/./ITSecurityNewsMonitor/wwwroot/css/site.scss?");
 
 /***/ })
 
@@ -71,7 +71,7 @@ eval("__webpack_require__.r(__webpack_exports__);\n// extracted by mini-css-extr
 /******/ 	// startup
 /******/ 	// Load entry module
 /******/ 	__webpack_require__("./ITSecurityNewsMonitor/wwwroot/js/site.js");
-/******/ 	__webpack_require__("./ITSecurityNewsMonitor/wwwroot/css/site.css");
+/******/ 	__webpack_require__("./ITSecurityNewsMonitor/wwwroot/css/site.scss");
 /******/ 	// This entry module used 'exports' so it can't be inlined
 /******/ })()
 ;

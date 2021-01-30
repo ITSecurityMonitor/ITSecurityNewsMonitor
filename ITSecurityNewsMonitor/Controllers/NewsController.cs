@@ -21,7 +21,7 @@ namespace ITSecurityNewsMonitor.Controllers
             _userManager = userManager;
         }
 
-        public IActionResult Index()
+        public IActionResult Index(int? view, int page = 1, string search = "")
         {
             NewsIndexViewModel newsIndexViewModel = new NewsIndexViewModel();
 
@@ -30,6 +30,31 @@ namespace ITSecurityNewsMonitor.Controllers
 
             newsIndexViewModel.Views = views;
             newsIndexViewModel.NewsGroups = newsGroups;
+            newsIndexViewModel.MaxPage = newsGroups.Any() ? (int) Math.Ceiling(newsGroups.Count() / 10.0) : 1;
+
+            if (page > newsIndexViewModel.MaxPage)
+            {
+                page = newsIndexViewModel.MaxPage;
+            }
+
+            if(page < 1)
+            {
+                page = 1;
+            }
+
+            newsIndexViewModel.Page = page;
+
+            List<View> selectedViews = views.Where(v => v.ID == view).ToList();
+
+            if (view == null || !selectedViews.Any())
+            {
+                newsIndexViewModel.SelectedView = null;
+            } else
+            {
+                newsIndexViewModel.SelectedView = selectedViews.First();
+            }
+
+            newsIndexViewModel.Search = search;
 
             return View(newsIndexViewModel);
         }

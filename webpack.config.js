@@ -7,18 +7,19 @@ const dirName = 'ITSecurityNewsMonitor/wwwroot/dist';
 module.exports = (env, argv) => {
     return {
         mode: argv.mode === "production" ? "production" : "development",
-        entry: ['./ITSecurityNewsMonitor/wwwroot/js/site.js', './ITSecurityNewsMonitor/wwwroot/css/site.css'],
+        entry: ['./ITSecurityNewsMonitor/wwwroot/js/site.js', './ITSecurityNewsMonitor/wwwroot/css/site.scss'],
         output: {
             filename: bundleFileName + '.js',
             path: path.resolve(__dirname, dirName)
         },
         module: {
             rules: [{
-                test: /\.css$/,
+                test: /\.s[ac]ss$/i,
                 use: [
                     MiniCssExtractPlugin.loader,
                     'css-loader',
-                    'postcss-loader'
+                    'postcss-loader',
+                    "sass-loader",
                 ]
             }]
         },

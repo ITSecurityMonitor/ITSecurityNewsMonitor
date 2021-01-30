@@ -1,0 +1,146 @@
+﻿.multi-background {
+    transform: skewY(-12deg);
+    transform-origin: 0;
+    -webkit-backface-visibility: hidden;
+    outline: 1px solid white;
+}
+
+// Place all the styles related to the NewsGroups controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: https://sass-lang.com/
+/*Voting*/
+.news-group-vote-tracker {
+    visibility: hidden;
+}
+
+.show-vote-tracker {
+    .news-group-vote-tracker
+
+{
+    visibility: initial;
+}
+
+.news-group-content {
+    visibility: hidden;
+}
+
+}
+
+/*Rest */
+.related-left-bar::before {
+    content: "";
+    position: absolute;
+    margin-top: 8.25px;
+    margin-left: 6.25px;
+    width: 8.5px;
+    height: 8.5px;
+    background-color: rgb(155, 97, 255);
+    border-radius: 100px;
+}
+
+.related-left-bar::after {
+    content: "";
+    position: absolute;
+    margin-top: 5px;
+    margin-left: 3px;
+    width: 15px;
+    height: 15px;
+    background-color: rgba(155, 97, 255, 0.25);
+    border-radius: 100px;
+}
+
+.left-bar {
+    border-left: 2px solid rgb(155, 97, 255);
+    ;
+}
+
+    .left-bar::before {
+        content: "";
+        width: 16px;
+        height: 16px;
+        top: 61px;
+        left: 9px;
+        position: absolute;
+        background-color: rgb(155, 97, 255);
+        border-radius: 100px;
+    }
+
+    .left-bar::after {
+        content: "";
+        width: 28px;
+        height: 28px;
+        top: 55px;
+        left: 3px;
+        position: absolute;
+        background-color: rgba(155, 97, 255, 0.25);
+        border-radius: 100px;
+    }
+
+.view-tab {
+    background-color: rgba(155, 97, 255, 0.20);
+}
+
+    .view-tab.selected {
+        background-color: rgba(155, 97, 255, 0.5);
+    }
+
+    .view-tab:hover {
+        background-color: rgba(155, 97, 255, 0.6);
+    }
+
+.border-bottom-violett {
+    border-color: rgba(155, 97, 255, 0.25);
+}
+
+.background-gradient {
+    background-color: #4158D0;
+    background-image: linear-gradient(158deg, #4159d099 0%, #C850C099 46%, #FFCC7099 100%);
+    background-size: 200% 200%;
+    -webkit-animation: AnimationName 5s ease infinite;
+    -moz-animation: AnimationName 5s ease infinite;
+    animation: AnimationName 5s ease infinite;
+    // transform: skewY(-12deg);
+    // transform-origin: 0;
+}
+
+@-webkit-keyframes AnimationName {
+    0% {
+        background-position: 0% 50%
+    }
+
+    50% {
+        background-position: 100% 50%
+    }
+
+    100% {
+        background-position: 0% 50%
+    }
+}
+
+@-moz-keyframes AnimationName {
+    0% {
+        background-position: 0% 50%
+    }
+
+    50% {
+        background-position: 100% 50%
+    }
+
+    100% {
+        background-position: 0% 50%
+    }
+}
+
+@keyframes AnimationName {
+    0% {
+        background-position: 0% 50%
+    }
+
+    50% {
+        background-position: 100% 50%
+    }
+
+    100% {
+        background-position: 0% 50%
+    }
+}
