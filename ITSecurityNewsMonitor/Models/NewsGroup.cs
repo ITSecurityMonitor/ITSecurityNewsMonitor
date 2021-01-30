@@ -12,7 +12,11 @@ namespace ITSecurityNewsMonitor.Models
 
         public int LowLevelTagId { get; set; }
         public LowLevelTag LowLevelTag { get; set; }
+        public DateTime CreatedDate { get; set; }
+        public DateTime UpdatedDate { get; set; }
 
-        public News News { get; set; }
+        public List<News> News { get; set; }
+
+        public VoteRequest VoteRequest { get; set; }
     }
 }

@@ -18,7 +18,6 @@ namespace ITSecurityNewsMonitor.Data
         public DbSet<LowLevelTag> LowLevelTags { get; set; }
         public DbSet<News> News { get; set; }
         public DbSet<NewsGroup> NewsGroups { get; set; }
-        public DbSet<NewsLowLevelTag> NewsLowLevelTags { get; set; }
         public DbSet<Source> Sources { get; set; }
         public DbSet<View> Views { get; set; }
         public DbSet<Vote> Votes { get; set; }
@@ -31,7 +30,6 @@ namespace ITSecurityNewsMonitor.Data
             modelBuilder.Entity<LowLevelTag>().ToTable("LowLevelTags");
             modelBuilder.Entity<News>().ToTable("News");
             modelBuilder.Entity<NewsGroup>().ToTable("NewsGroup");
-            modelBuilder.Entity<NewsLowLevelTag>().ToTable("NewsLowLevelTags");
             modelBuilder.Entity<Source>().ToTable("Sources");
             modelBuilder.Entity<View>().ToTable("Views");
             modelBuilder.Entity<Vote>().ToTable("Votes");

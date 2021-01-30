@@ -13,11 +13,15 @@ namespace ITSecurityNewsMonitor.Models
         public string Content { get; set; }
         public string Link { get; set; }
         public bool ManuallyAssigned { get; set; }
+        public DateTime CreatedDate { get; set; }
+        public DateTime UpdatedDate { get; set; }
 
         public int NewsGroupId { get; set; }
         public NewsGroup NewsGroup { get; set; }
 
         public int SourceId { get; set; }
         public Source Source { get; set; }
+
+        public ICollection<LowLevelTag> LowLevelTags { get; set; }
     }
 }

@@ -14,5 +14,7 @@ namespace ITSecurityNewsMonitor.Models
 
         public int HighLevelTagId { get; set; }
         public HighLevelTag HighLevelTag { get; set; }
+
+        public ICollection<News> News { get; set; }
     }
 }

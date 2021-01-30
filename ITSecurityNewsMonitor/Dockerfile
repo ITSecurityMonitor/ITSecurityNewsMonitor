@@ -10,6 +10,11 @@ WORKDIR /src
 COPY ["ITSecurityNewsMonitor/ITSecurityNewsMonitor.csproj", "ITSecurityNewsMonitor/"]
 RUN dotnet restore "ITSecurityNewsMonitor/ITSecurityNewsMonitor.csproj"
 COPY . .
+
+# To run Tailwind via Webpack/Postcss
+RUN npm install
+RUN npm run production
+
 WORKDIR "/src/ITSecurityNewsMonitor"
 RUN dotnet build "ITSecurityNewsMonitor.csproj" -c Release -o /app/build
 

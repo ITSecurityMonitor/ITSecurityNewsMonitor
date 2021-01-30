@@ -1,49 +1,64 @@
 ﻿<!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - ITSecurityNewsMonitor</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="~/dist/ITSecurityNewsMonitor.css" />
 </head>
-<body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">ITSecurityNewsMonitor</a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                    </ul>
-                    <partial name="_LoginPartial" />
-                </div>
+<body class="background-dotted">
+    <!-- Container -->
+    <div class="h-screen">
+        <!-- <div class="absolute gradient-background h-3/5 w-full z-negative"></div> -->
+        <canvas id="background-canvas" width="32" height="32" class="absolute h-3/5 w-full z-negative multi-background">
+        </canvas>
+        <!-- <canvas id="canv" width="32" height="32" class="w-full h-full"> -->
+        <div class="z-1 h-full flex justify-center items-center">
+            <div class="p-12 bg-white w-96 rounded shadow-md">
+                @RenderBody()
             </div>
-        </nav>
-    </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
+        </div>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2021 - ITSecurityNewsMonitor - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div>
-    </footer>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script>
+
+        if (typeof context == 'undefined') {
+            const c = document.getElementById('background-canvas');
+            const context = c.getContext('2d');
+
+            const col = function (x, y, r, g, b) {
+                context.fillStyle = `rgba(${r}, ${g}, ${b}, 1)`;
+                context.fillRect(x, y, 1, 1);
+            }
+            const R = function (x, y, t) {
+                let value = (Math.floor(192 + 64 * Math.cos((x * x - y * y) / 300 + t)));
+                return value;
+            }
+
+            const G = function (x, y, t) {
+                let value = (Math.floor(192 + 64 * Math.sin((x * x * Math.cos(t / 4) + y * y * Math.sin(t / 3)) / 300)));
+                return value * 0.5;
+            }
+
+            const B = function (x, y, t) {
+                let value = (Math.floor(192 + 64 * Math.sin(5 * Math.sin(t / 9) + ((x - 100) * (x - 100) + (y - 100) * (y - 100)) / 1100)));
+                return value * 1.2;
+            }
+
+            let time = 0;
+            const run = function () {
+                for (x = 0; x <= 35; x++) {
+                    for (y = 0; y <= 35; y++) {
+                        col(x, y, R(x, y, time), G(x, y, time), B(x, y, time));
+                    }
+                }
+                time = time + 0.01;
+                window.requestAnimationFrame(run);
+            }
+            run();
+        }
+    </script>
+    <script src="~/dist/ITSecurityNewsMonitor.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
