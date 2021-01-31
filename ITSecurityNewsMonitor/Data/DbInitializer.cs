@@ -41,6 +41,8 @@ namespace ITSecurityNewsMonitor.Data
 
 
             context.Sources.Add(source1);
+            context.Sources.Add(source2);
+            context.Sources.Add(source3);
             context.SaveChanges();
         }
     }

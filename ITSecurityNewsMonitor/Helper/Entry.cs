@@ -19,9 +19,5 @@ namespace ITSecurityNewsMonitor.Helper
 
         [JsonPropertyName("article_text")]
         public string Content { get; set; }
-
-        [JsonPropertyName("published")]
-        public DateTime Date { get; set; }
-
     }
 }
