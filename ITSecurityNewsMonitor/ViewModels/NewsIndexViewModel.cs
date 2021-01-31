@@ -15,5 +15,6 @@ namespace ITSecurityNewsMonitor.ViewModels
         public int MaxPage { get; set; }
         public int NewsGroupCount { get; set; }
         public string Search { get; set; }
+        public string OwnerId { get; set; }
     }
 }

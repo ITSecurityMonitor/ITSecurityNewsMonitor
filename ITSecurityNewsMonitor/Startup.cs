@@ -1,6 +1,7 @@
 using Hangfire;
 using Hangfire.PostgreSql;
 using ITSecurityNewsMonitor.Data;
+using ITSecurityNewsMonitor.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -102,7 +103,9 @@ namespace ITSecurityNewsMonitor
 
             app.UseHangfireDashboard();
             app.UseHangfireServer();
-            BackgroundJob.Enqueue(() => Console.WriteLine("Fire-and-forget"));
+            
+            BackgroundJob.Enqueue<Crawler>(c => c.ExecuteCrawl());
+            //RecurringJob.AddOrUpdate<Crawler>(c => c.ExecuteCrawl(), "*/30 * * * *");
 
             app.UseEndpoints(endpoints =>
             {

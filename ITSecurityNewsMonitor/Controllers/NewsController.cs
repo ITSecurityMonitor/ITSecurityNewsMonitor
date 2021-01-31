@@ -31,6 +31,7 @@ namespace ITSecurityNewsMonitor.Controllers
             newsIndexViewModel.Views = views;
             newsIndexViewModel.NewsGroups = newsGroups;
             newsIndexViewModel.MaxPage = newsGroups.Any() ? (int) Math.Ceiling(newsGroups.Count() / 10.0) : 1;
+            newsIndexViewModel.OwnerId = _userManager.GetUserId(User);
 
             if (page > newsIndexViewModel.MaxPage)
             {

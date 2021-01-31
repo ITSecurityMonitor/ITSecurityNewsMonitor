@@ -74,7 +74,7 @@
     @foreach (NewsGroup newsGroup in Model.NewsGroups)
     {
         <!-- News Group -->
-        <div class="shadow-md rounded bg-white bg-opacity-80 p-8 pb-1 @(newsGroup.VoteRequest != null ? "show-vote-tracker" : "")" id="@newsGroup.ID">
+        <div class="shadow-md rounded bg-white bg-opacity-80 p-8 pb-1 @(newsGroup.VoteRequests.Where(vr => vr.OwnerID.Equals(Model.OwnerId)).Any() ? "show-vote-tracker" : "")" id="@newsGroup.ID">
 
             <!-- Voting  -->
             <div class="relative news-group-vote-tracker">
@@ -117,13 +117,13 @@
                 <div class="mb-4">
                     <div class="flex flex-col sm:flex-row">
                         <span>
-                            <a href="@Url.Action("News", "Trackout", new { newsGroup = newsGroup.ID, link = newsGroup.News.First().Link })" target=":_blank" onclick="user_followed_link('@newsGroup.ID', '@(newsGroup.VoteRequest != null)')">
+                            <a href="@Url.Action("News", "Trackout", new { newsGroup = newsGroup.ID, link = newsGroup.News.First().Link })" target=":_blank" onclick="user_followed_link('@newsGroup.ID', '@(newsGroup.VoteRequests.Where(vr => vr.OwnerID.Equals(Model.OwnerId)).Any())')">
                                 <span class="font-bold text-2xl">
                                     @newsGroup.News.First().Headline
                                 </span>
                             </a>
                             <span class="text-xs whitespace-nowrap">
-                                <a href="@newsGroup.News.First().Source.Link" class="link" target=":_blank">
+                                <a href="@newsGroup.News.First().Source.Homepage" class="link" target=":_blank">
                                     via @newsGroup.News.First().Source.Name
                                 </a>
                             </span>
@@ -171,12 +171,12 @@
                         </div>
                         <span class="ml-6 sm:ml-1 sm:mt-0.5 leading-5">
                             <span class="font-bold hover:underline cursor-pointer">
-                                <a href="@Url.Action("News", "Trackout", new { newsGroup = newsGroup.ID, link = news.Link })" target=":_blank" onclick="user_followed_link('@newsGroup.ID', '@(newsGroup.VoteRequest != null)')">
+                                <a href="@Url.Action("News", "Trackout", new { newsGroup = newsGroup.ID, link = news.Link })" target=":_blank" onclick="user_followed_link('@newsGroup.ID', '@(newsGroup.VoteRequests.Where(vr => vr.OwnerID.Equals(Model.OwnerId)).Any())')">
                                     @news.Headline
                                 </a>
                             </span>
                             <span class="text-xs whitespace-nowrap">
-                                <a href="@news.Source.Link" target=":_blank" class="link">
+                                <a href="@news.Source.Homepage" target=":_blank" class="link">
                                     via @news.Source.Name
                                 </a>
                             </span>
