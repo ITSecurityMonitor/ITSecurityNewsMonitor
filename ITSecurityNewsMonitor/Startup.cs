@@ -103,9 +103,11 @@ namespace ITSecurityNewsMonitor
 
             app.UseHangfireDashboard();
             app.UseHangfireServer();
-            
+
             // BackgroundJob.Enqueue<Crawler>(c => c.ExecuteCrawl());
             //RecurringJob.AddOrUpdate<Crawler>(c => c.ExecuteCrawl(), "*/30 * * * *");
+
+            RecurringJob.AddOrUpdate<Crawler>(c => c.DeleteOld(), "0 1 * * *");
 
             app.UseEndpoints(endpoints =>
             {

@@ -24,6 +24,7 @@ module.exports = {
     },
   },
   purge: {
-    content: ["./app/**/*.html.erb"],
+    enabled: true,
+    content: ["./ITSecurityNewsMonitor/**/*.cshtml", "./ITSecurityNewsMonitor/**/*.scss"],
   }
 };

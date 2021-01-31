@@ -31,7 +31,8 @@ namespace ITSecurityNewsMonitor.Controllers
                 .Include(ng => ng.News).ThenInclude(n => n.Source)
                 .Include(ng => ng.News).ThenInclude(n => n.LowLevelTags)
                 .Include(ng => ng.VoteRequests)
-                .Where(ng => ng.News.Any(n => n.Headline.Contains(search ?? "")))
+                .Where(ng => !ng.Archived)
+                .Where(ng => ng.News.Any(n => n.Headline.ToLower().Contains((search ?? "").ToLower())))
                 .OrderByDescending(ng => ng.Score)
                 .ThenByDescending(ng => ng.UpdatedDate)
                 .ToList();
@@ -73,7 +74,7 @@ namespace ITSecurityNewsMonitor.Controllers
 
         public IActionResult Trackout(int newsGroupId, string link)
         {
-            NewsGroup newsGroup = _context.NewsGroups.Find(newsGroupId);
+            NewsGroup newsGroup = _context.NewsGroups.Include(ng => ng.VoteRequests).Where(ng => ng.ID == newsGroupId).First();
             string ownerID = _userManager.GetUserId(User);
 
             if (newsGroup == null)
@@ -88,6 +89,7 @@ namespace ITSecurityNewsMonitor.Controllers
                 voteRequest.OwnerID = ownerID;
                 voteRequest.NewsGroup = newsGroup;
 
+                _context.VoteRequests.Add(voteRequest);
                 _context.SaveChanges();
             }
 

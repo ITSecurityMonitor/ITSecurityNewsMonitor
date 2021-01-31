@@ -1,0 +1,66 @@
+﻿@model IEnumerable<ITSecurityNewsMonitor.Models.View>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="pl-10 pt-10">
+    <h1 class="font-bold text-5xl">Views</h1>
+</div>
+<div class="pl-10 pr-10 pt-4">
+    <div class="flex">
+        <a asp-action="Create" class="text-gray-400 hover:text-black w-18 cursor-pointer flex">
+            <svg width="13px" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="plus" class="svg-inline--fa fa-plus fa-w-14" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="currentColor" d="M416 208H272V64c0-17.67-14.33-32-32-32h-32c-17.67 0-32 14.33-32 32v144H32c-17.67 0-32 14.33-32 32v32c0 17.67 14.33 32 32 32h144v144c0 17.67 14.33 32 32 32h32c17.67 0 32-14.33 32-32V304h144c17.67 0 32-14.33 32-32v-32c0-17.67-14.33-32-32-32z"></path></svg>
+            <span class="ml-1">New View</span>
+        </a>
+    </div>
+
+    <div class="mt-4"></div>
+
+    @foreach (View view in Model)
+    {
+
+        <div class="p-4 shadow-md rounded bg-white bg-opacity-80 mb-4">
+            <!-- Name  -->
+            <span class="text-xs text-gray-500">Name</span>
+            <br>
+            <span class="font-bold">
+                @view.Name
+            </span>
+            <!-- Tags -->
+            @if (view.HighLevelTags.Count() > 0)
+            {
+                <br>
+                <span class="text-xs text-gray-500">Tags</span>
+            }
+            <br>
+            <div class="mb-1">
+                @foreach (HighLevelTag highLevelTag in view.HighLevelTags)
+                {
+                    <span class="high-level-tag">
+                        @highLevelTag.Name
+                    </span>
+                }
+            </div>
+            <!-- Actions  -->
+            <span class="text-xs text-gray-500">Actions</span>
+            <div class="flex">
+
+                <a asp-action="Details" asp-route-id="@view.ID">Details</a>
+
+
+                <a asp-action="Delete" asp-route-id="@view.ID" class="flex text-gray-400 hover:text-black mr-2">
+                    <svg width="12px" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="trash" class="svg-inline--fa fa-trash fa-w-14" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="currentColor" d="M432 32H312l-9.4-18.7A24 24 0 0 0 281.1 0H166.8a23.72 23.72 0 0 0-21.4 13.3L136 32H16A16 16 0 0 0 0 48v32a16 16 0 0 0 16 16h416a16 16 0 0 0 16-16V48a16 16 0 0 0-16-16zM53.2 467a48 48 0 0 0 47.9 45h245.8a48 48 0 0 0 47.9-45L416 128H32z"></path></svg>
+                    <span class="ml-1">Delete</span>
+                </a>
+                &middot;
+
+                <a asp-action="Edit" asp-route-id="@view.ID" class="flex text-gray-400 hover:text-black ml-2">
+                    <svg width="13px" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="pen" class="svg-inline--fa fa-pen fa-w-16" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M290.74 93.24l128.02 128.02-277.99 277.99-114.14 12.6C11.35 513.54-1.56 500.62.14 485.34l12.7-114.22 277.9-277.88zm207.2-19.06l-60.11-60.11c-18.75-18.75-49.16-18.75-67.91 0l-56.55 56.55 128.02 128.02 56.55-56.55c18.75-18.76 18.75-49.16 0-67.91z"></path></svg>
+                    <span class="ml-1">Edit</span>
+                </a>
+            </div>
+        </div>
+    }
+</div>

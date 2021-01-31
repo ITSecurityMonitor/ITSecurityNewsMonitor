@@ -42,6 +42,23 @@ namespace ITSecurityNewsMonitor.Services
             _url = "http://" + _config.GetValue<string>("Connections:Crawler:IP") + ":" + _config.GetValue<string>("Connections:Crawler:Port");
         }
 
+        public async Task DeleteOld()
+        {
+            using (IServiceScope scope = _serviceProvider.CreateScope())
+            using (SecNewsDbContext context = scope.ServiceProvider.GetRequiredService<SecNewsDbContext>())
+            {
+                DateTime thiryDaysAgo = DateTime.Now.AddDays(-30);
+                List<NewsGroup> newsGroups = context.NewsGroups.Where(ng => ng.UpdatedDate < thiryDaysAgo).ToList();
+
+                foreach(NewsGroup newsGroup in newsGroups)
+                {
+                    newsGroup.Archived = true;
+                }
+
+                context.SaveChanges();
+            }
+        }
+
         public async Task ExecuteCrawl()
         {
             using (IServiceScope scope = _serviceProvider.CreateScope())
