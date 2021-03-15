@@ -22,6 +22,30 @@ module.exports = {
         }
       },
     },
+    scale: {
+      0: "0",
+      25: ".25",
+      50: ".5",
+      75: ".75",
+      90: ".9",
+      95: ".95",
+      97: ".97",
+      100: "1",
+      105: "1.05",
+      110: "1.1",
+      125: "1.25",
+      150: "1.5",
+      200: "2",
+    },
+  },
+  variants: {
+    extend: {
+      translate: ["group-hover"],
+      scale: ["group-hover", "hover"],
+      width: ["responsive", "hover", "group-hover", "focus"],
+      borderRadius: ["group-hover"],
+      margin: ["group-hover"],
+    },
   },
   purge: {
     enabled: true,

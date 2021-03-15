@@ -22,12 +22,12 @@ namespace ITSecurityNewsMonitor.Controllers
             _userManager = userManager;
         }
 
-        public IActionResult Index(int? view, int page = 1, string search = "")
+        public async Task<IActionResult> Index(int? view, int page = 1, string search = "")
         {
             NewsIndexViewModel newsIndexViewModel = new NewsIndexViewModel();
 
-            List<View> views = _context.Views.Where(v => v.OwnerID.Equals(_userManager.GetUserId(User))).ToList();
-            List<NewsGroup> newsGroups = _context.NewsGroups
+            List<View> views = await _context.Views.Where(v => v.OwnerID.Equals(_userManager.GetUserId(User))).ToListAsync();
+            List<NewsGroup> newsGroups = await _context.NewsGroups
                 .Include(ng => ng.News).ThenInclude(n => n.Source)
                 .Include(ng => ng.News).ThenInclude(n => n.LowLevelTags)
                 .Include(ng => ng.VoteRequests)
@@ -35,7 +35,7 @@ namespace ITSecurityNewsMonitor.Controllers
                 .Where(ng => ng.News.Any(n => n.Headline.ToLower().Contains((search ?? "").ToLower())))
                 .OrderByDescending(ng => ng.Score)
                 .ThenByDescending(ng => ng.UpdatedDate)
-                .ToList();
+                .ToListAsync();
 
             double pageSize = 10.0;
 
@@ -72,9 +72,9 @@ namespace ITSecurityNewsMonitor.Controllers
             return View(newsIndexViewModel);
         }
 
-        public IActionResult Trackout(int newsGroupId, string link)
+        public async Task<IActionResult> Trackout(int newsGroupId, string link)
         {
-            NewsGroup newsGroup = _context.NewsGroups.Include(ng => ng.VoteRequests).Where(ng => ng.ID == newsGroupId).First();
+            NewsGroup newsGroup = await _context.NewsGroups.Include(ng => ng.VoteRequests).Where(ng => ng.ID == newsGroupId).FirstOrDefaultAsync();
             string ownerID = _userManager.GetUserId(User);
 
             if (newsGroup == null)
@@ -90,10 +90,71 @@ namespace ITSecurityNewsMonitor.Controllers
                 voteRequest.NewsGroup = newsGroup;
 
                 _context.VoteRequests.Add(voteRequest);
-                _context.SaveChanges();
+                _context.SaveChangesAsync();
             }
 
             return Redirect(link);
+        }
+
+        public async Task<IActionResult> Details(int newsGroupId)
+        {
+            NewsDetailsViewModel newsDetailsViewModel = new NewsDetailsViewModel();
+            NewsGroup newsGroup = await _context.NewsGroups
+                .Where(ng => ng.ID == newsGroupId)
+                .Include(ng => ng.News).ThenInclude(n => n.Source)
+                .Include(ng => ng.News).ThenInclude(n => n.LowLevelTags)
+                .Include(ng => ng.VoteRequests)
+                .Where(ng => !ng.Archived)
+                .FirstOrDefaultAsync();
+
+            if (newsGroup == null)
+            {
+                return NotFound();
+            }
+
+            newsDetailsViewModel.NewsGroup = newsGroup;
+            newsDetailsViewModel.OwnerId = _userManager.GetUserId(User);
+
+            return View(newsDetailsViewModel);
+        }
+
+        public class UserVoteInput
+        {
+            public int newsGroupId { get; set; }
+            public bool vote { get; set; }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UserVote([FromBody] UserVoteInput input)
+        {
+            NewsGroup newsGroup = await _context.NewsGroups.Include(ng => ng.VoteRequests).Where(ng => ng.ID == input.newsGroupId).FirstOrDefaultAsync();
+            string ownerID = _userManager.GetUserId(User);
+
+            if(newsGroup == null)
+            {
+                return NotFound("NewsGroup not found");
+            }
+
+            VoteRequest voteRequest = newsGroup.VoteRequests.Where(vr => vr.OwnerID == ownerID).FirstOrDefault();
+
+            if(voteRequest == null)
+            {
+                return NotFound("VoteRequest not found");
+            }
+
+            Vote vote = new Vote();
+
+            vote.OwnerID = ownerID;
+            vote.Criticality = input.vote;
+            vote.NewsGroup = newsGroup;
+
+            _context.Add(vote);
+
+            voteRequest.Completed = true;
+
+            _context.SaveChangesAsync();
+
+            return StatusCode(200);
         }
     }
 }

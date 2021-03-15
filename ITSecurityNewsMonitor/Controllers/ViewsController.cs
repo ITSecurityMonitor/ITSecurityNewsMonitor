@@ -7,63 +7,40 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ITSecurityNewsMonitor.Data;
 using ITSecurityNewsMonitor.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace ITSecurityNewsMonitor.Controllers
 {
     public class ViewsController : Controller
     {
         private readonly SecNewsDbContext _context;
+        private readonly UserManager<IdentityUser> _userManager;
 
-        public ViewsController(SecNewsDbContext context)
+        public ViewsController(SecNewsDbContext context, UserManager<IdentityUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         // GET: Views
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Views.ToListAsync());
+            return View(await _context.Views.Include(v => v.HighLevelTags).ToListAsync());
         }
 
-        // GET: Views/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Create()
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            View view = new View();
+            view.Name = "New View";
+            view.OwnerID = _userManager.GetUserId(User);
 
-            var view = await _context.Views
-                .FirstOrDefaultAsync(m => m.ID == id);
-            if (view == null)
-            {
-                return NotFound();
-            }
+            _context.Add(view);
 
-            return View(view);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Index));
         }
 
-        // GET: Views/Create
-        public IActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: Views/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,Name,OwnerID")] View view)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Add(view);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(view);
-        }
 
         // GET: Views/Edit/5
         public async Task<IActionResult> Edit(int? id)
@@ -119,27 +96,8 @@ namespace ITSecurityNewsMonitor.Controllers
         }
 
         // GET: Views/Delete/5
+        [HttpPost]
         public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var view = await _context.Views
-                .FirstOrDefaultAsync(m => m.ID == id);
-            if (view == null)
-            {
-                return NotFound();
-            }
-
-            return View(view);
-        }
-
-        // POST: Views/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var view = await _context.Views.FindAsync(id);
             _context.Views.Remove(view);

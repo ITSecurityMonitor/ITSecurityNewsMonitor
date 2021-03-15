@@ -21,9 +21,9 @@
 
 <div class="pl-10 pr-10 pt-5">
 
-    <form asp-action="Edit">
+    <form asp-action="Edit" method="post">
+        @Html.AntiForgeryToken()
         <input type="hidden" asp-for="ID" />
-        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
         <div class="d-flex flex-col">
             <div><label asp-for="Name" class="text text-gray-500"></label></div>
             <div><input asp-for="Name" class="rounded border p-1" /></div>
@@ -84,7 +84,3 @@
 
     </form>
 </div>
-
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}
