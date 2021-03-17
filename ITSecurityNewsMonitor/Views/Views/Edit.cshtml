@@ -56,20 +56,19 @@
         <div class="text-gray-500 mt-4">Add Tags</div>
         <div class="border rounded p-4">
             <!-- Search  -->
-            <div class="w-96">
-                <form action="@Url.Action("Edit", "Views")" method="get" class="flex flex-row">
-                    <input placeholder="Search Articles" class="rounded border p-1" />
+            <!--<div class="w-96">
+        <form action="@Url.Action("Edit", "Views")" method="get" class="flex flex-row">
+            <input placeholder="Search Articles" class="rounded border p-1" />
 
-                    <button>
-                        <input type="submit" value="Search" class="button" />
+            <button>
+                <input type="submit" value="Search" class="button" />
 
-                        <a href="@Url.Action("Edit", "Views")">
-                            <button class="ml-1 button">Clear</button>
-                        </a>
-                    </button>
-                </form>
-            </div>
-
+                <a href="@Url.Action("Edit", "Views")">
+                    <button class="ml-1 button">Clear</button>
+                </a>
+            </button>
+        </form>
+    </div>-->
             <!-- Search results  -->
             <div class="mt-4">
                 @foreach (HighLevelTag highLevelTag in highLevelTags)

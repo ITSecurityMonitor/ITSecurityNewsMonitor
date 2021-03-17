@@ -105,6 +105,12 @@ namespace ITSecurityNewsMonitor.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        [HttpPost]
+        public async Task<IActionResult> AddTag(int id, int tagId)
+        {
+
+        }
+
         private bool ViewExists(int id)
         {
             return _context.Views.Any(e => e.ID == id);
