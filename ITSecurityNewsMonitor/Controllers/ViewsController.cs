@@ -95,21 +95,33 @@ namespace ITSecurityNewsMonitor.Controllers
             return View(view);
         }
 
+        public class DeleteBody
+        {
+            public int viewId { get; set; }
+        }
+
+
         // GET: Views/Delete/5
         [HttpPost]
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete([FromBody] DeleteBody body)
         {
-            View view = await _context.Views.FindAsync(id);
+            View view = await _context.Views.FindAsync(body?.viewId);
             _context.Views.Remove(view);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        [HttpPost]
-        public async Task<IActionResult> AddTag(int id, int tagId)
+        public class AddTagBody
         {
-            View view = await _context.Views.FindAsync(id);
-            HighLevelTag tag = await _context.HighLevelTags.FindAsync(tagId);
+            public int id { get; set; }
+            public int tagId { get; set; }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddTag([FromBody]AddTagBody body)
+        {
+            View view = await _context.Views.FindAsync(body?.id);
+            HighLevelTag tag = await _context.HighLevelTags.FindAsync(body?.tagId);
 
             if(view == null || tag == null)
             {
