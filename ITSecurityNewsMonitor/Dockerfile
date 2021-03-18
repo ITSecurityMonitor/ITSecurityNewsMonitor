@@ -11,17 +11,6 @@ COPY ["ITSecurityNewsMonitor/ITSecurityNewsMonitor.csproj", "ITSecurityNewsMonit
 RUN dotnet restore "ITSecurityNewsMonitor/ITSecurityNewsMonitor.csproj"
 COPY . .
 
-RUN apt-get install -y git-core curl build-essential openssl libssl-dev \
- && git clone https://github.com/nodejs/node.git \
- && cd node \
- && ./configure \
- && make \
- && sudo make install
-
-# To run Tailwind via Webpack/Postcss
-RUN npm install
-RUN npm run production
-
 WORKDIR "/src/ITSecurityNewsMonitor"
 RUN dotnet build "ITSecurityNewsMonitor.csproj" -c Release -o /app/build
 
