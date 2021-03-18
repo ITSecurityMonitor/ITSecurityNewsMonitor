@@ -99,7 +99,7 @@ namespace ITSecurityNewsMonitor.Controllers
         [HttpPost]
         public async Task<IActionResult> Delete(int? id)
         {
-            var view = await _context.Views.FindAsync(id);
+            View view = await _context.Views.FindAsync(id);
             _context.Views.Remove(view);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
@@ -108,7 +108,17 @@ namespace ITSecurityNewsMonitor.Controllers
         [HttpPost]
         public async Task<IActionResult> AddTag(int id, int tagId)
         {
+            View view = await _context.Views.FindAsync(id);
+            HighLevelTag tag = await _context.HighLevelTags.FindAsync(tagId);
 
+            if(view == null || tag == null)
+            {
+                return NotFound();
+            }
+
+            view.HighLevelTags.Add(tag);
+            await _context.SaveChangesAsync();
+            return StatusCode(200);
         }
 
         private bool ViewExists(int id)
