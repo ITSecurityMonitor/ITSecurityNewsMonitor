@@ -69,7 +69,7 @@ namespace ITSecurityNewsMonitor
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory, RoleManager<IdentityRole> roleManager)
         {
             if (env.IsDevelopment())
             {
@@ -77,14 +77,14 @@ namespace ITSecurityNewsMonitor
                 app.UseMigrationsEndPoint();
 
                 // Apply migrations automatically on startup
-                using (var serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
+                /*using (var serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
                 {
                     var identityContext = serviceScope.ServiceProvider.GetService<ApplicationDbContext>();
                     identityContext.Database.Migrate();
 
                     var secNewsContext = serviceScope.ServiceProvider.GetService<SecNewsDbContext>();
                     secNewsContext.Database.Migrate();
-                }
+                }*/
             }
             else
             {
@@ -117,6 +117,34 @@ namespace ITSecurityNewsMonitor
                 endpoints.MapRazorPages();
                 endpoints.MapHangfireDashboard();
             });
+
+            SeedRoles(roleManager).Wait();
+        }
+
+        public async Task SeedRoles(RoleManager<IdentityRole> roleManager)
+        {
+
+            string[] roles = new[] {
+                "Admin"
+            };
+
+            foreach (var role in roles)
+            {
+
+                if (!await roleManager.RoleExistsAsync(role))
+                {
+                    var create = await roleManager.CreateAsync(new IdentityRole(role));
+
+                    if (!create.Succeeded)
+                    {
+
+                        throw new Exception("Failed to create role");
+
+                    }
+                }
+
+            }
+
         }
     }
 }

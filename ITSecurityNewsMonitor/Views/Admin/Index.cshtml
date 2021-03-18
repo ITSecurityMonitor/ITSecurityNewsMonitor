@@ -1,0 +1,6 @@
+﻿@model ITSecurityNewsMonitor.ViewModels.AdminIndexViewModel
+
+@foreach (var userRole in Model.UserRoles)
+{
+    <p>@userRole.User.Email - @userRole.Roles.First()?.Name</p>
+}
