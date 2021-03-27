@@ -153,7 +153,7 @@ namespace ITSecurityNewsMonitor
                 }
             }
 
-            if(Configuration.GetValue<string>("DefaultUser") != null)
+            if(Configuration.GetValue<string>("DefaultUser:Name") != null && Configuration.GetValue<string>("DefaultUser:Name") != null)
             {
                 IdentityUser defaultUser = new IdentityUser { UserName = Configuration.GetValue<string>("DefaultUser:Name"), Email = Configuration.GetValue<string>("DefaultUser:Name"), EmailConfirmed = true };
                 IdentityResult result = await userManager.CreateAsync(defaultUser, Configuration.GetValue<string>("DefaultUser:Password"));
