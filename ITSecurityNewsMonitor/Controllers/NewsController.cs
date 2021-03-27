@@ -90,7 +90,13 @@ namespace ITSecurityNewsMonitor.Controllers
                 voteRequest.NewsGroup = newsGroup;
 
                 _context.VoteRequests.Add(voteRequest);
-                _context.SaveChangesAsync();
+
+                try
+                {
+                    await _context.SaveChangesAsync();
+                } catch(Exception e) {
+                    return StatusCode(500);
+                }
             }
 
             return Redirect(link);
@@ -151,10 +157,16 @@ namespace ITSecurityNewsMonitor.Controllers
             _context.Add(vote);
 
             voteRequest.Completed = true;
+            try
+            {
+                await _context.SaveChangesAsync();
 
-            _context.SaveChangesAsync();
+                return StatusCode(200);
+            } catch(Exception e)
+            {
+                return StatusCode(500);
+            }
 
-            return StatusCode(200);
         }
     }
 }
