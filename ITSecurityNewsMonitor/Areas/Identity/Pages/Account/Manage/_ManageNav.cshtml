@@ -1,6 +1,7 @@
 ﻿@inject SignInManager<IdentityUser> SignInManager
 @{
     var hasExternalLogins = (await SignInManager.GetExternalAuthenticationSchemesAsync()).Any();
+    var hasMFA = (await SignInManager.GetTwoFactorAuthenticationUserAsync()) != null;
 }
 <ul class="nav nav-pills flex">
 
@@ -22,10 +23,13 @@
                 asp-page="./ExternalLogins">External logins</a>
         </div>
     }
-    <div class="link mr-3">
-        →<a class="nav-link @ManageNavPages.TwoFactorAuthenticationNavClass(ViewContext)" id="two-factor"
-            asp-page="./TwoFactorAuthentication">Two-factor authentication</a>
-    </div>
+    @if (hasMFA)
+    {
+        <div class="link mr-3">
+            →<a class="nav-link @ManageNavPages.TwoFactorAuthenticationNavClass(ViewContext)" id="two-factor"
+                asp-page="./TwoFactorAuthentication">Two-factor authentication</a>
+        </div>
+    }
     <div class="link mr-3">
         → <a class="nav-link @ManageNavPages.PersonalDataNavClass(ViewContext)" id="personal-data"
             asp-page="./PersonalData">Export Personal data</a>

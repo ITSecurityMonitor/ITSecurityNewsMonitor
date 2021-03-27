@@ -34,6 +34,13 @@ namespace ITSecurityNewsMonitor.Controllers
         }
 
         [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> NewsGroupAssignment()
+        {
+            return View();
+        }
+
+
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> UserManagement()
         {
             AdminIndexViewModel vm = new AdminIndexViewModel();

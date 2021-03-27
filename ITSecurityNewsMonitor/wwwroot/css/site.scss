@@ -15,56 +15,65 @@
 // }
 
 .low-level-tag {
-   @apply text-sm;
-   background-color: rgb(226, 213, 255);
-   // @apply hover:bg-yellow-400;
-   @apply cursor-pointer;
-   @apply rounded-md;
-   @apply p-1;
-   @apply mr-1;;
+    @apply text-sm;
+    background-color: rgb(226, 213, 255);
+    // @apply hover:bg-yellow-400;
+    @apply cursor-pointer;
+    @apply rounded-md;
+    @apply p-1;
+    @apply mr-1;
 }
 
 .high-level-tag {
-   @apply text-sm;
-   @apply bg-yellow-300;
-   @apply hover:bg-yellow-400;
-   @apply cursor-pointer;
-   @apply rounded-md;
-   @apply p-1;
-   @apply mr-1;
+    @apply text-sm;
+    @apply bg-yellow-300;
+    @apply hover:bg-yellow-400;
+    @apply cursor-pointer;
+    @apply rounded-md;
+    @apply p-1;
+    @apply mr-1;
 }
 
-
 .text-field {
-   @apply rounded border p-1;
+    @apply rounded border p-1;
 }
 
 .text-field-description {
-   @apply text-gray-500;
+    @apply text-gray-500;
 }
 
 .button {
-   @apply bg-white;
-   @apply text-gray-700;
-   
-   @apply py-1;
-   @apply px-2;
+    @apply bg-white;
+    @apply text-gray-700;
 
-   @apply border;
-   @apply border-gray-500;
-   
-   @apply rounded;
-   @apply cursor-pointer;
+    @apply py-1;
+    @apply px-2;
 
-   @apply hover:border-transparent;
-   @apply hover:bg-gray-500;
-   @apply hover:text-white;
+    @apply border;
+    @apply border-gray-500;
+
+    @apply rounded;
+    @apply cursor-pointer;
+
+    @apply hover:border-transparent;
+    @apply hover:bg-gray-500;
+    @apply hover:text-white;
+}
+
+.text-button {
+    @apply text-gray-400;
+    @apply hover:text-black;
+    @apply text-center;
+    @apply text-sm;
 }
 
 .link {
-   @apply hover:underline;
+    @apply hover:underline;
 }
 
+.text-muted {
+    @apply text-gray-500;
+}
 
 .input-label {
     @apply mr-2;

@@ -48,7 +48,10 @@ module.exports = {
     },
   },
   purge: {
-    enabled: true,
+    // Comment in for production!
+    // enabled: true,
+    enabled: false,
+    // Check if ** actually matches the files!
     content: ["./ITSecurityNewsMonitor/**/*.cshtml", "./ITSecurityNewsMonitor/**/*.scss"],
   }
 };
