@@ -5,14 +5,17 @@
     ViewData["ActivePage"] = ManageNavPages.Email;
 }
 
-<h4>@ViewData["Title"]</h4>
+<div class="">
+    <h1 class="font-bold text-3xl">@ViewData["Title"]</h1>
+</div>
+
 <partial name="_StatusMessage" model="Model.StatusMessage" />
 <div class="row">
     <div class="col-md-6">
         <form id="email-form" method="post">
             <div asp-validation-summary="All" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Email"></label>
+            <div class="flex">
+                <label class="input-label mr-2 w-44" asp-for="Email"></label>
                 @if (Model.IsEmailConfirmed)
                 {
                     <div class="input-group">
@@ -28,8 +31,8 @@
                     <button id="email-verification" type="submit" asp-page-handler="SendVerificationEmail" class="btn btn-link">Send verification email</button>
                 }
             </div>
-            <div class="form-group">
-                <label asp-for="Input.NewEmail"></label>
+            <div class="flex">
+                <label class="input-label" asp-for="Input.NewEmail"></label>
                 <input asp-for="Input.NewEmail" class="form-control" />
                 <span asp-validation-for="Input.NewEmail" class="text-danger"></span>
             </div>
