@@ -13,7 +13,7 @@
     <!-- Tabs -->
     @foreach (View view in Model.Views)
     {
-        <a href="@Url.Action("Index", "News", new { id = view.ID})">
+        <a href="@Url.Action("Index", "News", new { view = view.ID})">
             <div class="view-tab @(Model.SelectedView != null && Model.SelectedView.ID.Equals(view.ID) ? "selected" : "") cursor-pointer">
                 @view.Name
             </div>

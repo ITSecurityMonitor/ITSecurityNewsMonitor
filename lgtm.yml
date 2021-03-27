@@ -67,8 +67,7 @@ extraction:
   csharp:
     solution: 
       - ITSecurityNewsMonitor.sln
-    before_index:    # Customizable step used by all languages.
-      - dotnet restore
     index:    # Customizable step used by all languages.
       build_command:
+        - dotnet restore
         - dotnet build

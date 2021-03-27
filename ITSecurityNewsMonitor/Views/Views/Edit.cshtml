@@ -24,6 +24,8 @@
     <form asp-action="Edit" method="post">
         @Html.AntiForgeryToken()
         <input type="hidden" asp-for="ID" />
+        <input type="hidden" asp-for="OwnerID" />
+
         <div class="d-flex flex-col">
             <div><label asp-for="Name" class="text text-gray-500"></label></div>
             <div><input asp-for="Name" class="rounded border p-1" /></div>
@@ -57,18 +59,18 @@
         <div class="border rounded p-4">
             <!-- Search  -->
             <!--<div class="w-96">
-        <form action="@Url.Action("Edit", "Views")" method="get" class="flex flex-row">
-            <input placeholder="Search Articles" class="rounded border p-1" />
+            <form action="@Url.Action("Edit", "Views")" method="get" class="flex flex-row">
+                <input placeholder="Search Articles" class="rounded border p-1" />
 
-            <button>
-                <input type="submit" value="Search" class="button" />
+                <button>
+                    <input type="submit" value="Search" class="button" />
 
-                <a href="@Url.Action("Edit", "Views")">
-                    <button class="ml-1 button">Clear</button>
-                </a>
-            </button>
-        </form>
-    </div>-->
+                    <a href="@Url.Action("Edit", "Views")">
+                        <button class="ml-1 button">Clear</button>
+                    </a>
+                </button>
+            </form>
+        </div>-->
             <!-- Search results  -->
             <div class="mt-4">
                 @foreach (HighLevelTag highLevelTag in highLevelTags)

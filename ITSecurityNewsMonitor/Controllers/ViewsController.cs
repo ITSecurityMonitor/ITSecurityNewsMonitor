@@ -25,7 +25,7 @@ namespace ITSecurityNewsMonitor.Controllers
         // GET: Views
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Views.Include(v => v.HighLevelTags).ToListAsync());
+            return View(await _context.Views.Where(v => v.OwnerID.Equals(_userManager.GetUserId(User))).Include(v => v.HighLevelTags).ToListAsync());
         }
 
         public async Task<IActionResult> Create()
@@ -50,7 +50,7 @@ namespace ITSecurityNewsMonitor.Controllers
                 return NotFound();
             }
 
-            var view = _context.Views.Include(v => v.HighLevelTags).Where(v => v.ID == id).First();
+            var view = _context.Views.Where(v => v.ID == id && v.OwnerID.Equals(_userManager.GetUserId(User))).Include(v => v.HighLevelTags).FirstOrDefault();
             if (view == null)
             {
                 return NotFound();
@@ -74,6 +74,11 @@ namespace ITSecurityNewsMonitor.Controllers
 
             if (ModelState.IsValid)
             {
+                if(!view.OwnerID.Equals(_userManager.GetUserId(User)))
+                {
+                    return StatusCode(403);
+                }
+
                 try
                 {
                     _context.Update(view);
@@ -105,6 +110,10 @@ namespace ITSecurityNewsMonitor.Controllers
         public async Task<IActionResult> Delete([FromBody] DeleteBody body)
         {
             View view = await _context.Views.FindAsync(body?.viewId);
+            if (!view.OwnerID.Equals(_userManager.GetUserId(User)))
+            {
+                return StatusCode(403);
+            }
             _context.Views.Remove(view);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
@@ -120,6 +129,10 @@ namespace ITSecurityNewsMonitor.Controllers
         public async Task<IActionResult> AddTag([FromBody]AddTagBody body)
         {
             View view = await _context.Views.FindAsync(body?.id);
+            if (!view.OwnerID.Equals(_userManager.GetUserId(User)))
+            {
+                return StatusCode(403);
+            }
             HighLevelTag tag = await _context.HighLevelTags.FindAsync(body?.tagId);
 
             if(view == null || tag == null)
