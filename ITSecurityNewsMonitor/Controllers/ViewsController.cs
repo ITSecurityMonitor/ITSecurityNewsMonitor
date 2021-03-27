@@ -100,7 +100,6 @@ namespace ITSecurityNewsMonitor.Controllers
             public int viewId { get; set; }
         }
 
-
         // GET: Views/Delete/5
         [HttpPost]
         public async Task<IActionResult> Delete([FromBody] DeleteBody body)

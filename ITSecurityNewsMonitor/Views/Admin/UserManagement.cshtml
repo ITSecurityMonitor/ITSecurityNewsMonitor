@@ -1,0 +1,73 @@
+﻿@model ITSecurityNewsMonitor.ViewModels.AdminIndexViewModel
+
+
+<table style="width:100%">
+    <tr>
+        <th>E-Mail</th>
+        <th>Role</th>
+        <th></th>
+    </tr>
+
+    @foreach (var userRole in Model.UserRoles)
+    {
+        <tr id="@userRole.User.Id">
+            <td>@userRole.User.Email</td>
+            <td>@(userRole.Roles.FirstOrDefault()?.Name ?? "User")</td>
+            <td>
+                <div class="btn-group" role="group">
+                    <button id="btnGroupDrop1" type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                        Action
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+                        <li>
+                            <a class="dropdown-item" href="#" onclick="changeRole('@userRole.User.Id')">@(userRole.Roles.FirstOrDefault() == null ? "Make Admin" : "Remove Admin")</a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="#" onclick="deleteUser('@userRole.User.Id')">Delete user</a>
+                        </li>
+                    </ul>
+                </div>
+            </td>
+        </tr>
+    }
+</table>
+
+@section Scripts {
+    <script>
+        const deleteUser = userId => {
+            if (confirm("Do you really wish to delete this user?")) {
+                const xhr = new XMLHttpRequest();
+                xhr.open("POST", "@Url.Action("DeleteUser", "Admin")", true);
+                xhr.setRequestHeader('Content-Type', 'application/json');
+                xhr.addEventListener('readystatechange', function () {
+                    if (xhr.status != 200) {
+                        alert("Error");
+                    } else {
+                        window.location.reload();
+                    }
+                });
+                xhr.send(JSON.stringify({
+                    userId: userId
+                }));
+            }
+        }
+
+        const changeRole = userId => {
+            if (confirm("Do you really wish to change the role of this user?")) {
+                const xhr = new XMLHttpRequest();
+                xhr.open("POST", "@Url.Action("ChangeRole", "Admin")", true);
+                xhr.setRequestHeader('Content-Type', 'application/json');
+                xhr.addEventListener('readystatechange', function () {
+                    if (xhr.status != 200) {
+                        alert("Error");
+                    } else {
+                        window.location.reload();
+                    }
+                });
+                xhr.send(JSON.stringify({
+                    userId: userId
+                }));
+            }
+        }
+    </script>
+}

@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -43,7 +44,16 @@ namespace ITSecurityNewsMonitor
 
             services.AddDatabaseDeveloperPageExceptionFilter();
 
-            services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+            services.AddDefaultIdentity<IdentityUser>(options => {
+                options.SignIn.RequireConfirmedAccount = true;
+                options.Password.RequiredLength = 8;
+                options.Password.RequireDigit = true;
+                options.Password.RequireNonAlphanumeric = false;
+
+                options.User.RequireUniqueEmail = true;
+
+                options.SignIn.RequireConfirmedEmail = true;
+                })
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             services.AddControllersWithViews();
@@ -66,25 +76,24 @@ namespace ITSecurityNewsMonitor
 
             services.AddHangfireServer();
 
+            services.AddHsts(options =>
+            {
+                options.Preload = true;
+                options.IncludeSubDomains = true;
+                options.MaxAge = TimeSpan.FromDays(60);
+                // options.ExcludedHosts.Add("example.com");
+            });
+
+            services.AddTransient<IEmailSender, EmailSender>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory, RoleManager<IdentityRole> roleManager)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory, RoleManager<IdentityRole> roleManager, UserManager<IdentityUser> userManager)
         {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
                 app.UseMigrationsEndPoint();
-
-                // Apply migrations automatically on startup
-                /*using (var serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
-                {
-                    var identityContext = serviceScope.ServiceProvider.GetService<ApplicationDbContext>();
-                    identityContext.Database.Migrate();
-
-                    var secNewsContext = serviceScope.ServiceProvider.GetService<SecNewsDbContext>();
-                    secNewsContext.Database.Migrate();
-                }*/
             }
             else
             {
@@ -118,10 +127,10 @@ namespace ITSecurityNewsMonitor
                 endpoints.MapHangfireDashboard();
             });
 
-            SeedRoles(roleManager).Wait();
+            SeedRoles(roleManager, userManager).Wait();
         }
 
-        public async Task SeedRoles(RoleManager<IdentityRole> roleManager)
+        public async Task SeedRoles(RoleManager<IdentityRole> roleManager, UserManager<IdentityUser> userManager)
         {
 
             string[] roles = new[] {
@@ -133,7 +142,7 @@ namespace ITSecurityNewsMonitor
 
                 if (!await roleManager.RoleExistsAsync(role))
                 {
-                    var create = await roleManager.CreateAsync(new IdentityRole(role));
+                    IdentityResult create = await roleManager.CreateAsync(new IdentityRole(role));
 
                     if (!create.Succeeded)
                     {
@@ -142,8 +151,19 @@ namespace ITSecurityNewsMonitor
 
                     }
                 }
-
             }
+
+            if(Configuration.GetValue<string>("DefaultUser") != null)
+            {
+                IdentityUser defaultUser = new IdentityUser { UserName = Configuration.GetValue<string>("DefaultUser:Name"), Email = Configuration.GetValue<string>("DefaultUser:Name"), EmailConfirmed = true };
+                IdentityResult result = await userManager.CreateAsync(defaultUser, Configuration.GetValue<string>("DefaultUser:Password"));
+
+                if (result.Succeeded)
+                {
+                    IdentityResult result1 = await userManager.AddToRoleAsync(defaultUser, "Admin");
+                }
+            }
+
 
         }
     }

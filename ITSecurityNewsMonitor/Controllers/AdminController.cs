@@ -30,6 +30,12 @@ namespace ITSecurityNewsMonitor.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Index()
         {
+            return View();
+        }
+
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> UserManagement()
+        {
             AdminIndexViewModel vm = new AdminIndexViewModel();
 
             vm.UserRoles = new List<UserRole>();
@@ -54,6 +60,60 @@ namespace ITSecurityNewsMonitor.Controllers
             }
           
             return View(vm);
+        }
+
+        public class DeleteBody
+        {
+            public string userId { get; set; }
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult> DeleteUser([FromBody] DeleteBody body)
+        {
+            IdentityUser user = await _userManager.FindByIdAsync(body.userId);
+            if (user != null)
+            {
+                IdentityResult result = await _userManager.DeleteAsync(user);
+                if (result.Succeeded)
+                    return StatusCode(200);
+                else
+                    return StatusCode(500);
+            }
+            else
+                return NotFound();
+        }
+
+        public class ChangeRoleBody
+        {
+            public string userId { get; set; }
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult> ChangeRole([FromBody] ChangeRoleBody body)
+        {
+            IdentityUser user = await _userManager.FindByIdAsync(body.userId);
+            if (user != null)
+            {
+                IdentityResult result;
+
+                if (await _userManager.IsInRoleAsync(user, "Admin"))
+                {
+                    result = await _userManager.RemoveFromRoleAsync(user, "Admin");
+                }
+                else
+                {
+                    result = await _userManager.AddToRoleAsync(user, "Admin");
+                }
+
+                if (result.Succeeded)
+                    return StatusCode(200);
+                else
+                    return StatusCode(500);
+            }
+            else
+                return NotFound();
         }
     }
 }

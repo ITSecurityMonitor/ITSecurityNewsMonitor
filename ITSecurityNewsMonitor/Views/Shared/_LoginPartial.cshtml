@@ -17,6 +17,15 @@
                     Views
                 </div>
             </a>
+
+            @if (User.IsInRole("Admin"))
+            {
+                <a href="@Url.Action("Index", "Admin")" class="flex flex-col justify-center bg-grey-lighter mr-3">
+                    <div class="font-bold text-2xl hover:underline">
+                        Admin
+                    </div>
+                </a>
+            }
         </div>
 
         <div class="ml-auto py-4 px-2 flex">
