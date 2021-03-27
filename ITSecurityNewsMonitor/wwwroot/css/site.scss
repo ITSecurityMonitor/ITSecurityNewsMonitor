@@ -5,3 +5,332 @@
 @import "./ITSecurityNewsMonitor-components.scss";
 
 @import "tailwindcss/utilities";
+
+// .background-dotted {
+//     background:
+//         linear-gradient(90deg, $bg-color ($dot-space - $dot-size), transparent 1%) center,
+//         linear-gradient($bg-color ($dot-space - $dot-size), transparent 1%) center,
+//         $dot-color;
+//     background-size: $dot-space $dot-space;
+// }
+
+.low-level-tag {
+    @apply text-sm;
+    background-color: rgb(226, 213, 255);
+    // @apply hover:bg-yellow-400;
+    @apply cursor-pointer;
+    @apply rounded-md;
+    @apply p-1;
+    @apply mr-1;
+}
+
+.high-level-tag {
+    @apply text-sm;
+    @apply bg-yellow-300;
+    @apply hover:bg-yellow-400;
+    @apply cursor-pointer;
+    @apply rounded-md;
+    @apply p-1;
+    @apply mr-1;
+}
+
+.text-field {
+    @apply rounded border p-1;
+}
+
+.text-field-description {
+    @apply text-gray-500;
+}
+
+.button {
+    @apply bg-white;
+    @apply text-gray-700;
+
+    @apply py-1;
+    @apply px-2;
+
+    @apply border;
+    @apply border-gray-500;
+
+    @apply rounded;
+    @apply cursor-pointer;
+
+    @apply hover:border-transparent;
+    @apply hover:bg-gray-500;
+    @apply hover:text-white;
+}
+
+.text-button {
+    @apply text-gray-400;
+    @apply hover:text-black;
+    @apply text-center;
+    @apply text-sm;
+}
+
+.link {
+    @apply hover:underline;
+}
+
+.text-muted {
+    @apply text-gray-500;
+}
+
+.input-label {
+    @apply mr-2;
+    @apply w-44;
+}
+
+.view-tab {
+    // color: rgba(155, 97, 255, 0.2);
+    @apply border-b-4;
+    @apply border-purple-200;
+    @apply mr-3;
+    @apply p-3;
+    @apply pb-2;
+    @apply mb-1;
+}
+
+.view-tab.selected {
+    color: purple-500;
+    @apply font-bold;
+    @apply border-purple-500;
+}
+.view-tab:hover {
+    @apply border-purple-500;
+}
+
+.multi-background {
+    transform: skewY(-12deg);
+    transform-origin: 0;
+    -webkit-backface-visibility: hidden;
+    outline: 1px solid white;
+}
+
+// Place all the styles related to the NewsGroups controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: https://sass-lang.com/
+/*Voting*/
+.news-group-vote-tracker {
+    visibility: hidden;
+}
+
+.show-vote-tracker {
+    .news-group-vote-tracker {
+        visibility: initial;
+    }
+
+    .news-group-content {
+        visibility: hidden;
+    }
+}
+
+/*Rest */
+.related-left-bar::before {
+    content: "";
+    position: absolute;
+    margin-top: 8.25px;
+    margin-left: 6.25px;
+    width: 8.5px;
+    height: 8.5px;
+    background-color: rgb(155, 97, 255);
+    border-radius: 100px;
+}
+
+.related-left-bar::after {
+    content: "";
+    position: absolute;
+    margin-top: 5px;
+    margin-left: 3px;
+    width: 15px;
+    height: 15px;
+    background-color: rgba(155, 97, 255, 0.25);
+    border-radius: 100px;
+}
+
+.left-bar {
+    border-left: 2px solid rgb(155, 97, 255);
+}
+
+.left-bar::before {
+    content: "";
+    width: 16px;
+    height: 16px;
+    top: 61px;
+    left: 9px;
+    position: absolute;
+    background-color: rgb(155, 97, 255);
+    border-radius: 100px;
+}
+
+.left-bar::after {
+    content: "";
+    width: 28px;
+    height: 28px;
+    top: 55px;
+    left: 3px;
+    position: absolute;
+    background-color: rgba(155, 97, 255, 0.25);
+    border-radius: 100px;
+}
+
+.background-gradient {
+    background-color: #4158d0;
+    background-image: linear-gradient(158deg, #4159d099 0%, #c850c099 46%, #ffcc7099 100%);
+    background-size: 200% 200%;
+    -webkit-animation: AnimationName 5s ease infinite;
+    -moz-animation: AnimationName 5s ease infinite;
+    animation: AnimationName 5s ease infinite;
+    // transform: skewY(-12deg);
+    // transform-origin: 0;
+}
+
+@-webkit-keyframes AnimationName {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+@-moz-keyframes AnimationName {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+@keyframes AnimationName {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+.wavy.inner {
+    color: transparent;
+}
+
+.wavy.outer {
+    font-size: 4pt;
+    text-decoration-style: wavy;
+    text-decoration-line: underline;
+    letter-spacing: 300px;
+    word-wrap: none;
+}
+
+.background-dotted {
+    background: linear-gradient(90deg, white 19px, transparent 1%) center,
+        linear-gradient(white 19px, transparent 1%) center, #c5c5c5;
+    background-size: 20px 20px;
+}
+
+.wavy {
+    text-decoration-style: wavy;
+    text-decoration-line: underline;
+    letter-spacing: 300px;
+}
+
+// Scroller
+// https://css-tricks.com/css-only-carousel/
+
+* {
+    box-sizing: border-box;
+}
+
+.slider {
+    text-align: center;
+    overflow: hidden;
+}
+
+.slides {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    /*
+    scroll-snap-points-x: repeat(300px);
+    scroll-snap-type: mandatory;
+    */
+}
+
+.slides::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+.slides::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.slides > div {
+    scroll-snap-align: start;
+    flex-shrink: 0;
+    margin-right: 50px;
+    border-radius: 10px;
+    transform-origin: center center;
+    transform: scale(1);
+    transition: transform 0.5s;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 100px;
+}
+
+.slides > div:target {
+    /*   transform: scale(0.8); */
+}
+
+.author-info {
+    background: rgba(0, 0, 0, 0.75);
+    color: white;
+    padding: 0.75rem;
+    text-align: center;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    margin: 0;
+}
+
+.author-info a {
+    color: white;
+}
+
+.slider > .nav > a {
+    display: inline-flex;
+    width: 1.5rem;
+    height: 1.5rem;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.slider > a:active {
+    top: 1px;
+}
+
+.slider > a:focus {
+    background: #000;
+}

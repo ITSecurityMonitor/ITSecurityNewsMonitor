@@ -1,1 +1,13 @@
-﻿<a href="@Url.Action("UserManagement", "Admin")">User Management</a>
+﻿@{
+    ViewData["Title"] = "Admin";
+}
+
+<div class="px-10 pt-10">
+    <h1 class="font-bold text-5xl">@ViewData["Title"]</h1>
+</div>
+
+<div class="p-10">
+    <button class="button" onclick="window.location.href='@Url.Action("UserManagement", "Admin")'">→ User
+        Management</button>
+    <button class="button" onclick="window.location.href='@Url.Action("NewsGroupAssignment", "Admin")'">→ News Group Assignment</button>
+</div>

@@ -1,36 +1,50 @@
 ﻿@model ITSecurityNewsMonitor.ViewModels.AdminIndexViewModel
 
+@{
+    ViewData["Title"] = "User Management";
+}
 
-<table style="width:100%">
-    <tr>
-        <th>E-Mail</th>
-        <th>Role</th>
-        <th></th>
-    </tr>
+<div class="px-10 pt-10">
+    <h1 class="font-bold text-5xl">@ViewData["Title"]</h1>
+    <a href="@Url.Action("Index", "Admin")" class="mt-2 link flex">
+        <span class="ml-1">← Back to Admin Overview</span>
+    </a>
+</div>
 
+<div class="p-10 ">
     @foreach (var userRole in Model.UserRoles)
     {
-        <tr id="@userRole.User.Id">
-            <td>@userRole.User.Email</td>
-            <td>@(userRole.Roles.FirstOrDefault()?.Name ?? "User")</td>
-            <td>
-                <div class="btn-group" role="group">
-                    <button id="btnGroupDrop1" type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                        Action
-                    </button>
-                    <ul class="dropdown-menu" aria-labelledby="btnGroupDrop1">
-                        <li>
-                            <a class="dropdown-item" href="#" onclick="changeRole('@userRole.User.Id')">@(userRole.Roles.FirstOrDefault() == null ? "Make Admin" : "Remove Admin")</a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item" href="#" onclick="deleteUser('@userRole.User.Id')">Delete user</a>
-                        </li>
-                    </ul>
+        <div id="@userRole.User.Id" class="grid grid-cols-3 p-2 border rounded bg-white mb-2">
+            
+            <div>
+                <span class="text-muted">
+                    Email
+                </span>
+                <br>
+                @userRole.User.Email
+            </div>
+            <div>
+                <span class="text-muted">
+                    Role
+                </span>
+                <br>
+                @(userRole.Roles.FirstOrDefault()?.Name ?? "User")
                 </div>
-            </td>
-        </tr>
+            <div>
+                <div class="btn-group" role="group">
+                    <span class="text-muted">
+                        Action
+                    </span>
+                    <br>
+                    <div aria-labelledby="btnGroupDrop1">
+                        <button class="button" href="#" onclick="changeRole('@userRole.User.Id')">@(userRole.Roles.FirstOrDefault() == null ? "Make Admin" : "Remove Admin")</button>
+                        <button class="button" href="#" onclick="deleteUser('@userRole.User.Id')">Delete user</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     }
-</table>
+</div>
 
 @section Scripts {
     <script>

@@ -1,0 +1,59 @@
+﻿@model ITSecurityNewsMonitor.ViewModels.AdminIndexViewModel
+
+@{
+    ViewData["Title"] = "News Group Assignment";
+}
+
+<div class="px-10 pt-10">
+    <h1 class="font-bold text-5xl">@ViewData["Title"]</h1>
+    <a href="@Url.Action("Index", "Admin")" class="mt-2 link flex">
+        <span class="ml-1">← Back to Admin Overview</span>
+    </a>
+</div>
+
+<div class="p-10 grid grid-cols-2 gap-x-5">
+    <div>
+        <span class="font-bold">News</span>
+        <div class="grid gap-y-2">
+            <div class="border rounded bg-white p-2">
+                I'm a News Group
+                <div class="ml-5 flex-col">
+                    <div class="cursor-pointer bg-purple-200 rounded px-2">
+                        I'm News
+                    </div>
+                    <div class="cursor-pointer px-2">
+                        I'm Newsworthy
+                    </div>
+                </div>
+            </div>
+            <div class="border rounded bg-white p-2">
+                I'm another News Group
+                <div class="ml-5 flex-col">
+                    <span>I'm News</span>
+                    <span>I'm Newsworthy</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div>
+        <span class="font-bold">News Groups</span>
+        <div class="grid gap-y-2">
+            <div class="border rounded bg-white p-2">
+                I'm a News Group
+                <div class="ml-5 flex-col">
+                    <span>I'm News</span>
+                    <span>I'm Newsworthy</span>
+                </div>
+            </div>
+            <div class="border rounded bg-white p-2 bg-purple-200">
+                I'm another News Group
+                <div class="ml-5 flex-col">
+                    <span>I'm News</span>
+                    <span>I'm Newsworthy</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <button class="mt-5 button">Move News →</button>
+</div>
+</div>
