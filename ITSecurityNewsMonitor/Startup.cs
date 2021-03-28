@@ -1,6 +1,8 @@
 using Hangfire;
+using Hangfire.Dashboard;
 using Hangfire.PostgreSql;
 using ITSecurityNewsMonitor.Data;
+using ITSecurityNewsMonitor.Helper;
 using ITSecurityNewsMonitor.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
@@ -118,8 +120,11 @@ namespace ITSecurityNewsMonitor
             app.UseAuthentication();
             app.UseAuthorization();
 
-            app.UseHangfireDashboard();
-            app.UseHangfireServer();
+
+            app.UseHangfireDashboard("/hangfire", new DashboardOptions
+            {
+                Authorization = new[] { new MyAuthorizationFilter() }
+            });
 
             // BackgroundJob.Enqueue<Crawler>(c => c.ExecuteCrawl());
             RecurringJob.AddOrUpdate<Crawler>(c => c.ExecuteCrawl(), "*/10 * * * *");
