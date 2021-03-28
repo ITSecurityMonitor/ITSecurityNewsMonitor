@@ -1,4 +1,4 @@
-﻿@model ITSecurityNewsMonitor.ViewModels.AdminIndexViewModel
+﻿@model ITSecurityNewsMonitor.ViewModels.AdminSimilarityCheckViewModel
 
 @{
     ViewData["Title"] = "News Similarity Check";
@@ -81,8 +81,8 @@
             const searchTermLeft = document.getElementById("searchTermLeft").value;
             const searchTermRight = document.getElementById("searchTermRight").value;
             const urlParams = new URLSearchParams(window.location.search);
-            urlParams.append('searchTermLeft', searchTermLeft);
-            urlParams.append('searchTermRight', searchTermRight);
+            urlParams.set('searchTermLeft', searchTermLeft);
+            urlParams.set('searchTermRight', searchTermRight);
             window.location.search = urlParams;
         }
     </script>
