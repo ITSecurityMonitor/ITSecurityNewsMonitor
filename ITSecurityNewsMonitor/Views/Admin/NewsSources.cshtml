@@ -11,8 +11,11 @@
     </a>
 </div>
 
+<div class="pt-5 px-10 pb-2 text-right">
+    <button class="button text-xs">Add Source</button>
+</div>
 
-<div class="p-10 table w-full bg-white">
+<div class="px-10 table w-full bg-white">
     <div class="grid grid-cols-4">
         <div>
             Name
@@ -27,19 +30,18 @@
             Actions
         </div>
     </div>
-    <div>
     @foreach (var source in Model.Sources)
         {
             <div class="grid grid-cols-4">
-                <span class="text-xs">@source.Name</span>
-                <span class="text-xs">@source.Link</span>
-                <span class="text-xs">@source.Homepage</span>
+                <div class="break-all text-xs">@source.Name</div>
+                <div class="break-all text-xs">@source.Link</div>
+                <div class="break-all text-xs">@source.Homepage</div>
                 <div class="text-right">
-                    <button class="button text-xs">Select</button>
+                    <button class="button text-xs">Edit</button>
+                    <button class="button-danger text-xs">Delete</button>
                 </div>
             </div>
         }
-    </div>
 </div>
 
 @section Scripts {

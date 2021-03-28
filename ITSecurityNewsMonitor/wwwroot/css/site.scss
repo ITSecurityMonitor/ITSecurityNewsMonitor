@@ -79,6 +79,12 @@
     @apply hover:text-white;
 }
 
+.button:disabled {
+    @apply border-gray-200;
+    @apply bg-gray-50;
+    @apply text-gray-400;
+}
+
 .button-danger {
     @apply button;
 
@@ -151,6 +157,7 @@
     }
     .nav-item:disabled {
         @apply text-gray-400;
+        @apply pointer-events-none;
     }
     .nav-item:not(:disabled) {
         @apply hover:bg-gray-100;
@@ -162,21 +169,21 @@
 
 .view-tab {
     // color: rgba(155, 97, 255, 0.2);
-    @apply border-b-4;
+    @apply border-b-2;
     @apply border-purple-200;
     @apply mr-3;
     @apply p-3;
     @apply pb-2;
     @apply mb-1;
-}
-
-.view-tab.selected {
-    color: purple-500;
-    @apply font-bold;
-    @apply border-purple-500;
+    
+    &.selected {
+        @apply text-purple-600;
+        @apply font-bold;
+        @apply border-purple-600;
+    }
 }
 .view-tab:hover {
-    @apply border-purple-500;
+    @apply border-purple-600;
 }
 
 //
@@ -354,11 +361,11 @@
     word-wrap: none;
 }
 
-.background-dotted {
-    background: linear-gradient(90deg, white 19px, transparent 1%) center,
-        linear-gradient(white 19px, transparent 1%) center, #c5c5c5;
-    background-size: 20px 20px;
-}
+// .background-dotted {
+//     background: linear-gradient(90deg, white 19px, transparent 1%) center,
+//         linear-gradient(white 19px, transparent 1%) center, #c5c5c5;
+//     background-size: 20px 20px;
+// }
 
 .wavy {
     text-decoration-style: wavy;

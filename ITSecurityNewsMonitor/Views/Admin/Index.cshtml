@@ -1,12 +1,12 @@
 ﻿@{
-    ViewData["Title"] = "Admin";
+    ViewData["Title"] = "Admin Overview";
 }
 
 <div class="site-header">
     <h1>@ViewData["Title"]</h1>
 </div>
 
-<div class="p-10 pt-5 flex">
+<div class="p-10 pt-5 flex flex-wrap">
      <div class="nav-group mr-2">
         <button class="nav-item" onclick="window.location.href='@Url.Action("NewsGroupAssignment", "Admin")'">
             News Group Assignment
