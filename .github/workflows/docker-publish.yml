@@ -52,7 +52,7 @@ jobs:
   
   deploy:
     runs-on: ubuntu-latest
-    need: [push-docker-image]
+    needs: push-docker-image
     steps:
     - name: executing remote ssh commands using ssh key
       uses: appleboy/ssh-action@master
