@@ -10,7 +10,7 @@
     </a>
 </div>
 
-<div class="px-10 block @(Model.NewsGroup.VoteRequests.Where(vr => vr.OwnerID.Equals(Model.OwnerId) && !vr.Completed).Any() ? "hidden" : "")" id="vote">
+<div class="px-10 block @(Model.NewsGroup.VoteRequests.Where(vr => vr.OwnerID.Equals(Model.OwnerId) && !vr.Completed).Any() ? "" : "hidden")" id="vote">
     <div class="mt-8">
         <h5 class="text-2xl font-bold text-purple-900">
             Is this group of articles
@@ -40,14 +40,14 @@
 </div>
 <div class="p-10">
     <!-- News -->
-    @foreach (News news in Model.NewsGroup.News)
+    @foreach (News news in Model.NewsGroup.News.OrderByDescending(n => n.CreatedDate))
     {
         <div class="relative">
             <div class="ml-4 p-8 left-bar">
                 <h1 class="text-sm">@news.CreatedDate</h1>
                 <span>
                     <h1 class="font-bold text-2xl">
-                        <a href="@Url.Action("Trackout", "News", new { newsGroupId = Model.NewsGroup.ID, link = news.Link })" target=":_blank" onclick="@(Model.NewsGroup.VoteRequests.Where(vr => vr.OwnerID.Equals(Model.OwnerId) && vr.Completed).Any() ? "" : "user_followed_link()")">
+                        <a href="@Url.Action("Trackout", "News", new { newsGroupId = Model.NewsGroup.ID, link = news.Link })" target="_blank" onclick="@(Model.NewsGroup.VoteRequests.Where(vr => vr.OwnerID.Equals(Model.OwnerId) && vr.Completed).Any() ? "" : "user_followed_link()")">
                             <span class="font-bold text-2xl">
                                 @news.Headline
                             </span>
@@ -60,7 +60,7 @@
                     </span>
                 </span>
                 <hr class="mt-2 mb-2">
-                @news.Content
+                @news.Summary
                 <br>
 
                 @if (news.LowLevelTags.Any())
