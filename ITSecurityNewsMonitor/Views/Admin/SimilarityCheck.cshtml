@@ -1,0 +1,89 @@
+﻿@model ITSecurityNewsMonitor.ViewModels.AdminIndexViewModel
+
+@{
+    ViewData["Title"] = "News Similarity Check";
+}
+
+<div class="site-header">
+    <h1>@ViewData["Title"]</h1>
+    <a href="@Url.Action("Index", "Admin")">
+        <span class="">← Back to Admin Overview</span>
+    </a>
+</div>
+
+<div class="px-10 py-5">
+    <div class="grid grid-cols-2 rounded border bg-white">
+        <div class="flex items-center p-2 col-span-2 text-xs uppercase font-bold text-gray-400 bg-gray-100 border-b">
+            Result
+            <button class="ml-auto button text-xs">
+                Calculate
+            </button>
+        </div>
+        <div class="p-2 text-xs border-r">
+            First News here
+        </div>
+         <div class="p-2 text-xs">
+            Second news here
+        </div>
+        <div class="border-t col-span-2 p-2 uppercase font-bold text-xs text-center">
+            Similarity score: 89.123
+        </div>
+    </div>
+</div>
+
+<div class="px-10 grid grid-cols-2 gap-x-5">
+    <!-- Select A -->
+        <div class="table bg-white">
+            <div class="grid grid-cols-2">
+                <span>Title</span>
+                <span class="text-right">Action</span>
+            </div>
+            <div class="">
+                <input id="searchTermLeft" class="border rounded w-full" value='@ViewData["searchTermLeft"]'/>
+                <button class="ml-2 px-2 border rounded text-xs" onclick="search()">Search</button>
+            </div>
+            @foreach (var news in Model.NewsLeft)
+            {
+                <div class="grid grid-cols-2">
+                    <span class="text-xs">@news.Headline</span>
+                    <div class="text-right">
+                        <button class="button text-xs">Select</button>
+                    </div>
+                </div>
+            }
+        </div>
+
+    <!-- Select B -->
+    <div class="table bg-white">
+        <div class="grid grid-cols-2">
+            <span>Title</span>
+            <span class="text-right">Action</span>
+        </div>
+        <div class="flex bg-gray-50">
+            <input id="searchTermRight" class="border rounded w-full" value='@ViewData["searchTermRight"]'/>
+            <button class="ml-2 px-2 border rounded text-xs" onclick="search()">Search</button>
+        </div>
+        @foreach (var news in Model.NewsRight)
+        {
+            <div class="grid grid-cols-2">
+                <span class="text-xs">@news.Headline</span>
+                <div class="text-right">
+                    <button class="button text-xs">Select</button>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        let search = () => {
+            const searchTermLeft = document.getElementById("searchTermLeft").value;
+            const searchTermRight = document.getElementById("searchTermRight").value;
+            const urlParams = new URLSearchParams(window.location.search);
+            urlParams.append('searchTermLeft', searchTermLeft);
+            urlParams.append('searchTermRight', searchTermRight);
+            window.location.search = urlParams;
+        }
+    </script>
+}

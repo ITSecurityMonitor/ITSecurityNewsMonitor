@@ -52,6 +52,9 @@ module.exports = {
       borderRadius: ["group-hover"],
       margin: ["group-hover"],
     },
+    borderRadius: ["first", "last"],
+    borderWidth: ["last", "first"],
+    margin: ['responsive', 'hover', 'first'],
   },
   purge: {
     enabled: false,

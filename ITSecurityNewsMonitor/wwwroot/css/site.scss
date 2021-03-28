@@ -43,21 +43,50 @@
     @apply text-gray-500;
 }
 
+// .button {
+//     @apply bg-white;
+//     @apply text-gray-700;
+
+//     @apply py-1;
+//     @apply px-2;
+
+//     @apply border;
+//     @apply border-gray-500;
+
+//     @apply rounded;
+//     @apply cursor-pointer;
+
+//     @apply hover:border-transparent;
+//     @apply hover:bg-gray-500;
+//     @apply hover:text-white;
+// }
+
 .button {
     @apply bg-white;
-    @apply text-gray-700;
+    @apply text-purple-700;
 
     @apply py-1;
     @apply px-2;
 
     @apply border;
-    @apply border-gray-500;
+    @apply border-purple-500;
 
     @apply rounded;
     @apply cursor-pointer;
 
     @apply hover:border-transparent;
-    @apply hover:bg-gray-500;
+    @apply hover:bg-purple-500;
+    @apply hover:text-white;
+}
+
+.button-danger {
+    @apply button;
+
+    @apply border-red-500;
+    @apply text-red-500;
+
+    @apply hover:border-transparent;
+    @apply hover:bg-red-500;
     @apply hover:text-white;
 }
 
@@ -81,6 +110,54 @@
 .input-label {
     @apply mr-2;
     @apply w-44;
+}
+
+.table {
+    
+    & > div:first-child {
+        @apply uppercase;
+        @apply font-bold;
+        @apply text-gray-400;
+        @apply bg-gray-100;
+        @apply px-2;
+        @apply py-1;
+        @apply text-xs;
+        @apply rounded-t-lg;
+        @apply border-t;
+        @apply border-l;
+        @apply border-r;
+    }
+    & > div:not(:first-child) {
+        @apply p-2;
+        @apply border-t;
+        @apply border-l;
+        @apply border-r;
+        @apply last:border-b;
+        @apply last:rounded-b-lg;
+    }
+}
+
+.nav-group {
+    @apply mb-2;
+    @apply border;
+    @apply rounded-md;
+    @apply flex;
+    @apply bg-white;
+    @apply shadow;
+    .nav-item {
+        @apply py-1;
+        @apply px-2;
+        @apply cursor-pointer;
+    }
+    .nav-item:disabled {
+        @apply text-gray-400;
+    }
+    .nav-item:not(:disabled) {
+        @apply hover:bg-gray-100;
+    }
+    .nav-item:not(:last-child) {
+        @apply border-r;
+    }
 }
 
 .view-tab {
@@ -133,7 +210,6 @@
     -webkit-backface-visibility: hidden;
     outline: 1px solid white;
 }
-
 
 #tabs-container {
     @apply max-h-12;

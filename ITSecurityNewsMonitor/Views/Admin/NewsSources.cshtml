@@ -1,0 +1,46 @@
+﻿@model ITSecurityNewsMonitor.ViewModels.AdminIndexViewModel
+
+@{
+    ViewData["Title"] = "Manage News Sources";
+}
+
+<div class="site-header">
+    <h1>@ViewData["Title"]</h1>
+    <a href="@Url.Action("Index", "Admin")">
+        <span class="">← Back to Admin Overview</span>
+    </a>
+</div>
+
+
+<div class="p-10 table w-full bg-white">
+    <div class="grid grid-cols-4">
+        <div>
+            Name
+        </div>
+        <div>
+            Link
+        </div>
+        <div>
+            Homepage
+        </div>
+        <div class="text-right">
+            Actions
+        </div>
+    </div>
+    <div>
+    @foreach (var source in Model.Sources)
+        {
+            <div class="grid grid-cols-4">
+                <span class="text-xs">@source.Name</span>
+                <span class="text-xs">@source.Link</span>
+                <span class="text-xs">@source.Homepage</span>
+                <div class="text-right">
+                    <button class="button text-xs">Select</button>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts {
+}

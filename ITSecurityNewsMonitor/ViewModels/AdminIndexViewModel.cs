@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using ITSecurityNewsMonitor.Models;
+using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,5 +16,8 @@ namespace ITSecurityNewsMonitor.ViewModels
     public class AdminIndexViewModel
     {
         public List<UserRole> UserRoles { get; set; }
+        public List<Source> Sources { get; set; }
+        public List<News> NewsLeft { get; set; }
+        public List<News> NewsRight { get; set; }
     }
 }

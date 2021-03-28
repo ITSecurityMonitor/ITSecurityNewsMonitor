@@ -6,8 +6,23 @@
     <h1>@ViewData["Title"]</h1>
 </div>
 
-<div class="p-10 pt-5">
-    <button class="button" onclick="window.location.href='@Url.Action("UserManagement", "Admin")'">→ User
-        Management</button>
-    <button class="button" onclick="window.location.href='@Url.Action("NewsGroupAssignment", "Admin")'">→ News Group Assignment</button>
+<div class="p-10 pt-5 flex">
+     <div class="nav-group mr-2">
+        <button class="nav-item" onclick="window.location.href='@Url.Action("NewsGroupAssignment", "Admin")'">
+            News Group Assignment
+        </button>
+        <button class="nav-item" onclick="window.location.href='@Url.Action("SimilarityCheck", "Admin")'">
+            News Similarity Check
+        </button>
+     </div>
+     <div class="nav-group mr-2">
+        <button class="nav-item" onclick="window.location.href='@Url.Action("NewsSources", "Admin")'">
+            News Sources
+        </button>
+    </div>
+    <div class="nav-group">
+        <button class="nav-item" onclick="window.location.href='@Url.Action("UserManagement", "Admin")'">
+            User Management
+        </button>
+    </div>
 </div>

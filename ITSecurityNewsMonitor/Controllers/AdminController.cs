@@ -34,9 +34,29 @@ namespace ITSecurityNewsMonitor.Controllers
         }
 
         [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> SimilarityCheck([FromQuery] string searchTermLeft, [FromQuery] string searchTermRight)
+        {   
+
+            AdminIndexViewModel vm = new AdminIndexViewModel();
+            vm.NewsLeft = await _context.News.Where(n => searchTermLeft == null || n.Headline.Contains(searchTermLeft)).ToListAsync();
+            vm.NewsRight = await _context.News.Where(n => searchTermRight == null || n.Headline.Contains(searchTermRight)).ToListAsync();
+            ViewData["searchTermLeft"] = searchTermLeft;
+            ViewData["searchTermRight"] = searchTermRight;
+            return View(vm);
+        }
+
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> NewsGroupAssignment()
         {
             return View();
+        }
+
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> NewsSources()
+        {   
+            AdminIndexViewModel vm = new AdminIndexViewModel();
+            vm.Sources = await _context.Sources.ToListAsync();
+            return View(vm);
         }
 
 
