@@ -3,35 +3,36 @@
     var hasExternalLogins = (await SignInManager.GetExternalAuthenticationSchemesAsync()).Any();
     var hasMFA = (await SignInManager.GetTwoFactorAuthenticationUserAsync()) != null;
 }
-<ul class="nav nav-pills flex">
+<ul class="nav nav-pills flex flex-wrap">
 
-    <div class="link mr-3">
-        → <a class="nav-link @ManageNavPages.IndexNavClass(ViewContext)" id="profile" asp-page="./Index">Profile</a>
+    <div class="nav-group mr-2">
+        <button class="nav-item">
+            → <a class="@ManageNavPages.IndexNavClass(ViewContext)" id="profile" asp-page="./Index">Edit Profile</a>
+        </button>
+        <button class="nav-item">
+            → <a class="@ManageNavPages.EmailNavClass(ViewContext)" id="email" asp-page="./Email">Edit Email</a>
+        </button>
     </div>
-    <div class="link mr-3">
-        → <a class="nav-link @ManageNavPages.EmailNavClass(ViewContext)" id="email" asp-page="./Email">Email</a>
+    <div class="nav-group">
+        <button class="nav-item">
+            → <a class="nav-link @ManageNavPages.PersonalDataNavClass(ViewContext)" id="personal-data"
+                asp-page="./PersonalData">Personal data</a>
+        </button>
     </div>
-
-    <div class="link mr-3">
-        → <a class="nav-link @ManageNavPages.ChangePasswordNavClass(ViewContext)" id="change-password"
-            asp-page="./ChangePassword">Change Password</a>
-    </div>
-    @if (hasExternalLogins)
-    {
-        <div id="external-logins" class="link mr-3">
+    <div class="nav-group mr-2">
+        <button class="nav-item ">
+            → <a class="@ManageNavPages.ChangePasswordNavClass(ViewContext)" id="change-password"
+                asp-page="./ChangePassword">Change Password</a>
+        </button>
+         <button id="external-logins" class="nav-item" disabled="@(!hasExternalLogins)">
             → <a id="external-login" class="nav-link @ManageNavPages.ExternalLoginsNavClass(ViewContext)"
                 asp-page="./ExternalLogins">External logins</a>
-        </div>
-    }
-    @if (hasMFA)
-    {
-        <div class="link mr-3">
+        </button>
+
+        <button class="nav-item" disabled="@(!hasMFA)">
             →<a class="nav-link @ManageNavPages.TwoFactorAuthenticationNavClass(ViewContext)" id="two-factor"
                 asp-page="./TwoFactorAuthentication">Two-factor authentication</a>
-        </div>
-    }
-    <div class="link mr-3">
-        → <a class="nav-link @ManageNavPages.PersonalDataNavClass(ViewContext)" id="personal-data"
-            asp-page="./PersonalData">Export Personal data</a>
+        </button>
     </div>
+
 </ul>

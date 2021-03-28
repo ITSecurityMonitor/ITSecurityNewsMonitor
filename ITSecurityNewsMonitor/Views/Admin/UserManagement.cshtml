@@ -12,39 +12,40 @@
 </div>
 
 
-<div class="p-10 ">
-    @foreach (var userRole in Model.UserRoles)
-    {
-        <div id="@userRole.User.Id" class="grid grid-cols-3 p-2 border rounded bg-white mb-2">
-            
+<div class="p-10">
+    <div class="table w-full bg-white">
+        <div class="grid grid-cols-3">
             <div>
-                <span class="text-muted">
-                    Email
-                </span>
-                <br>
-                @userRole.User.Email
+                Email
             </div>
             <div>
-                <span class="text-muted">
-                    Role
-                </span>
-                <br>
-                @(userRole.Roles.FirstOrDefault()?.Name ?? "User")
+                Role
+            </div>
+            <div class="text-right">
+                Actions
+            </div>
+        </div>
+        @foreach (var userRole in Model.UserRoles)
+        {
+            <div id="@userRole.User.Id" class="grid grid-cols-3">
+                
+                <div>
+                    @userRole.User.Email
                 </div>
-            <div>
-                <div class="btn-group" role="group">
-                    <span class="text-muted">
-                        Action
-                    </span>
-                    <br>
-                    <div aria-labelledby="btnGroupDrop1">
-                        <button class="button" href="#" onclick="changeRole('@userRole.User.Id')">@(userRole.Roles.FirstOrDefault() == null ? "Make Admin" : "Remove Admin")</button>
-                        <button class="button" href="#" onclick="deleteUser('@userRole.User.Id')">Delete user</button>
+                <div>
+                    @(userRole.Roles.FirstOrDefault()?.Name ?? "User")
+                    </div>
+                <div class="text-right">
+                    <div class="btn-group" role="group">
+                        <div aria-labelledby="btnGroupDrop1">
+                            <button class="button text-xs" href="#" onclick="changeRole('@userRole.User.Id')">@(userRole.Roles.FirstOrDefault() == null ? "Make Admin" : "Remove Admin")</button>
+                            <button class="text-xs button-danger" href="#" onclick="deleteUser('@userRole.User.Id')">Delete user</button>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    }
+        }
+    </div>
 </div>
 
 @section Scripts {
