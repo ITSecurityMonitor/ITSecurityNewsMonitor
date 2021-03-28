@@ -4,12 +4,13 @@
     ViewData["Title"] = "User Management";
 }
 
-<div class="px-10 pt-10">
-    <h1 class="font-bold text-5xl">@ViewData["Title"]</h1>
-    <a href="@Url.Action("Index", "Admin")" class="mt-2 link flex">
-        <span class="ml-1">← Back to Admin Overview</span>
+<div class="site-header">
+    <h1>@ViewData["Title"]</h1>
+    <a href="@Url.Action("Index", "Admin")">
+        <span class="">← Back to Admin Overview</span>
     </a>
 </div>
+
 
 <div class="p-10 ">
     @foreach (var userRole in Model.UserRoles)

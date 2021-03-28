@@ -6,6 +6,7 @@
 
 @import "tailwindcss/utilities";
 
+
 // .background-dotted {
 //     background:
 //         linear-gradient(90deg, $bg-color ($dot-space - $dot-size), transparent 1%) center,
@@ -61,6 +62,8 @@
 }
 
 .text-button {
+    @apply flex;
+    @apply items-center;
     @apply text-gray-400;
     @apply hover:text-black;
     @apply text-center;
@@ -99,6 +102,31 @@
     @apply border-purple-500;
 }
 
+//
+// 
+// Components
+// 
+// 
+.site-header {
+    @apply px-10;
+    @apply pt-5;
+    
+    h1 {
+        @apply font-bold;
+        @apply text-5xl;
+    }
+
+    a {
+        @apply mt-2;
+        @apply link;
+        @apply flex;
+
+        span {
+            @apply ml-1;
+        }
+    }
+}
+
 .multi-background {
     transform: skewY(-12deg);
     transform-origin: 0;
@@ -106,21 +134,33 @@
     outline: 1px solid white;
 }
 
+
+#tabs-container {
+    @apply max-h-12;
+    &.show-all {
+        @apply max-h-full;
+    }
+    &.show-all > .show-all-button {
+        @apply hidden;
+    }
+}
+
+
 // Place all the styles related to the NewsGroups controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: https://sass-lang.com/
 /*Voting*/
 .news-group-vote-tracker {
-    visibility: hidden;
+    display: none;
 }
 
 .show-vote-tracker {
     .news-group-vote-tracker {
-        visibility: initial;
+        display: initial;
     }
 
     .news-group-content {
-        visibility: hidden;
+        display: none;
     }
 }
 

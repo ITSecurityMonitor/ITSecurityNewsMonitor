@@ -1,6 +1,12 @@
 module.exports = {
   theme: {
     extend: {
+      boxShadow: {
+        '2xl': '0px 10px -14px 14px rgb(255, 255, 255);'
+      },
+      margin: {
+        '-1/3': "-0.08333rem;"
+      },
       zIndex: {
         'negative': -1,
       },
@@ -48,8 +54,6 @@ module.exports = {
     },
   },
   purge: {
-    // Comment in for production!
-    // enabled: true,
     enabled: false,
     // Check if ** actually matches the files!
     content: ["./ITSecurityNewsMonitor/**/*.cshtml", "./ITSecurityNewsMonitor/**/*.scss"],
