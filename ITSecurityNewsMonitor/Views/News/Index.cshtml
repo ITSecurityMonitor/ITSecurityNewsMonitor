@@ -1,72 +1,78 @@
 ﻿@model ITSecurityNewsMonitor.ViewModels.NewsIndexViewModel
+@{
+    ViewData["Title"] = "News";
+}
 
-<div class="px-10 pt-10 flex">
-    <h1 class="font-bold text-5xl">News</h1>
+<div class="site-header">
+    <h1>@ViewData["Title"]</h1>
 </div>
 
-<div class="sticky z-50 top-14 bg-white px-10 pt-4 flex">
+<div class="px-10 pt-4" id="view-picker">
     <!-- All -->
-    <a href="@Url.Action("Index", "News")">
-        <div class="view-tab @(Model.SelectedView == null ? "selected" : "") cursor-pointer w-24">All</div>
-    </a>
+    <div class="bg-purple-100 rounded p-3">
+        <div class="flex overflow-hidden" id="tabs-container">
+            <div class="flex flex-wrap ">
+                <a href="@Url.Action("Index", "News")">
+                    <div class="view-tab @(Model.SelectedView == null ? "selected" : "") cursor-pointer w-24">All</div>
+                </a>
 
-    <!-- Tabs -->
-    @foreach (View view in Model.Views)
-    {
-        <a href="@Url.Action("Index", "News", new { view = view.ID})">
-            <div class="view-tab @(Model.SelectedView != null && Model.SelectedView.ID.Equals(view.ID) ? "selected" : "") cursor-pointer">
-                @view.Name
+                @if (@Model.SelectedView != null) {
+                    <a href="@Url.Action("Index", "News", new { view = @Model.SelectedView.ID})">
+                        <div class="view-tab @(Model.SelectedView != null && Model.SelectedView.ID.Equals(@Model.SelectedView.ID) ? "selected" : "") cursor-pointer">
+                            @Model.SelectedView.Name
+                        </div>
+                    </a>
+                }
+
+
+                <!-- Tabs -->
+                @foreach (View view in Model.Views)
+                {   
+                    @if (@Model.SelectedView == null || view.ID != @Model.SelectedView.ID) {
+                        <a href="@Url.Action("Index", "News", new { view = view.ID})">
+                            <div class="view-tab @(Model.SelectedView != null && @Model.SelectedView.ID.Equals(view.ID) ? "selected" : "") cursor-pointer">
+                                @view.Name
+                            </div>
+                        </a>
+                    }
+                }
+                <!-- New -->
+                <button class="px-2 pt-4 flex items-start justify-center flex-shrink-0 font-bold hover:text-purple-500" onclick="window.location.href='@Url.Action("Create", "Views")'">
+                    + New
+                </button>
             </div>
-        </a>
-    }
 
-    <!-- New -->
-    <div class="mr-3 p-3 rounded-t-xl cursor-pointer font-bold hover:text-purple-500">
-        <a href="@Url.Action("Create", "Views")">
-            +
-        </a>
-    </div>
+            @* dont apply text-button here  *@
+            <button class="show-all-button ml-auto px-2 pt-3 pb-4 flex items-start justify-center flex-shrink-0 font-bold hover:text-purple-500" onclick="toggle_show_all_tabs()">
+                ☰ View All
+            </button>
+        </div>
 
-    <!-- Search -->
-    <div class="ml-auto mt-2">
-        <form method="get">
-            <input type="text" name="search" class="rounded border p-1" value="@(Model.Search == null ? "" : Model.Search)" />
-            <input type="submit" value="Search" class="button" />
-        </form>
-    </div>
-</div>
-<div class="sticky z-30 top-28 pt-4 px-10 bg-white pb-2 flex">
-    <div class="">
-        <button>
-            Sort by
+        <button id="hide-all-button" class="hidden ml-auto px-2 pt-4 pb-2 flex items-start justify-center flex-shrink-0 font-bold hover:text-purple-500" onclick="toggle_show_all_tabs()">
+            ^ Hide All
         </button>
     </div>
+</div>
 
-    <div class="ml-auto flex">
+<div class="sticky z-30 top-16 md:top-12 pt-4 px-10 bg-white pb-4 flex flex-col sm:flex-row border-b shadow-2xl" id="sticky-searchbar-and-pages">
+     <!-- Search -->
+    <div class="">
+        <form method="get" class="ml-auto flex">
+            <input type="text" name="search" class="rounded border p-1 w-full sm:w-auto" value="@(Model.Search == null ? "" : Model.Search)" />
+            <input type="submit" value="Search" class="ml-1 button" />
+        </form>
+    </div>
+
+    <div class="mt-2 sm:mt-0 ml-auto flex items-center">
         <a href="@Url.Action("Index", "News", new { page = Model.Page > 1 ? Model.Page - 1 : 1, search = Model.Search, view = Model.SelectedView?.ID })" class="ml-2 mr-1 flex @(Model.Page > 1 ? "text-gray-400 hover:text-black" : "text-gray-100 pointer-events-none")">
-            <svg width="10px" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="arrow-right" class="svg-inline--fa fa-arrow-right fa-w-14" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
-                <path fill="currentColor" d="M257.5 445.1l-22.2 22.2c-9.4 9.4-24.6 9.4-33.9 0L7 273c-9.4-9.4-9.4-24.6 0-33.9L201.4 44.7c9.4-9.4 24.6-9.4 33.9 0l22.2 22.2c9.5 9.5 9.3 25-.4 34.3L136.6 216H424c13.3 0 24 10.7 24 24v32c0 13.3-10.7 24-24 24H136.6l120.5 114.8c9.8 9.3 10 24.8.4 34.3z"></path>
-            </svg>
-            <div class="ml-1 self-center">Prev</div>
+            <div class="ml-1 self-center ">← Prev</div>
         </a>
-
         &middot;
         Page @Model.Page of @Model.MaxPage
         &middot;
-
         <a href="@Url.Action("Index", "News", new { page = Model.Page < Model.MaxPage ? Model.Page + 1 : Model.MaxPage, search = Model.Search, view = Model.SelectedView?.ID })" class="ml-1 flex @(Model.Page < Model.MaxPage ? "text-gray-400 hover:text-black" : "text-gray-100 pointer-events-none")">
-
-            <div class="mr-1 self-center">Next</div>
-            <svg width="10px" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="arrow-right" class="svg-inline--fa fa-arrow-right fa-w-14" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
-                <path fill="currentColor" d="M190.5 66.9l22.2-22.2c9.4-9.4 24.6-9.4 33.9 0L441 239c9.4 9.4 9.4 24.6 0 33.9L246.6 467.3c-9.4 9.4-24.6 9.4-33.9 0l-22.2-22.2c-9.5-9.5-9.3-25 .4-34.3L311.4 296H24c-13.3 0-24-10.7-24-24v-32c0-13.3 10.7-24 24-24h287.4L190.9 101.2c-9.8-9.3-10-24.8-.4-34.3z"></path>
-            </svg>
+            <div class="mr-1">Next →</div>
         </a>
-
-        <!--
-        @Model.NewsGroupCount Results
-        &middot;
-        Page @Model.Page of @Model.MaxPage
-        -->
     </div>
 </div>
 
@@ -77,8 +83,7 @@
         <div class="shadow-md rounded bg-white bg-opacity-80 p-8 pb-1 @(newsGroup.VoteRequests.Where(vr => vr.OwnerID.Equals(Model.OwnerId) && !vr.Completed).Any() ? "show-vote-tracker" : "")" id="@newsGroup.ID">
 
             <!-- Voting  -->
-            <div class="relative news-group-vote-tracker">
-                <div class="absolute w-full flex-col">
+            <div class="news-group-vote-tracker">
                     <div>
                         <h5 class="text-2xl font-bold text-purple-900">
                             Is this group of articles
@@ -87,13 +92,13 @@
                         </h5>
                     </div>
                     <div class="flex mt-4">
-                        <div class="mr-10 text-xl flex items-center cursor-pointer text-purple-400 hover:text-purple-900" onclick="user_voted(@newsGroup.ID, true)">
+                        <div class="mr-10 text-xl flex items-center cursor-pointer text-purple-400 hover:text-purple-600" onclick="user_voted(@newsGroup.ID, true)">
                             <span class="mr-3 text-3xl">Yes</span>
                             <svg width="2.25em" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="vote-yea" class="svg-inline--fa fa-vote-yea fa-w-20" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512">
                                 <path fill="currentColor" d="M608 320h-64v64h22.4c5.3 0 9.6 3.6 9.6 8v16c0 4.4-4.3 8-9.6 8H73.6c-5.3 0-9.6-3.6-9.6-8v-16c0-4.4 4.3-8 9.6-8H96v-64H32c-17.7 0-32 14.3-32 32v96c0 17.7 14.3 32 32 32h576c17.7 0 32-14.3 32-32v-96c0-17.7-14.3-32-32-32zm-96 64V64.3c0-17.9-14.5-32.3-32.3-32.3H160.4C142.5 32 128 46.5 128 64.3V384h384zM211.2 202l25.5-25.3c4.2-4.2 11-4.2 15.2.1l41.3 41.6 95.2-94.4c4.2-4.2 11-4.2 15.2.1l25.3 25.5c4.2 4.2 4.2 11-.1 15.2L300.5 292c-4.2 4.2-11 4.2-15.2-.1l-74.1-74.7c-4.3-4.2-4.2-11 0-15.2z"></path>
                             </svg>
                         </div>
-                        <div class="mr-10 text-xl flex items-center cursor-pointer text-purple-400 hover:text-purple-900" onclick="user_voted(@newsGroup.ID, false)">
+                        <div class="mr-10 text-xl flex items-center cursor-pointer text-purple-400 hover:text-purple-600" onclick="user_voted(@newsGroup.ID, false)">
                             <span class="mr-3 text-3xl">No</span>
                             <svg width="2.25em" aria-hidden="true" focusable="false" data-prefix="fal" data-icon="vote-nay" class="svg-inline--fa fa-vote-nay fa-w-20" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512">
                                 <path fill="currentColor" d="M393.5 153.8l-11.3-11.3c-1.6-1.6-3.6-2.3-5.7-2.3s-4.1.8-5.7 2.3L320 193.4l-50.9-50.9c-1.6-1.6-3.6-2.3-5.7-2.3s-4.1.8-5.7 2.3l-11.3 11.3c-3.1 3.1-3.1 8.2 0 11.3l50.9 50.9-50.9 50.9c-3.1 3.1-3.1 8.2 0 11.3l11.3 11.3c1.6 1.6 3.6 2.3 5.7 2.3s4.1-.8 5.7-2.3l50.9-50.9 50.9 50.9c1.6 1.6 3.6 2.3 5.7 2.3s4.1-.8 5.7-2.3l11.3-11.3c3.1-3.1 3.1-8.2 0-11.3l-51-50.9 50.9-50.9c3.2-3.1 3.2-8.2 0-11.3zM608 288h-64V62.5c0-16.8-14.3-30.5-32-30.5H128c-17.7 0-32 13.7-32 30.5V288H32c-17.7 0-32 14.3-32 32v128c0 17.7 14.3 32 32 32h576c17.7 0 32-14.3 32-32V320c0-17.7-14.3-32-32-32zM128 64h384v304H128V64zm480 384H32V320h64v48H73.6c-5.3 0-9.6 3.6-9.6 8v16c0 4.4 4.3 8 9.6 8h492.8c5.3 0 9.6-3.6 9.6-8v-16c0-4.4-4.3-8-9.6-8H544v-48h64v128z"></path>
@@ -114,7 +119,6 @@
                                 </a>
                             }
                         </h3>
-                    </div>
                 </div>
             </div>
 
@@ -134,11 +138,8 @@
                                 </a>
                             </span>
                         </span>
-                        <a href="@Url.Action("Details", "News", new { newsGroupId = newsGroup.ID })" class="text-gray-400 hover:text-black w-36 flex sm:ml-auto sm:justify-end text-sm">
-                            <div class="mr-1 self-center">View as Story</div>
-                            <svg width="10px" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="arrow-right" class="svg-inline--fa fa-arrow-right fa-w-14" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
-                                <path fill="currentColor" d="M190.5 66.9l22.2-22.2c9.4-9.4 24.6-9.4 33.9 0L441 239c9.4 9.4 9.4 24.6 0 33.9L246.6 467.3c-9.4 9.4-24.6 9.4-33.9 0l-22.2-22.2c-9.5-9.5-9.3-25 .4-34.3L311.4 296H24c-13.3 0-24-10.7-24-24v-32c0-13.3 10.7-24 24-24h287.4L190.9 101.2c-9.8-9.3-10-24.8-.4-34.3z"></path>
-                            </svg>
+                        <a href="@Url.Action("Details", "News", new { newsGroupId = newsGroup.ID })" class="text-button w-36 flex sm:ml-auto sm:justify-end text-sm">
+                            <span class="mr-1 self-center text-left sm:text-right w-40">View as Story →</span>
                         </a>
                     </div>
                     <hr class="mt-2 mb-2">
@@ -170,12 +171,12 @@
                         <div class="mb-2">
                             <h1 class="flex flex-col sm:flex-row related-left-bar">
                                 <div class="flex mt-0.5">
-                                    <span class="ml-6 mr-1 mt-0.5 text-xs sm:mt-0 sm:text-base sm:leading-5">
+                                    <div class="w-40 w-24 lg:w-40 ml-6 mr-1 mt-0.5 text-xs sm:mt-0 sm:text-base sm:leading-5">
                                         @news.CreatedDate
+                                    </div>
+                                    <span class="mr-2 invisible sm:visible">
+                                        →
                                     </span>
-                                    <svg class="hidden sm:block h-5" width="10px" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="arrow-right" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
-                                        <path fill="currentColor" d="M190.5 66.9l22.2-22.2c9.4-9.4 24.6-9.4 33.9 0L441 239c9.4 9.4 9.4 24.6 0 33.9L246.6 467.3c-9.4 9.4-24.6 9.4-33.9 0l-22.2-22.2c-9.5-9.5-9.3-25 .4-34.3L311.4 296H24c-13.3 0-24-10.7-24-24v-32c0-13.3 10.7-24 24-24h287.4L190.9 101.2c-9.8-9.3-10-24.8-.4-34.3z"></path>
-                                    </svg>
                                 </div>
                                 <span class="ml-6 sm:ml-1 sm:mt-0.5 leading-5">
                                     <span class="font-bold hover:underline cursor-pointer">
@@ -209,25 +210,50 @@
 
 <div class="px-10 pt-10 pb-16 flex">
     <a href="@Url.Action("Index", "News", new { page = Model.Page > 1 ? Model.Page - 1 : 1, search = Model.Search, view = Model.SelectedView?.ID })" class="ml-2 mr-1 flex @(Model.Page > 1 ? "text-gray-400 hover:text-black" : "text-gray-100 pointer-events-none")">
-        <svg width="10px" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="arrow-right" class="svg-inline--fa fa-arrow-right fa-w-14" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
-            <path fill="currentColor" d="M257.5 445.1l-22.2 22.2c-9.4 9.4-24.6 9.4-33.9 0L7 273c-9.4-9.4-9.4-24.6 0-33.9L201.4 44.7c9.4-9.4 24.6-9.4 33.9 0l22.2 22.2c9.5 9.5 9.3 25-.4 34.3L136.6 216H424c13.3 0 24 10.7 24 24v32c0 13.3-10.7 24-24 24H136.6l120.5 114.8c9.8 9.3 10 24.8.4 34.3z"></path>
-        </svg>
-        <div class="ml-1 self-center">Prev</div>
+        <div class="ml-1">← Prev</div>
     </a>
-
+    &middot;
     Page @Model.Page of @Model.MaxPage
-
+    &middot;
     <a href="@Url.Action("Index", "News", new { page = Model.Page < Model.MaxPage ? Model.Page + 1 : Model.MaxPage, search = Model.Search, view = Model.SelectedView?.ID })" class="ml-1 flex @(Model.Page < Model.MaxPage ? "text-gray-400 hover:text-black" : "text-gray-100 pointer-events-none")">
-
-        <div class="mr-1 self-center">Next</div>
-        <svg width="10px" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="arrow-right" class="svg-inline--fa fa-arrow-right fa-w-14" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
-            <path fill="currentColor" d="M190.5 66.9l22.2-22.2c9.4-9.4 24.6-9.4 33.9 0L441 239c9.4 9.4 9.4 24.6 0 33.9L246.6 467.3c-9.4 9.4-24.6 9.4-33.9 0l-22.2-22.2c-9.5-9.5-9.3-25 .4-34.3L311.4 296H24c-13.3 0-24-10.7-24-24v-32c0-13.3 10.7-24 24-24h287.4L190.9 101.2c-9.8-9.3-10-24.8-.4-34.3z"></path>
-        </svg>
+        <div class="mr-1">Next →</div>
     </a>
 </div>
 
 @section Scripts {
     <script type="text/javascript">
+        
+        function is_scrolled_into_view(el) {
+            let rect = el.getBoundingClientRect();
+            let elemTop = rect.top;
+            let elemBottom = rect.bottom;
+
+            // Only completely visible elements return true:
+            let isVisible = (elemTop >= 0) && (elemBottom <= window.innerHeight);
+            // Partially visible elements return true:
+            //isVisible = elemTop < window.innerHeight && elemBottom >= 0;
+            return isVisible;
+        }
+        
+        let handle_scroll = () => {
+            let is_in_view = is_scrolled_into_view(document.getElementById("view-picker"));
+            console.log("scroll");
+            if(is_in_view) {
+                document.getElementById("view-name-in-navbar").classList.add("hidden"); 
+                document.getElementById("sticky-searchbar-and-pages").classList.remove("bg-white");
+            } else  {
+                document.getElementById("view-name-in-navbar").classList.remove("hidden"); 
+                document.getElementById("sticky-searchbar-and-pages").classList.add("bg-white");
+            }
+        }
+
+        document.onscroll = () => {
+            handle_scroll();
+        }
+
+        handle_scroll();
+
+
         const user_voted = (newsGroupId, vote) => {
             const xhr = new XMLHttpRequest();
             xhr.open("POST", "@Url.Action("UserVote", "News")", true);
@@ -252,5 +278,15 @@
             
             elem.classList.add("show-vote-tracker");
         }
+
+        const toggle_show_all_tabs = () => {
+            document.getElementById("tabs-container").classList.toggle("show-all")
+            document.getElementById("hide-all-button").classList.toggle("hidden")
+        }
+
+        @* function isOverflown(element) {
+            return element.scrollHeight > element.clientHeight || element.scrollWidth > element.clientWidth;
+        } *@
+
     </script>
 }

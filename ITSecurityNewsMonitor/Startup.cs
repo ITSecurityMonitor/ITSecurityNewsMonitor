@@ -122,7 +122,6 @@ namespace ITSecurityNewsMonitor
             app.UseHangfireServer();
 
             // BackgroundJob.Enqueue<Crawler>(c => c.ExecuteCrawl());
-
             // RecurringJob.AddOrUpdate<Crawler>(c => c.ExecuteCrawl(), "*/10 * * * *");
             // RecurringJob.AddOrUpdate<Crawler>(c => c.DeleteOld(), "0 1 * * *");
 
