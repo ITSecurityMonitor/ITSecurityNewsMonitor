@@ -1,4 +1,4 @@
-﻿@model ITSecurityNewsMonitor.ViewModels.AdminIndexViewModel
+﻿@model ITSecurityNewsMonitor.ViewModels.AdminNewsSourcesViewModel
 
 @{
     ViewData["Title"] = "Manage News Sources";
@@ -35,11 +35,35 @@
                 <span class="text-xs">@source.Link</span>
                 <span class="text-xs">@source.Homepage</span>
                 <div class="text-right">
-                    <button class="button text-xs">Select</button>
+                    <form asp-action="DeleteSource" class="form-confirm" data-message="Do you reall wish to delete source @source.Name">
+                        <input type="hidden" name="ID" value="@source.ID"/>
+                        <button type="submit" class="button text-xs">Delete</button>
+                    </form>
                 </div>
             </div>
         }
     </div>
+
+    <form asp-action="NewsSources" method="post">
+        @Html.AntiForgeryToken()
+        <div class="d-flex flex-col">
+            <div><label class="text text-gray-500">Name</label></div>
+            <div><input name="name" class="rounded border p-1" /></div>
+
+        </div>
+
+        <div class="d-flex flex-col">
+            <div><label class="text text-gray-500">Link</label></div>
+            <div><input name="Link" class="rounded border p-1" /></div>
+        </div>
+
+        <div class="d-flex flex-col">
+            <div><label class="text text-gray-500">Homepage</label></div>
+            <div><input name="Homepage" class="rounded border p-1" /></div>
+        </div>
+
+        <button type="submit">Create</button>
+    </form>
 </div>
 
 @section Scripts {

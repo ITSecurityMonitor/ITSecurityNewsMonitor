@@ -53,10 +53,74 @@ namespace ITSecurityNewsMonitor.Controllers
 
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> NewsSources()
-        {   
-            AdminIndexViewModel vm = new AdminIndexViewModel();
+        {
+            AdminNewsSourcesViewModel vm = new AdminNewsSourcesViewModel();
             vm.Sources = await _context.Sources.ToListAsync();
             return View(vm);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Admin")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteSource(int? ID)
+        {
+            try
+            {
+                if (ID == null)
+                {
+                    return NotFound();
+                }
+
+                Source source = await _context.Sources.FindAsync(ID);
+
+                if(source == null)
+                {
+                    return NotFound();
+                }
+
+                _context.Sources.Remove(source);
+
+                await _context.SaveChangesAsync();
+
+                return RedirectToAction(nameof(NewsSources));
+            } catch(Exception e)
+            {
+                return StatusCode(500);
+            }
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Admin")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> NewsSources(string Name, string Link, string Homepage)
+        {
+            if(Name == null || Link == null || Homepage == null)
+            {
+                return StatusCode(500);
+            }
+
+            Source source = new Source()
+            {
+                Name = Name,
+                Link = Link,
+                Homepage = Homepage
+            };
+
+            try
+            {
+                if(_context.Sources.Where(s => s.Link.Equals(Link)).Any())
+                {
+                    return StatusCode(409);
+                }
+
+                _context.Sources.Add(source);
+                await _context.SaveChangesAsync();
+
+                return RedirectToAction(nameof(NewsSources));
+            } catch(Exception e)
+            {
+                return StatusCode(500);
+            }
         }
 
 

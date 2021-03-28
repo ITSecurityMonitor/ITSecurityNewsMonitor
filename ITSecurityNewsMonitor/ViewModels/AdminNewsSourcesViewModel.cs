@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ITSecurityNewsMonitor.ViewModels
 {
-    public class AdminSourcesViewModel
+    public class AdminNewsSourcesViewModel
     {
         public List<Source> Sources { get; set; }
     }
