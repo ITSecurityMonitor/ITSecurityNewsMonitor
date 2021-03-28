@@ -35,9 +35,9 @@ namespace ITSecurityNewsMonitor.Controllers
 
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> SimilarityCheck([FromQuery] string searchTermLeft, [FromQuery] string searchTermRight)
-        {   
+        {
 
-            AdminIndexViewModel vm = new AdminIndexViewModel();
+            AdminSimilarityCheckViewModel vm = new AdminSimilarityCheckViewModel();
             vm.NewsLeft = await _context.News.Where(n => searchTermLeft == null || n.Headline.Contains(searchTermLeft)).ToListAsync();
             vm.NewsRight = await _context.News.Where(n => searchTermRight == null || n.Headline.Contains(searchTermRight)).ToListAsync();
             ViewData["searchTermLeft"] = searchTermLeft;
