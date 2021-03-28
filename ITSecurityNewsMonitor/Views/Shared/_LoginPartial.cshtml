@@ -33,7 +33,7 @@
                 Todo check if this is a good idea :)
             *@
             <div class="pb-0.5 h-8 hidden sm:flex">
-                @if (ViewData["Title"].ToString() == "News" && @Model.SelectedView != null)
+                @if (ViewData != null && ViewData["Title"]?.ToString() == "News" && @Model.SelectedView != null)
                 {
                     <a href="@Url.Action("Index", "News", new { view = @Model.SelectedView.ID})" id="view-name-in-navbar"
                         class="-mt-0.5 flex flex-col hidden">

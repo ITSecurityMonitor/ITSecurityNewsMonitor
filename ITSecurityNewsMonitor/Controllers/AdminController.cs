@@ -34,9 +34,93 @@ namespace ITSecurityNewsMonitor.Controllers
         }
 
         [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> SimilarityCheck([FromQuery] string searchTermLeft, [FromQuery] string searchTermRight)
+        {
+
+            AdminSimilarityCheckViewModel vm = new AdminSimilarityCheckViewModel();
+            vm.NewsLeft = await _context.News.Where(n => searchTermLeft == null || n.Headline.Contains(searchTermLeft)).ToListAsync();
+            vm.NewsRight = await _context.News.Where(n => searchTermRight == null || n.Headline.Contains(searchTermRight)).ToListAsync();
+            ViewData["searchTermLeft"] = searchTermLeft;
+            ViewData["searchTermRight"] = searchTermRight;
+            return View(vm);
+        }
+
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> NewsGroupAssignment()
         {
             return View();
+        }
+
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> NewsSources()
+        {
+            AdminNewsSourcesViewModel vm = new AdminNewsSourcesViewModel();
+            vm.Sources = await _context.Sources.ToListAsync();
+            return View(vm);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Admin")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteSource(int? ID)
+        {
+            try
+            {
+                if (ID == null)
+                {
+                    return NotFound();
+                }
+
+                Source source = await _context.Sources.FindAsync(ID);
+
+                if(source == null)
+                {
+                    return NotFound();
+                }
+
+                _context.Sources.Remove(source);
+
+                await _context.SaveChangesAsync();
+
+                return RedirectToAction(nameof(NewsSources));
+            } catch(Exception e)
+            {
+                return StatusCode(500);
+            }
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Admin")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> NewsSources(string Name, string Link, string Homepage)
+        {
+            if(Name == null || Link == null || Homepage == null)
+            {
+                return StatusCode(500);
+            }
+
+            Source source = new Source()
+            {
+                Name = Name,
+                Link = Link,
+                Homepage = Homepage
+            };
+
+            try
+            {
+                if(_context.Sources.Where(s => s.Link.Equals(Link)).Any())
+                {
+                    return StatusCode(409);
+                }
+
+                _context.Sources.Add(source);
+                await _context.SaveChangesAsync();
+
+                return RedirectToAction(nameof(NewsSources));
+            } catch(Exception e)
+            {
+                return StatusCode(500);
+            }
         }
 
 

@@ -50,6 +50,16 @@
                 run();
             }
         }
+
+        const forms = document.querySelectorAll('.form-confirm');
+
+        Array.from(forms).forEach(form => {
+            form.addEventListener('click', function (event) {
+                if (!confirm(form.dataset.message ?? "Are you certain you with to delete this item?")) {
+                    event.preventDefault();
+                }
+            });
+        });
     </script>
     <script src="~/dist/ITSecurityNewsMonitor.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
