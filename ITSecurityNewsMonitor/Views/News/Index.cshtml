@@ -7,7 +7,7 @@
     <h1>@ViewData["Title"]</h1>
 </div>
 
-<div class="px-10 pt-4" id="view-picker">
+<div class="px-5 md:px-10 pt-4" id="view-picker">
     <!-- All -->
     <div class="bg-gray-50 rounded p-3">
         <div class="flex -mb-2">
@@ -71,7 +71,7 @@
     </div>
 </div>
 
-<div class="sticky z-30 top-16 md:top-12 pt-4 px-10 bg-white pb-4 flex flex-col sm:flex-row border-b shadow-2xl" id="sticky-searchbar-and-pages">
+<div class="sticky z-30 top-14 md:top-12 pt-4 px-5 md:px-10 bg-white pb-4 flex flex-col sm:flex-row border-b shadow-2xl" id="sticky-searchbar-and-pages">
      <!-- Search -->
     <div class="">
         <form method="get" class="ml-auto flex">
@@ -93,7 +93,7 @@
     </div>
 </div>
 
-<div class="px-10 pt-10">
+<div class="px-5 md:px-10 pt-10">
     @foreach (NewsGroup newsGroup in Model.NewsGroups)
     {
         <!-- News Group -->
@@ -217,10 +217,12 @@
             </div>
 
             <div class="px-8 pb-2 flex flex-col mt-4 mb-1">
-                <div class="ml-auto text-xs text-right text-gray-500">
-                    Last updated: @newsGroup.UpdatedDate
-                    &middot;
-                    Story started: @newsGroup.CreatedDate
+                <div class="ml-auto text-xs flex flex-col md:flex-row justify-right text-gray-500">
+                    <span>Last updated: @newsGroup.UpdatedDate</span>
+                    @if ((@newsGroup.UpdatedDate - @newsGroup.CreatedDate).TotalSeconds > 10) {
+                        <span class="hidden px-1 md:block">&middot;</span>
+                        <span>Story started: @newsGroup.CreatedDate</span>
+                    }
                 </div>
             </div>
         </div>
@@ -228,7 +230,7 @@
     }
 </div>
 
-<div class="px-10 pt-10 pb-16 flex">
+<div class="px-10 pt-10 pb-16 flex justify-center">
     <a href="@Url.Action("Index", "News", new { page = Model.Page > 1 ? Model.Page - 1 : 1, search = Model.Search, view = Model.SelectedView?.ID })" class="ml-2 mr-1 flex @(Model.Page > 1 ? "text-gray-400 hover:text-black" : "text-gray-100 pointer-events-none")">
         <div class="ml-1">← Prev</div>
     </a>

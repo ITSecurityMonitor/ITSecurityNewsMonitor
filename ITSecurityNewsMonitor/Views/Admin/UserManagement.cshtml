@@ -12,10 +12,10 @@
 </div>
 
 
-<div class="p-10">
+<div class="px-5 md:px-10 py-10">
     <div class="table w-full bg-white">
-        <div class="grid grid-cols-3">
-            <div>
+        <div class="grid grid-cols-4">
+            <div class="col-span-2">
                 Email
             </div>
             <div>
@@ -27,9 +27,9 @@
         </div>
         @foreach (var userRole in Model.UserRoles)
         {
-            <div id="@userRole.User.Id" class="grid grid-cols-3">
+            <div id="@userRole.User.Id" class="grid grid-cols-4 text-xs">
                 
-                <div>
+                <div class="col-span-2">
                     @userRole.User.Email
                 </div>
                 <div>
@@ -38,8 +38,8 @@
                 <div class="text-right">
                     <div class="btn-group" role="group">
                         <div aria-labelledby="btnGroupDrop1">
-                            <button class="button text-xs" href="#" onclick="changeRole('@userRole.User.Id')">@(userRole.Roles.FirstOrDefault() == null ? "Make Admin" : "Remove Admin")</button>
-                            <button class="text-xs button-danger" href="#" onclick="deleteUser('@userRole.User.Id')">Delete user</button>
+                            <button class="button mb-1" href="#" onclick="changeRole('@userRole.User.Id')">@(userRole.Roles.FirstOrDefault() == null ? "Make Admin" : "Remove Admin")</button>
+                            <button class="button-danger" href="#" onclick="deleteUser('@userRole.User.Id')">Delete user</button>
                         </div>
                     </div>
                 </div>

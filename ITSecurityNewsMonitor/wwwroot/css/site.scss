@@ -85,6 +85,10 @@
     @apply text-gray-400;
 }
 
+.text-danger {
+    @apply text-red-500;
+}
+
 .button-danger {
     @apply button;
 
@@ -192,7 +196,8 @@
 // 
 // 
 .site-header {
-    @apply px-10;
+    @apply px-5;
+    @apply md:px-10;
     @apply pt-5;
     
     h1 {
