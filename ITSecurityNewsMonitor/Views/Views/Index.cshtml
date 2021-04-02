@@ -21,7 +21,7 @@
         </div>
         @foreach (View view in Model)
         {  
-            <div class="grid grid-cols-4">
+            <div class="grid grid-cols-4" id="@view.ID">
                 <div class="col-span-3">
                     <span class="">@view.Name</span>
                     @* TODO: *@
