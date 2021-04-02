@@ -139,7 +139,7 @@
                                 @firstNews.Headline
                             </a>
                         </h3>
-                        <h3 class="flex flex-col text-base"">
+                        <h3 class="flex flex-col text-base">
                             @foreach (News news in newsGroup.News.OrderByDescending(n => n.CreatedDate).Skip(1))
                             {
                                 <a href="@news.Link" class="text-gray-500 hover:text-black" target=":_blank">
