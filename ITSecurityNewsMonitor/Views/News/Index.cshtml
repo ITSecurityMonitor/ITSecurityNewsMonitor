@@ -259,12 +259,17 @@
         
         const handle_scroll = () => {
             let is_in_view = is_scrolled_into_view(document.getElementById("view-picker"));
+
+            const view_name_in_navbar = document.getElementById("view-name-in-navbar");
+            const sticky_searchbar_and_pages = document.getElementById("sticky-searchbar-and-pages");
+            if(!view_name_in_navbar || !sticky_searchbar_and_pages) return 
+
             if(is_in_view) {
-                document.getElementById("view-name-in-navbar").classList.add("hidden"); 
-                document.getElementById("sticky-searchbar-and-pages").classList.remove("bg-white");
+                view_name_in_navbar.classList.add("hidden"); 
+                sticky_searchbar_and_pages.classList.remove("bg-white");
             } else  {
-                document.getElementById("view-name-in-navbar").classList.remove("hidden"); 
-                document.getElementById("sticky-searchbar-and-pages").classList.add("bg-white");
+                view_name_in_navbar.classList.remove("hidden"); 
+                sticky_searchbar_and_pages.classList.add("bg-white");
             }
         }
 
