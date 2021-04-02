@@ -131,11 +131,11 @@ namespace ITSecurityNewsMonitor
 
             app.UseEndpoints(endpoints =>
             {
-            endpoints.MapControllerRoute(
-                name: "default",
-                pattern: "{controller=News}/{action=Index}/{id?}");
-            endpoints.MapRazorPages();
-            endpoints.MapHangfireDashboard();
+                endpoints.MapControllerRoute(
+                    name: "default",
+                    pattern: "{controller=News}/{action=Index}/{id?}");
+                endpoints.MapRazorPages();
+                endpoints.MapHangfireDashboard();
             });
 
             SeedRoles(roleManager, userManager).Wait();
