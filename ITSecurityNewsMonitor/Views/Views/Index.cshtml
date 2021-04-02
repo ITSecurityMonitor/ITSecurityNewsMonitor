@@ -40,6 +40,11 @@
                 </div>
             </div>
         }
+        @if(!Model.Any()) {
+            <div class="grid grid-cols-4">
+                No views yet! Create one now.
+            </div>
+        }
     </div>
 
     @* <div class="mt-4"></div>
