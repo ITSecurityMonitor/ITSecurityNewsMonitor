@@ -3,6 +3,7 @@ using ITSecurityNewsMonitor.Helper;
 using ITSecurityNewsMonitor.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
@@ -30,14 +31,16 @@ namespace ITSecurityNewsMonitor.Services
             Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
         };
         private readonly IConfiguration _config;
+        private readonly IMemoryCache _cache;
 
         private string _url;
 
         IServiceProvider _serviceProvider;
-        public Crawler(IServiceProvider serviceProvider, IConfiguration config)
+        public Crawler(IServiceProvider serviceProvider, IConfiguration config, IMemoryCache memoryCache)
         {
             _serviceProvider = serviceProvider;
             _config = config;
+            _cache = memoryCache;
 
             _url = "http://" + _config.GetValue<string>("Connections:Crawler:IP") + ":" + _config.GetValue<string>("Connections:Crawler:Port");
         }
@@ -176,6 +179,44 @@ namespace ITSecurityNewsMonitor.Services
             else
             {
                 throw new System.ArgumentException("API returned status code: " + response.StatusCode);
+            }
+        }
+
+        public async Task ComputeSimilarity(string id, News news1, News news2)
+        {
+            if (news1 != null && news2 != null)
+            {
+                var input = System.Text.Json.JsonSerializer.Serialize(new
+                {
+                    text1 = news1.Content,
+                    text2 = news2.Content
+                }, _options);
+
+                var content = new StringContent(input, Encoding.UTF8, "application/json");
+                var response = await _client.PostAsync(_url + "/similarity", content);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var responseContent = await response.Content.ReadAsStringAsync();
+                    double responseObject = JsonConvert.DeserializeObject<double>(responseContent);
+
+                    var cacheExpiryOptions = new MemoryCacheEntryOptions
+                    {
+                        AbsoluteExpiration = DateTime.Now.AddMinutes(5),
+                        Priority = CacheItemPriority.High,
+                        SlidingExpiration = TimeSpan.FromMinutes(2),
+                        Size = 1024,
+                    };
+                    _cache.Set(id, responseObject.ToString(), cacheExpiryOptions);
+
+                    string value = string.Empty;
+                    _cache.TryGetValue(id, out value);
+                }
+                else
+                {
+                    throw new System.ArgumentException("API returned status code: " + response.StatusCode);
+                }
+                
             }
         }
 
