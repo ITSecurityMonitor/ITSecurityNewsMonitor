@@ -69,10 +69,19 @@
             Hide All
         </button>
     </div>
+
+     <!-- Search (When on mobile) -->
+    <div class="mt-3 block sm:hidden">
+        <form method="get" class="ml-auto flex">
+            <input type="text" name="search" class="rounded border p-1 w-full sm:w-auto" value="@(Model.Search == null ? "" : Model.Search)" />
+            <input type="submit" value="Search" class="ml-1 button" />
+        </form>
+    </div>
 </div>
 
-<div class="sticky z-30 top-14 md:top-12 pt-4 px-5 md:px-10 bg-white pb-4 flex flex-col sm:flex-row border-b shadow-2xl" id="sticky-searchbar-and-pages">
-     <!-- Search -->
+
+<!-- Search (when not on mobile) -->
+<div class="hidden sm:block sticky z-30  top-14 md:top-12 pt-4 px-5 md:px-10 bg-white pb-4 flex flex-col sm:flex-row border-b shadow-2xl" id="sticky-searchbar-and-pages">
     <div class="">
         <form method="get" class="ml-auto flex">
             <input type="text" name="search" class="rounded border p-1 w-full sm:w-auto" value="@(Model.Search == null ? "" : Model.Search)" />
@@ -80,7 +89,7 @@
         </form>
     </div>
 
-    <div class="mt-2 sm:mt-0 ml-auto flex items-center">
+    @* <div class="mt-2 sm:mt-0 ml-auto flex items-center">
         <a href="@Url.Action("Index", "News", new { page = Model.Page > 1 ? Model.Page - 1 : 1, search = Model.Search, view = Model.SelectedView?.ID })" class="ml-2 mr-1 flex @(Model.Page > 1 ? "text-gray-400 hover:text-black" : "text-gray-100 pointer-events-none")">
             <div class="ml-1 self-center ">← Prev</div>
         </a>
@@ -90,7 +99,7 @@
         <a href="@Url.Action("Index", "News", new { page = Model.Page < Model.MaxPage ? Model.Page + 1 : Model.MaxPage, search = Model.Search, view = Model.SelectedView?.ID })" class="ml-1 flex @(Model.Page < Model.MaxPage ? "text-gray-400 hover:text-black" : "text-gray-100 pointer-events-none")">
             <div class="mr-1">Next →</div>
         </a>
-    </div>
+    </div> *@
 </div>
 
 <div class="px-5 md:px-10 pt-10">

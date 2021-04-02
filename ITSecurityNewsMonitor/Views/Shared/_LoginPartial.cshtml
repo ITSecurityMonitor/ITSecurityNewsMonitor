@@ -10,6 +10,9 @@
     .hover-trigger:hover .hover-target {
         display: flex;
     }
+    .hover-trigger:focus .hover-target {
+        display: flex;
+    }
 </style>
 
 <div class="sticky z-50 -top-0.5 bg-white flex px-5 md:px-10 py-3 pt-5">
@@ -17,22 +20,22 @@
     {
         <div class="flex overflow-hidden items-center">
             <div class="flex">
-                <a href="@Url.Action("Index", "News")" class="flex flex-col justify-center bg-grey-lighter mr-3">
-                    <div class="font-bold text-2xl hover:underline">
+                <a href="@Url.Action("Index", "News")" class="flex flex-col justify-center bg-grey-lighter mr-2">
+                    <div class="font-bold text-xl md:text-2xl hover:underline">
                         News
                     </div>
                 </a>
 
-                <a href="@Url.Action("Index", "Views")" class="flex flex-col justify-center bg-grey-lighter mr-3">
-                    <div class="font-bold text-2xl hover:underline">
+                <a href="@Url.Action("Index", "Views")" class="flex flex-col justify-center bg-grey-lighter mr-2">
+                    <div class="font-bold text-xl md:text-2xl hover:underline">
                         Views
                     </div>
                 </a>
 
                 @if (User.IsInRole("Admin"))
                 {
-                    <a href="@Url.Action("Index", "Admin")" class="flex flex-col justify-center bg-grey-lighter mr-3">
-                        <div class="font-bold text-2xl hover:underline">
+                    <a href="@Url.Action("Index", "Admin")" class="flex flex-col justify-center bg-grey-lighter mr-2">
+                        <div class="font-bold text-xl md:text-2xl hover:underline">
                             Admin
                         </div>
                     </a>
@@ -46,10 +49,10 @@
                 @if (ViewData != null && ViewData["Title"]?.ToString() == "News" && @Model.SelectedView != null)
                 {
                     <a href="@Url.Action("Index", "News", new { view = @Model.SelectedView.ID})" id="view-name-in-navbar"
-                        class="-mt-0.5 flex flex-col hidden">
+                        class="-mt-1 md:-mt-0.5 flex flex-col hidden">
                         <span class="mr-1 text-xs mb-0.5">Current view: </span>
                         <div
-                            class="truncate sm:w-36 md:w-56 lg:w-auto -mt-2 text-purple-600 text-base font-bold @(Model.SelectedView != null && Model.SelectedView.ID.Equals(@Model.SelectedView.ID) ? "selected" : "") cursor-pointer">
+                            class="truncate w-36 sm:w-36 md:w-56 lg:w-auto -mt-2 text-purple-600 text-base font-bold @(Model.SelectedView != null && Model.SelectedView.ID.Equals(@Model.SelectedView.ID) ? "selected" : "") cursor-pointer">
                             @Model.SelectedView.Name
                         </div>
                     </a>
@@ -57,7 +60,7 @@
             </div>
         </div>
 
-        <div class="ml-auto group" id="user-id">
+        <div class="ml-auto group h-9" id="user-id">
             <div id="user-options" class="hover-trigger relative">
                 <div
                     class="rounded-full bg-gray-50 hover:bg-gray-200 w-8 h-8 flex items-center justify-center cursor-pointer">
