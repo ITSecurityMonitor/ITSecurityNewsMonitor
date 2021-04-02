@@ -28,7 +28,8 @@
             → <a id="external-login" class="nav-link @ManageNavPages.ExternalLoginsNavClass(ViewContext)"
                 asp-page="./ExternalLogins">External logins</a>
         </button>
-
+    </div>
+    <div class="nav-group mr-2">
         <button class="nav-item" disabled="@(!hasMFA)">
             →<a class="nav-link @ManageNavPages.TwoFactorAuthenticationNavClass(ViewContext)" id="two-factor"
                 asp-page="./TwoFactorAuthentication">Two-factor Auth.</a>
