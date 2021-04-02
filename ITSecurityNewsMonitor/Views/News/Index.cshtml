@@ -137,7 +137,7 @@
                                 @newsGroup.News.First().Headline
                             </a>
                         </h3>
-                        <h3 class="text-base">
+                        <h3 class="flex flex-col text-base">
                             @foreach (News news in newsGroup.News.Skip(1))
                             {
                                 <a href="@news.Link" class="text-gray-500 hover:text-black" target=":_blank">
