@@ -31,7 +31,7 @@
                     </div> *@
                 </div>
                 <div class="text-right">
-                    <button class="button" href="@Url.Action("Edit", "Views", new { id = view.ID })">
+                    <button class="button" onclick="window.location.href='@Url.Action("Edit", "Views", new { id = view.ID })'">
                         Edit
                     </button>
                     <button class="button-danger" onclick="deleteView(@view.ID)">
