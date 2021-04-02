@@ -1,10 +1,13 @@
-﻿using ITSecurityNewsMonitor.Data;
+﻿using Hangfire;
+using ITSecurityNewsMonitor.Data;
 using ITSecurityNewsMonitor.Models;
+using ITSecurityNewsMonitor.Services;
 using ITSecurityNewsMonitor.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -19,12 +22,14 @@ namespace ITSecurityNewsMonitor.Controllers
         private readonly SecNewsDbContext _context;
         private readonly UserManager<IdentityUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly IMemoryCache _cache;
 
-        public AdminController(SecNewsDbContext context, UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager)
+        public AdminController(SecNewsDbContext context, UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager, IMemoryCache memoryCache)
         {
             _context = context;
             _userManager = userManager;
             _roleManager = roleManager;
+            _cache = memoryCache;
         }
 
         [Authorize(Roles = "Admin")]
@@ -34,15 +39,45 @@ namespace ITSecurityNewsMonitor.Controllers
         }
 
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> SimilarityCheck([FromQuery] string searchTermLeft, [FromQuery] string searchTermRight)
+        public async Task<IActionResult> SimilarityCheck([FromQuery] string searchTermLeft, [FromQuery] string searchTermRight, [FromQuery] int? selectionLeft, [FromQuery] int? selectionRight)
         {
 
             AdminSimilarityCheckViewModel vm = new AdminSimilarityCheckViewModel();
             vm.NewsLeft = await _context.News.Where(n => searchTermLeft == null || n.Headline.Contains(searchTermLeft)).ToListAsync();
             vm.NewsRight = await _context.News.Where(n => searchTermRight == null || n.Headline.Contains(searchTermRight)).ToListAsync();
+            vm.SelectionLeft = await _context.News.FindAsync(selectionLeft);
+            vm.SelectionRight = await _context.News.FindAsync(selectionRight);
+
+            if(vm.SelectionLeft != null && vm.SelectionRight != null)
+            {
+                string id = System.Guid.NewGuid().ToString();
+                BackgroundJob.Enqueue<Crawler>(c => c.ComputeSimilarity(id, vm.SelectionLeft, vm.SelectionRight));
+                vm.JobID = id;
+            }
+
             ViewData["searchTermLeft"] = searchTermLeft;
             ViewData["searchTermRight"] = searchTermRight;
+            
             return View(vm);
+        }
+
+        public class PollInput
+        {
+            public string id { get; set; }
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost]
+        public async Task<IActionResult> PollSimilarity([FromBody] PollInput input)
+        {
+            string value = string.Empty;
+            if (input.id != null && _cache.TryGetValue(input.id, out value))
+            {
+                return Content(value);
+            } else
+            {
+                return StatusCode(102);
+            }
         }
 
         [Authorize(Roles = "Admin")]

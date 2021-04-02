@@ -11,5 +11,9 @@ namespace ITSecurityNewsMonitor.ViewModels
     { 
         public List<News> NewsLeft { get; set; }
         public List<News> NewsRight { get; set; }
+
+        public News SelectionLeft { get; set; }
+        public News SelectionRight { get; set; }
+        public string JobID { get; set; }
     }
 }
