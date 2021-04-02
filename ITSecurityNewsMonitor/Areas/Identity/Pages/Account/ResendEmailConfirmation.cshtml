@@ -1,19 +1,23 @@
 ﻿@page
 @model ResendEmailConfirmationModel
 @{
-    ViewData["Title"] = "Resend email confirmation";
+    ViewData["Title"] = "Resend Email";
+    Layout = "_IdentityLayout";
 }
 
-<h1 class="font-bold text-5xl mb-4">
-    @ViewData["Title"]
-</h1>
-
-<h4>Enter your email.</h4>
-<hr />
+<!-- Title -->
+<div class="mb-4">
+    <h1 class="font-bold text-5xl">
+        @ViewData["Title"]
+    </h1>
+    <a href="@("/Identity" + Url.Action("Login", "Account"))" class="link flex mt-2">
+        ← Back to Log in
+    </a>
+</div>
 <form method="post">
     <div class="field">
         <label asp-for="Input.Email" class="text-field-description"></label>
-        <input asp-for="Input.Email" class="text-field w-72" />
+        <input asp-for="Input.Email" class="text-field w-full" />
     </div>
-    <button type="submit" class="button">Resend</button>
+    <button type="submit" class="mt-4 button">Resend</button>
 </form>

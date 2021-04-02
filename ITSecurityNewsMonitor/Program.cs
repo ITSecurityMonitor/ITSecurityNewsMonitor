@@ -1,5 +1,6 @@
 using ITSecurityNewsMonitor.Data;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -29,8 +30,11 @@ namespace ITSecurityNewsMonitor
                 var services = scope.ServiceProvider;
                 try
                 {
-                    var context = services.GetRequiredService<SecNewsDbContext>();
-                    DbInitializer.Initialize(context);
+                    var identityContext = services.GetService<ApplicationDbContext>();
+                    identityContext.Database.Migrate();
+
+                    var secNewsContext = services.GetService<SecNewsDbContext>();
+                    secNewsContext.Database.Migrate();
                 }
                 catch (Exception ex)
                 {

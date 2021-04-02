@@ -51,6 +51,7 @@ module.exports = {
       width: ["responsive", "hover", "group-hover", "focus"],
       borderRadius: ["group-hover"],
       margin: ["group-hover"],
+      visibility: ["group-hover", "hover"],
     },
     borderRadius: ["first", "last"],
     borderWidth: ["last", "first"],

@@ -11,7 +11,7 @@
     </a>
 </div>
 
-<div class="px-10 py-5">
+<div class="px-5 md:px-10 py-5">
     <div class="grid grid-cols-2 rounded border bg-white">
         <div class="flex items-center p-2 col-span-2 text-xs uppercase font-bold text-gray-400 bg-gray-100 border-b">
             Result
@@ -28,15 +28,15 @@
     </div>
 </div>
 
-<div class="px-10 grid grid-cols-2 gap-x-5">
+<div class="px-5 md:px-10 grid md:grid-cols-2 gap-5">
     <!-- Select A -->
-        <div class="table bg-white">
+        <div class="table bg-white w-full">
             <div class="grid grid-cols-2">
                 <span>Title</span>
                 <span class="text-right">Action</span>
             </div>
-            <div class="">
-                <input id="searchTermLeft" class="border rounded w-full" value='@ViewData["searchTermLeft"]'/>
+            <div class="flex bg-gray-50">
+                <input id="searchTermLeft" class="px-1 border rounded w-full" value='@ViewData["searchTermLeft"]'/>
                 <button class="ml-2 px-2 border rounded text-xs" onclick="search()">Search</button>
             </div>
             @foreach (var news in Model.NewsLeft)
@@ -51,13 +51,13 @@
         </div>
 
     <!-- Select B -->
-    <div class="table bg-white">
+    <div class="table bg-white w-full">
         <div class="grid grid-cols-2">
             <span>Title</span>
             <span class="text-right">Action</span>
         </div>
         <div class="flex bg-gray-50">
-            <input id="searchTermRight" class="border rounded w-full" value='@ViewData["searchTermRight"]'/>
+            <input id="searchTermRight" class="px-1 border rounded w-full" value='@ViewData["searchTermRight"]'/>
             <button class="ml-2 px-2 border rounded text-xs" onclick="search()">Search</button>
         </div>
         @foreach (var news in Model.NewsRight)

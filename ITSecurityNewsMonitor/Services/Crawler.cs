@@ -108,26 +108,29 @@ namespace ITSecurityNewsMonitor.Services
 
                 context.SaveChanges();
 
-                Dictionary<int, int> similarities = await ComputeSimilarities(context.News.ToList());
-
-                foreach(KeyValuePair<int, int> similarity in similarities)
+                if (context.News.Any())
                 {
-                    News news = context.News.Where(n => n.ID == similarity.Key).Include(n => n.NewsGroup).ThenInclude(ng => ng.News).First();
-                        
-                    if(news.NewsGroup.News.Count() > 1) // don't assign a news to a group if it is already in a group with other news
+                    Dictionary<int, int> similarities = await ComputeSimilarities(context.News.ToList());
+
+                    foreach (KeyValuePair<int, int> similarity in similarities)
                     {
-                        continue;
+                        News news = context.News.Where(n => n.ID == similarity.Key).Include(n => n.NewsGroup).ThenInclude(ng => ng.News).First();
+
+                        if (news.NewsGroup.News.Count() > 1) // don't assign a news to a group if it is already in a group with other news
+                        {
+                            continue;
+                        }
+
+                        NewsGroup oldNewsGroup = news.NewsGroup; // save old news group so that it can be deleted
+                        NewsGroup newNewsGroup = context.News.Where(n => n.ID == similarity.Value).Include(n => n.NewsGroup).First().NewsGroup;
+                        news.NewsGroup = newNewsGroup;
+                        news.NewsGroup.UpdatedDate = newNewsGroup.News.Max(n => n.CreatedDate) > news.CreatedDate ? newNewsGroup.News.Max(n => n.CreatedDate) : news.CreatedDate;
+
+                        context.NewsGroups.Remove(oldNewsGroup);
                     }
 
-                    NewsGroup oldNewsGroup = news.NewsGroup; // save old news group so that it can be deleted
-                    NewsGroup newNewsGroup = context.News.Where(n => n.ID == similarity.Value).Include(n => n.NewsGroup).First().NewsGroup;
-                    news.NewsGroup = newNewsGroup;
-                    news.NewsGroup.UpdatedDate = newNewsGroup.News.Max(n => n.CreatedDate) > news.CreatedDate ? newNewsGroup.News.Max(n => n.CreatedDate) : news.CreatedDate;
-
-                    context.NewsGroups.Remove(oldNewsGroup);
+                    context.SaveChanges();
                 }
-
-                context.SaveChanges();
             }
         }
 

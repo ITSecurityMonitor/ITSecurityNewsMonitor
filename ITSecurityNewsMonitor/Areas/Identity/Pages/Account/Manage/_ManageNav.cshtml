@@ -13,7 +13,7 @@
             → <a class="@ManageNavPages.EmailNavClass(ViewContext)" id="email" asp-page="./Email">Edit Email</a>
         </button>
     </div>
-    <div class="nav-group">
+    <div class="nav-group mr-2">
         <button class="nav-item">
             → <a class="nav-link @ManageNavPages.PersonalDataNavClass(ViewContext)" id="personal-data"
                 asp-page="./PersonalData">Personal data</a>
@@ -28,10 +28,11 @@
             → <a id="external-login" class="nav-link @ManageNavPages.ExternalLoginsNavClass(ViewContext)"
                 asp-page="./ExternalLogins">External logins</a>
         </button>
-
+    </div>
+    <div class="nav-group mr-2">
         <button class="nav-item" disabled="@(!hasMFA)">
             →<a class="nav-link @ManageNavPages.TwoFactorAuthenticationNavClass(ViewContext)" id="two-factor"
-                asp-page="./TwoFactorAuthentication">Two-factor authentication</a>
+                asp-page="./TwoFactorAuthentication">Two-factor Auth.</a>
         </button>
     </div>
 
