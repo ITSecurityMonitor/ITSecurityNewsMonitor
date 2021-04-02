@@ -1,7 +1,7 @@
 ﻿@page
 @model ResendEmailConfirmationModel
 @{
-    ViewData["Title"] = "Resend Email Confirmation";
+    ViewData["Title"] = "Resend Email";
     Layout = "_IdentityLayout";
 }
 
@@ -17,7 +17,7 @@
 <form method="post">
     <div class="field">
         <label asp-for="Input.Email" class="text-field-description"></label>
-        <input asp-for="Input.Email" class="text-field w-72" />
+        <input asp-for="Input.Email" class="text-field w-full" />
     </div>
     <button type="submit" class="mt-4 button">Resend</button>
 </form>
