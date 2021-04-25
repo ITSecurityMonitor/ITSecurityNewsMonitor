@@ -5,12 +5,9 @@ using System.Threading.Tasks;
 
 namespace ITSecurityNewsMonitor.Models
 {
-    public class Keyword
+    public class Tag
     {
         public int ID { get; set; }
         public string Name { get; set; }
-
-        public int LowLevelTagId { get; set; }
-        public LowLevelTag LowLevelTag { get; set; }
     }
 }

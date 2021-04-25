@@ -175,15 +175,15 @@
                     </div>
                     <div class="px-8 pt-4">
                         @firstNews.Summary
-                        @if (firstNews.LowLevelTags.Any())
+                        @if (firstNews.Tags.Any())
                         {
                             <span class="text-xs text-gray-500">Tags</span>
                         }
                         <br>
-                        @foreach (LowLevelTag lowLevelTag in firstNews.LowLevelTags)
+                        @foreach (Tag tag in firstNews.Tags)
                         {
                             <span class="low-level-tag">
-                                @lowLevelTag.Name
+                                @tag.Name
                             </span>
                         }
                     </div>

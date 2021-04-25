@@ -67,7 +67,7 @@ namespace ITSecurityNewsMonitor.Services
             using (IServiceScope scope = _serviceProvider.CreateScope())
             using (SecNewsDbContext context = scope.ServiceProvider.GetRequiredService<SecNewsDbContext>())
             {
-                List<LowLevelTag> lowLevelTags = context.LowLevelTags.Include(llt => llt.Keywords).ToList();
+                List<Tag> tags = context.Tags.ToList();
                 List<Source> sources = context.Sources.ToList();
                 // Get new articles
                 foreach (Source source in sources)
@@ -87,9 +87,9 @@ namespace ITSecurityNewsMonitor.Services
                             news.Source = source;
                             news.ManuallyAssigned = false;
 
-                            List<int> tags = await ExtractTags(news.Content, lowLevelTags);
+                            List<string> foundTags = await ExtractTags(news.Content, tags);
 
-                            news.LowLevelTags = context.LowLevelTags.Where(llt => tags.Contains(llt.ID)).ToList();
+                            news.Tags = context.Tags.Where(tag => foundTags.Contains(tag.Name)).ToList();
 
                             context.News.Add(news);
 
@@ -157,16 +157,12 @@ namespace ITSecurityNewsMonitor.Services
             }
         }
 
-        public async Task<List<int>> ExtractTags(string text, List<LowLevelTag> lowLevelTags)
+        public async Task<List<string>> ExtractTags(string text, List<Tag> tags)
         {
             var input = System.Text.Json.JsonSerializer.Serialize(new
             {
                 text = text,
-                keywords = lowLevelTags.Select(llt => new
-                {
-                    name = llt.ID,
-                    keywords = llt.Keywords.ToList()
-                })
+                keywords = tags.Select(tag => tag.Name).ToList()
             }, _options);
 
             var content = new StringContent(input, Encoding.UTF8, "application/json");
@@ -175,7 +171,7 @@ namespace ITSecurityNewsMonitor.Services
             if (response.IsSuccessStatusCode)
             {
                 var responseContent = await response.Content.ReadAsStringAsync();
-                List<int> responseObject = System.Text.Json.JsonSerializer.Deserialize<List<int>>(responseContent);
+                List<string> responseObject = System.Text.Json.JsonSerializer.Deserialize<List<string>>(responseContent);
 
                 return responseObject;
             }

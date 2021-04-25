@@ -22,6 +22,6 @@ namespace ITSecurityNewsMonitor.Models
         public int SourceId { get; set; }
         public Source Source { get; set; }
 
-        public ICollection<LowLevelTag> LowLevelTags { get; set; }
+        public ICollection<Tag> Tags { get; set; }
     }
 }

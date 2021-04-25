@@ -29,7 +29,7 @@ namespace ITSecurityNewsMonitor.Controllers
             List<View> views = await _context.Views.Where(v => v.OwnerID.Equals(_userManager.GetUserId(User))).ToListAsync();
             List<NewsGroup> newsGroups = await _context.NewsGroups
                 .Include(ng => ng.News).ThenInclude(n => n.Source)
-                .Include(ng => ng.News).ThenInclude(n => n.LowLevelTags)
+                .Include(ng => ng.News).ThenInclude(n => n.Tags)
                 .Include(ng => ng.VoteRequests)
                 .Where(ng => !ng.Archived)
                 .Where(ng => ng.News.Any(n => n.Headline.ToLower().Contains((search ?? "").ToLower())))
@@ -108,7 +108,7 @@ namespace ITSecurityNewsMonitor.Controllers
             NewsGroup newsGroup = await _context.NewsGroups
                 .Where(ng => ng.ID == newsGroupId)
                 .Include(ng => ng.News).ThenInclude(n => n.Source)
-                .Include(ng => ng.News).ThenInclude(n => n.LowLevelTags)
+                .Include(ng => ng.News).ThenInclude(n => n.Tags)
                 .Include(ng => ng.VoteRequests)
                 .Where(ng => !ng.Archived)
                 .FirstOrDefaultAsync();

@@ -129,7 +129,7 @@ namespace ITSecurityNewsMonitor
                 Authorization = new[] { new MyAuthorizationFilter() }
             });
 
-            // BackgroundJob.Enqueue<Crawler>(c => c.ExecuteCrawl());
+            BackgroundJob.Enqueue<Crawler>(c => c.ExecuteCrawl());
             if (!env.IsDevelopment())
             {
                 RecurringJob.AddOrUpdate<Crawler>(c => c.ExecuteCrawl(), "*/10 * * * *");
