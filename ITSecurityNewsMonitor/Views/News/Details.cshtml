@@ -1,16 +1,13 @@
 ﻿@model ITSecurityNewsMonitor.ViewModels.NewsDetailsViewModel
 
-<div class="px-10 pt-10">
+<div class="px-5 md_px-10 pt-10">
     <h1 class="font-bold text-5xl">Story</h1>
     <a href="javascript:void(0);" onclick="history.go(-1);" class="mt-2 link flex">
-        <svg width="13px" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="arrow-left" class="svg-inline--fa fa-arrow-left fa-w-14" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
-            <path fill="currentColor" d="M257.5 445.1l-22.2 22.2c-9.4 9.4-24.6 9.4-33.9 0L7 273c-9.4-9.4-9.4-24.6 0-33.9L201.4 44.7c9.4-9.4 24.6-9.4 33.9 0l22.2 22.2c9.5 9.5 9.3 25-.4 34.3L136.6 216H424c13.3 0 24 10.7 24 24v32c0 13.3-10.7 24-24 24H136.6l120.5 114.8c9.8 9.3 10 24.8.4 34.3z"></path>
-        </svg>
-        <span class="ml-1">Back to overview</span>
+        ← Back to overview
     </a>
 </div>
 
-<div class="px-10 block @(Model.NewsGroup.VoteRequests.Where(vr => vr.OwnerID.Equals(Model.OwnerId) && !vr.Completed).Any() ? "" : "hidden")" id="vote">
+@* <div class="px-5 md_px-10 block @(Model.NewsGroup.VoteRequests.Where(vr => vr.OwnerID.Equals(Model.OwnerId) && !vr.Completed).Any() ? "" : "hidden")" id="vote">
     <div class="mt-8">
         <h5 class="text-2xl font-bold text-purple-900">
             Is this group of articles
@@ -19,7 +16,7 @@
         </h5>
     </div>
     <div class="flex mt-4">
-        <a href="#" class="mr-10 text-xl flex items-center cursor-pointer text-purple-400 hover:text-purple-900" onclick="user_voted(@Model.NewsGroup.ID, true)">
+        <a href="#" class="mr-10 text-xl flex items-center cursor-pointer text-purple-400 hover_text-purple-900" onclick="user_voted(@Model.NewsGroup.ID, true)">
             <span class="mr-3 text-3xl">Yes</span>
             <svg width="2.25em" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="vote-yea" class="svg-inline--fa fa-vote-yea fa-w-20" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512">
                 <path fill="currentColor" d="M608 320h-64v64h22.4c5.3 0 9.6 3.6 9.6 8v16c0 4.4-4.3 8-9.6 8H73.6c-5.3 0-9.6-3.6-9.6-8v-16c0-4.4 4.3-8 9.6-8H96v-64H32c-17.7 0-32 14.3-32 32v96c0 17.7 14.3 32 32 32h576c17.7 0 32-14.3 32-32v-96c0-17.7-14.3-32-32-32zm-96 64V64.3c0-17.9-14.5-32.3-32.3-32.3H160.4C142.5 32 128 46.5 128 64.3V384h384zM211.2 202l25.5-25.3c4.2-4.2 11-4.2 15.2.1l41.3 41.6 95.2-94.4c4.2-4.2 11-4.2 15.2.1l25.3 25.5c4.2 4.2 4.2 11-.1 15.2L300.5 292c-4.2 4.2-11 4.2-15.2-.1l-74.1-74.7c-4.3-4.2-4.2-11 0-15.2z"></path>
@@ -27,7 +24,7 @@
             <!-- <svg width="1.5em" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="check" class="svg-inline--fa fa-check fa-w-16" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M173.898 439.404l-166.4-166.4c-9.997-9.997-9.997-26.206 0-36.204l36.203-36.204c9.997-9.998 26.207-9.998 36.204 0L192 312.69 432.095 72.596c9.997-9.997 26.207-9.997 36.204 0l36.203 36.204c9.997 9.997 9.997 26.206 0 36.204l-294.4 294.401c-9.998 9.997-26.207 9.997-36.204-.001z"></path></svg> -->
         </a>
 
-        <a href="#" class="mr-auto text-xl flex items-center cursor-pointer text-purple-300 hover:text-purple-900" onclick="user_voted(@Model.NewsGroup.ID, false)">
+        <a href="#" class="mr-auto text-xl flex items-center cursor-pointer text-purple-300 hover_text-purple-900" onclick="user_voted(@Model.NewsGroup.ID, false)">
             <span class="mr-3 text-3xl">No</span>
             <!-- <svg width="1.5em" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="times" class="svg-inline--fa fa-times fa-w-11" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 352 512"><path fill="currentColor" d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"></path></svg> -->
             <!-- <svg width="2.25em"aria-hidden="true" focusable="false" data-prefix="fas" data-icon="vote-nay" class="svg-inline--fa fa-vote-nay fa-w-20" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><path fill="currentColor" d="M608 320h-64v64h22.4c5.3 0 9.6 3.6 9.6 8v16c0 4.4-4.3 8-9.6 8H73.6c-5.3 0-9.6-3.6-9.6-8v-16c0-4.4 4.3-8 9.6-8H96v-64H32c-17.7 0-32 14.3-32 32v96c0 17.7 14.3 32 32 32h576c17.7 0 32-14.3 32-32v-96c0-17.7-14.3-32-32-32zm-96 64V64.3c0-17.9-14.5 -32.3-32.3-32.3H160.4C142.5 32 128 46.5 128 64.3V384h384zM235.1 157.1c-6.2-6.2-6.2-16.4 0-22.6l11.3-11.3c6.2-6.2 16.4-6.2 22.6 0l50.9 50.9 50.9-50.9c6.2-6.2 16.4-6.2 22.6 0l11.3 11.3c6.2 6.2 6.2 16.4 0 22.6L353.9 208l50.9 50.9c6.2 6.2 6.2 16.4 0 22.6l-11.3 11.3c-6.2 6.2-16.4 6.2-22.6 0L320 241.9l-50.9 50.9c-6.2 6.2-16.4 6.2-22.6 0l-11.3-11.3c-6.2-6.2-6.2-16.4 0-22.6l50.9-50.9-51-50.9z"></path></svg> -->
@@ -37,8 +34,8 @@
             <!-- <svg width="2.25em" aria-hidden="true" focusable="false" data-prefix="far" data-icon="vote-nay" class="svg-inline--fa fa-vote-nay fa-w-20" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><path fill="currentColor" d="M246.5 268.4l11.3 11.3c6.2 6.2 16.4 6.2 22.6 0l39.6-39.6 39.6 39.6c6.2 6.2 16.4 6.2 22.6 0l11.3-11.3c6.2-6.2 6.2-16.4 0-22.6l-39.6-39.6 39.6-39.6c6.2-6.2 6.2-16.4 0-22.6l-11.3-11.3c-6.2-6.2-16.4-6.2-22.6 0L320 172.3l-39.6-39.6c-6.2-6.2-16.4-6.2-22.6 0L246.5 144c-6.2 6.2-6.2 16.4 0 22.6l39.6 39.6-39.6 39.6c-6.3 6.3-6.3 16.4 0 22.6zM592 272h-80V38.2C512 17.1 497.5 0 479.7 0H160.3C142.5 0 128 17.1 128 38.2V272H48c-26.5 0-48 21.5-48 48v144c0 26.5 21.5 48 48 48h544c26.5 0 48-21.5 48-48V320c0-26.5-21.5-48-48-48zM464 48v320H176V48h288zm128 416H48V320h80v48h-22.4c-5.3 0-9.6 3.6-9.6 8v32c0 4.4 4.3 8 9.6 8h428.8c5.3 0 9.6-3.6 9.6-8v-32c0-4.4-4.3-8-9.6-8H512v-48h80v144z"></path></svg> -->
         </a>
     </div>
-</div>
-<div class="p-10">
+</div> *@
+<div class="px-5 md_px-10 mt-10">
     <!-- News -->
     @foreach (News news in Model.NewsGroup.News.OrderByDescending(n => n.CreatedDate))
     {
