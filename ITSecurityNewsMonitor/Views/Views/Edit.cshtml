@@ -4,7 +4,7 @@
 @{
     ViewData["Title"] = "Edit View";
     Layout = "~/Views/Shared/_Layout.cshtml";
-    var highLevelTags = ViewData["HighLevelTags"] as List<HighLevelTag>;
+    var tags = ViewData["Tags"] as List<Tag>;
 }
 
 <div class="site-header">
@@ -31,17 +31,17 @@
 
         <div class="pt-5">
             <span class="text text-gray-500">Tags</span><br>
-            @if (Model.HighLevelTags.Count() > 0)
+            @if (Model.Tags.Count() > 0)
             {
                 <span>No Tags have been added so far.</span>
             }
 
-            @foreach (HighLevelTag highLevelTag in Model.HighLevelTags)
+            @foreach (Tag tag in Model.Tags)
             {
                 <span class="high-level-tag">
-                    @highLevelTag.Name
+                    @tag.Name
 
-                    <a href="@Url.Action("RemoveTag", "Views", new { id = highLevelTag.ID })" class="underline"></a>
+                    <a href="@Url.Action("RemoveTag", "Views", new { id = tag.ID })" class="underline"></a>
                 </span>
             }
         </div>
@@ -69,11 +69,11 @@
         </div>-->
             <!-- Search results  -->
             <div class="mt-4">
-                @foreach (HighLevelTag highLevelTag in highLevelTags)
+                @foreach (Tag tag in tags)
                 {
                     <span class="high-level-tag">
-                        @highLevelTag.Name
-                        <a href="@Url.Action("AddTag", "Views", new { id = highLevelTag.ID})" class="underline">Add</a>
+                        @tag.Name
+                        <a href="@Url.Action("AddTag", "Views", new { id = tag.ID})" class="underline">Add</a>
                     </span>
                 }
             </div>

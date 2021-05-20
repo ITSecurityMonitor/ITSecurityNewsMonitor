@@ -13,9 +13,7 @@ namespace ITSecurityNewsMonitor.Data
         {
         }
 
-        public DbSet<HighLevelTag> HighLevelTags { get; set; }
-        public DbSet<Keyword> Keywords { get; set; }
-        public DbSet<LowLevelTag> LowLevelTags { get; set; }
+        public DbSet<Tag> Tags { get; set; }
         public DbSet<News> News { get; set; }
         public DbSet<NewsGroup> NewsGroups { get; set; }
         public DbSet<Source> Sources { get; set; }
@@ -25,9 +23,7 @@ namespace ITSecurityNewsMonitor.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<HighLevelTag>().ToTable("HighLevelTags");
-            modelBuilder.Entity<Keyword>().ToTable("Keywords");
-            modelBuilder.Entity<LowLevelTag>().ToTable("LowLevelTags");
+            modelBuilder.Entity<Tag>().ToTable("Tags");
             modelBuilder.Entity<News>().ToTable("News");
             modelBuilder.Entity<NewsGroup>().ToTable("NewsGroup");
             modelBuilder.Entity<Source>().ToTable("Sources");

@@ -1,0 +1,65 @@
+﻿<input type="file" id="file-selector" accept=".csv">
+
+<p>Tag name</p>
+<select id="tag-selection" style="width: 200px; border: solid 1px black;">
+</select>
+
+<button onclick="loadFile()">Load file</button>
+
+@section Scripts {
+    <script>
+        const fileSelector = document.getElementById('file-selector');
+        const columnSeperator = ',';
+        let lines;
+
+        const loadFile = () => {
+            if (lines && lines.length > 0) {
+                const select = document.getElementById('tag-selection');
+                const index = select.value;
+
+                const items = [];
+                // .replace('"', '')
+                for (const line of lines) {
+                    const item = line.split(columnSeperator)[index];
+                    items.push(item.replaceAll('"', ''));
+                }
+
+                const xhr = new XMLHttpRequest();
+                xhr.open("POST", "@Url.Action("SaveMultipleTags", "Admin")", true);
+                xhr.setRequestHeader('Content-Type', 'application/json');
+                xhr.send(JSON.stringify({
+                    Tags: items
+                }));
+            }
+        }
+
+        fileSelector.addEventListener('change', (event) => {
+            const fileList = event.target.files;
+            const file = fileList[0];
+
+            const reader = new FileReader();
+            reader.addEventListener('load', (event) => {
+                const result = event.target.result;
+                lines = result.split('\n');
+
+                const headlineArry = lines.shift().split(columnSeperator);
+                const select = document.getElementById('tag-selection');
+
+                for (let i = 0; i < headlineArry.length; i++) {
+                    const option = document.createElement("option");
+                    option.text = headlineArry[i];
+                    option.value = i;
+                    select.add(option);
+                }
+            });
+
+            reader.addEventListener('progress', (event) => {
+                if (event.loaded && event.total) {
+                    const percent = (event.loaded / event.total) * 100;
+                    console.log(`Progress: ${Math.round(percent)}`);
+                }
+            });
+            reader.readAsText(file);
+        });
+    </script>
+}

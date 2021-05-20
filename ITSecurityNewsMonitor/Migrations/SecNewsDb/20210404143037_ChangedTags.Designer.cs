@@ -3,15 +3,17 @@ using System;
 using ITSecurityNewsMonitor.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace ITSecurityNewsMonitor.Migrations.SecNewsDb
 {
     [DbContext(typeof(SecNewsDbContext))]
-    partial class SecNewsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210404143037_ChangedTags")]
+    partial class ChangedTags
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -41,6 +43,9 @@ namespace ITSecurityNewsMonitor.Migrations.SecNewsDb
                     b.Property<bool>("ManuallyAssigned")
                         .HasColumnType("boolean");
 
+                    b.Property<int>("NewsGroupId")
+                        .HasColumnType("integer");
+
                     b.Property<int>("SourceId")
                         .HasColumnType("integer");
 
@@ -51,6 +56,8 @@ namespace ITSecurityNewsMonitor.Migrations.SecNewsDb
                         .HasColumnType("timestamp without time zone");
 
                     b.HasKey("ID");
+
+                    b.HasIndex("NewsGroupId");
 
                     b.HasIndex("SourceId");
 
@@ -191,28 +198,21 @@ namespace ITSecurityNewsMonitor.Migrations.SecNewsDb
                     b.ToTable("VoteRequests");
                 });
 
-            modelBuilder.Entity("NewsNewsGroup", b =>
-                {
-                    b.Property<int>("NewsGroupsID")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("NewsID")
-                        .HasColumnType("integer");
-
-                    b.HasKey("NewsGroupsID", "NewsID");
-
-                    b.HasIndex("NewsID");
-
-                    b.ToTable("NewsNewsGroup");
-                });
-
             modelBuilder.Entity("ITSecurityNewsMonitor.Models.News", b =>
                 {
+                    b.HasOne("ITSecurityNewsMonitor.Models.NewsGroup", "NewsGroup")
+                        .WithMany("News")
+                        .HasForeignKey("NewsGroupId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("ITSecurityNewsMonitor.Models.Source", "Source")
                         .WithMany("News")
                         .HasForeignKey("SourceId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("NewsGroup");
 
                     b.Navigation("Source");
                 });
@@ -250,21 +250,6 @@ namespace ITSecurityNewsMonitor.Migrations.SecNewsDb
                     b.Navigation("NewsGroup");
                 });
 
-            modelBuilder.Entity("NewsNewsGroup", b =>
-                {
-                    b.HasOne("ITSecurityNewsMonitor.Models.NewsGroup", null)
-                        .WithMany()
-                        .HasForeignKey("NewsGroupsID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ITSecurityNewsMonitor.Models.News", null)
-                        .WithMany()
-                        .HasForeignKey("NewsID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("ITSecurityNewsMonitor.Models.News", b =>
                 {
                     b.Navigation("Tags");
@@ -272,6 +257,8 @@ namespace ITSecurityNewsMonitor.Migrations.SecNewsDb
 
             modelBuilder.Entity("ITSecurityNewsMonitor.Models.NewsGroup", b =>
                 {
+                    b.Navigation("News");
+
                     b.Navigation("VoteRequests");
                 });
 

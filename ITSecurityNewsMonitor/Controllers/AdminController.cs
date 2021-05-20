@@ -39,6 +39,43 @@ namespace ITSecurityNewsMonitor.Controllers
         }
 
         [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> Tags()
+        {
+            return View();
+        }
+
+        public class SaveMultipleTagsInput
+        {
+            public List<string> Tags { get; set; }
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost]
+        public async Task<IActionResult> SaveMultipleTags([FromBody] SaveMultipleTagsInput input)
+        {
+            try
+            {
+                foreach (string inputTag in input.Tags)
+                {
+                    if (!_context.Tags.Where(t => t.Name.Equals(inputTag)).Any())
+                    {
+                        Tag tag = new Tag();
+                        tag.Name = inputTag;
+
+                        _context.Tags.Add(tag);
+                    }
+                }
+
+                await _context.SaveChangesAsync();
+
+                return StatusCode(200);
+            } catch (Exception e)
+            {
+                return StatusCode(500);
+            }
+        }
+
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> SimilarityCheck([FromQuery] string searchTermLeft, [FromQuery] string searchTermRight, [FromQuery] int? selectionLeft, [FromQuery] int? selectionRight)
         {
 
