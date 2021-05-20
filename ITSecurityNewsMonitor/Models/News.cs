@@ -13,6 +13,7 @@ namespace ITSecurityNewsMonitor.Models
         public string Content { get; set; }
         public string Link { get; set; }
         public bool ManuallyAssigned { get; set; }
+        public bool AssignedToStory { get; set; }
         public DateTime CreatedDate { get; set; }
         public DateTime UpdatedDate { get; set; }
 

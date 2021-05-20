@@ -33,7 +33,7 @@ namespace ITSecurityNewsMonitor.Services
         private readonly IConfiguration _config;
         private readonly IMemoryCache _cache;
 
-        private double threshold = 0.6;
+        private double threshold = 0.75;
         private string _url;
 
         IServiceProvider _serviceProvider;
@@ -85,6 +85,7 @@ namespace ITSecurityNewsMonitor.Services
                             news.CreatedDate = DateTime.Now;
                             news.Summary = entry.Summary;
                             news.Content = entry.Content;
+                            news.AssignedToStory = false;
                             news.Source = source;
                             news.ManuallyAssigned = false;
 
@@ -102,17 +103,22 @@ namespace ITSecurityNewsMonitor.Services
 
                 if (context.News.Any())
                 {
-                    Dictionary<int, Dictionary<int, double>> similarities = await ComputeSimilarities(context.News.ToList());
+                    DateTime ninetyDaysAgo = DateTime.Now.AddDays(-90);
+                    // check similarity for anything that is new comparing it to any news assigned to a news group that was updated in the last 90 days.
+                    Dictionary<int, Dictionary<int, double>> similarities = await ComputeSimilarities(context.News.Include(n => n.NewsGroups).Where(n => n.AssignedToStory != true || n.NewsGroups.Any(ng => ninetyDaysAgo < ng.UpdatedDate)).ToList());
 
                     foreach (KeyValuePair<int, Dictionary<int, double>> similarity in similarities)
                     {
-                        News news = context.News.Where(n => n.ID == similarity.Key).First();
-                        DateTime ninetyDaysAgo = DateTime.Now.AddDays(-90);
+                        News news = context.News.Where(n => n.AssignedToStory == false && n.ID == similarity.Key).FirstOrDefault();
+                        if(news == null)
+                        {
+                            continue;
+                        }
 
                         List<NewsGroup> similarNewsGroups = context.News
-                            .Where(n => ninetyDaysAgo < n.CreatedDate)
                             .Include(n => n.NewsGroups)
                             .ThenInclude(ng => ng.News)
+                            .Where(ng => ninetyDaysAgo < ng.UpdatedDate)
                             .SelectMany(n => n.NewsGroups, (n, ng) => new {ID = n.ID, NewsGroup = ng})
                             .ToList()
                             .GroupBy(n => n.NewsGroup)
@@ -143,6 +149,8 @@ namespace ITSecurityNewsMonitor.Services
 
                             context.NewsGroups.Add(newsGroup);
                         }
+
+                        news.AssignedToStory = true;
 
                         context.SaveChanges();
                     }

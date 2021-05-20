@@ -22,9 +22,16 @@ namespace ITSecurityNewsMonitor.Controllers
             _userManager = userManager;
         }
 
-        public async Task<IActionResult> Index(int? view, int page = 1, string search = "")
+        public async Task<IActionResult> Index(int? view, int page = 1, string search = "", string order = "popular")
         {
             NewsIndexViewModel newsIndexViewModel = new NewsIndexViewModel();
+
+            if(order == null || (!order.Equals("new") && !order.Equals("favorite")))
+            {
+                order = "popular";
+            }
+
+            ViewBag.order = order;
 
             List<View> views = await _context.Views.Where(v => v.OwnerID.Equals(_userManager.GetUserId(User))).ToListAsync();
             List<NewsGroup> newsGroups = await _context.NewsGroups
@@ -33,9 +40,15 @@ namespace ITSecurityNewsMonitor.Controllers
                 .Include(ng => ng.VoteRequests)
                 .Where(ng => !ng.Archived)
                 .Where(ng => ng.News.Any(n => n.Headline.ToLower().Contains((search ?? "").ToLower())))
-                .OrderByDescending(ng => ng.Score)
-                .ThenByDescending(ng => ng.UpdatedDate)
                 .ToListAsync();
+
+            if(order.Equals("new"))
+            {
+                newsGroups = newsGroups.OrderByDescending(ng => ng.CreatedDate).ToList();
+            } else
+            {
+                newsGroups = newsGroups.OrderByDescending(ng => ng.Score).ThenByDescending(ng => ng.News.Count()).ThenByDescending(ng => ng.UpdatedDate).ToList();
+            }
 
             double pageSize = 10.0;
 
