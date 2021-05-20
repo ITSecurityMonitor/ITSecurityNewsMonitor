@@ -1,41 +1,34 @@
 ﻿@using Microsoft.AspNetCore.Identity
 @inject SignInManager<IdentityUser> SignInManager
 @inject UserManager<IdentityUser> UserManager
-
+@* 
 <style>
     .hover-trigger .hover-target {
         display: none;
     }
-
     .hover-trigger:hover .hover-target {
         display: flex;
     }
     .hover-trigger:focus .hover-target {
         display: flex;
-    }
-</style>
+    } 
+</style> *@
 
-<div class="sticky z-50 -top-0.5 bg-white flex px-5 md:px-10 py-3 pt-5">
+<div class="bg-white flex px-5 md_px-10 py-3 pt-5">
     @if (SignInManager.IsSignedIn(User))
     {
         <div class="flex overflow-hidden items-center">
             <div class="flex">
                 <a href="@Url.Action("Index", "News")" class="flex flex-col justify-center bg-grey-lighter mr-2">
-                    <div class="font-bold text-xl md:text-2xl hover:underline">
+                    <div class="font-bold text-xl md_text-2xl hover_underline">
                         News
-                    </div>
-                </a>
-
-                <a href="@Url.Action("Index", "Views")" class="flex flex-col justify-center bg-grey-lighter mr-2">
-                    <div class="font-bold text-xl md:text-2xl hover:underline">
-                        Views
                     </div>
                 </a>
 
                 @if (User.IsInRole("Admin"))
                 {
                     <a href="@Url.Action("Index", "Admin")" class="flex flex-col justify-center bg-grey-lighter mr-2">
-                        <div class="font-bold text-xl md:text-2xl hover:underline">
+                        <div class="font-bold text-xl md_text-2xl hover_underline">
                             Admin
                         </div>
                     </a>
@@ -49,10 +42,10 @@
                 @if (ViewData != null && ViewData["Title"]?.ToString() == "News" && @Model.SelectedView != null)
                 {
                     <a href="@Url.Action("Index", "News", new { view = @Model.SelectedView.ID})" id="view-name-in-navbar"
-                        class="-mt-1 md:-mt-0.5 flex flex-col hidden">
+                        class="-mt-1 md_-mt-0.5 flex flex-col hidden">
                         <span class="mr-1 text-xs mb-0.5">Current view: </span>
                         <div
-                            class="truncate w-36 sm:w-36 md:w-56 lg:w-auto -mt-2 text-purple-600 text-base font-bold @(Model.SelectedView != null && Model.SelectedView.ID.Equals(@Model.SelectedView.ID) ? "selected" : "") cursor-pointer">
+                            class="truncate w-36 sm_w-36 md_w-56 lg:w-auto -mt-2 text-purple-600 text-base font-bold @(Model.SelectedView != null && Model.SelectedView.ID.Equals(@Model.SelectedView.ID) ? "selected" : "") cursor-pointer">
                             @Model.SelectedView.Name
                         </div>
                     </a>
@@ -62,46 +55,73 @@
 
         <div class="ml-auto group h-9" id="user-id">
             <div id="user-options" class="hover-trigger relative">
-                <div
-                    class="rounded-full bg-gray-50 hover:bg-gray-200 w-8 h-8 flex items-center justify-center cursor-pointer">
+                <button
+                    class="rounded-full bg-gray-50 hover_bg-gray-200 w-8 h-8 flex items-center justify-center cursor-pointer"
+                    onclick="show_user_menu()"
+                    >
                     <svg width="13px" height="13px" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="user"
                         class="-ml-0.5" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
                         <path fill="currentColor"
                             d="M224 256c70.7 0 128-57.3 128-128S294.7 0 224 0 96 57.3 96 128s57.3 128 128 128zm89.6 32h-16.7c-22.2 10.2-46.9 16-72.9 16s-50.6-5.8-72.9-16h-16.7C60.2 288 0 348.2 0 422.4V464c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48v-41.6c0-74.2-60.2-134.4-134.4-134.4z">
                         </path>
                     </svg>
-                </div>
-                <div class="hover-target absolute bg-white shadow-md border rounded right-0 flex flex-col overflow-hidden">
-                    <div class="p-2 bg-gray-50">
-                        @User.Identity.Name
-                    </div>
-                    <hr>
-                    <a asp-area="Identity" asp-page="/Account/Manage/Index"
-                        class="flex-grow-1 whitespace-nowrap hover:bg-gray-50 cursor-pointer p-2">
-                        My Account
-                    </a>
-                    <hr>
+                </button>
+                <div id="user-menu" class="flex hidden">
+                    <div class="hover-target absolute z-50 bg-white shadow-md border rounded right-0 flex flex-col overflow-hidden none">
+                        <div class="p-2 bg-gray-50">
+                            @User.Identity.Name
+                        </div>
+                        <hr>
+                        <a asp-area="Identity" asp-page="/Account/Manage/Index"
+                        onclick="hide_user_menu()"
+                            class="flex-grow-1 whitespace-nowrap hover_bg-gray-50 cursor-pointer p-2">
+                            My Account
+                        </a>
+                        <hr>
 
-                    <form class="flex-grow-1 whitespace-nowrap text-red-500 hover:bg-gray-50 cursor-pointer p-2 flex" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Page("/", new { area = "" })" method="post">
-                        <button type="submit" class="flex">
-                            <svg width="14px" height="14px" aria-hidden="true" focusable="false" data-prefix="fas"
-                                data-icon="sign-out" class="mr-1 mt-1.5  fill-current" role="img"
-                                xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-                                <path
-                                    d="M180 448H96c-53 0-96-43-96-96V160c0-53 43-96 96-96h84c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12H96c-17.7 0-32 14.3-32 32v192c0 17.7 14.3 32 32 32h84c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12zm117.9-303.1l77.6 71.1H184c-13.3 0-24 10.7-24 24v32c0 13.3 10.7 24 24 24h191.5l-77.6 71.1c-10.1 9.2-10.4 25-.8 34.7l21.9 21.9c9.3 9.3 24.5 9.4 33.9.1l152-150.8c9.5-9.4 9.5-24.7 0-34.1L353 88.3c-9.4-9.3-24.5-9.3-33.9.1l-21.9 21.9c-9.7 9.6-9.3 25.4.7 34.6z">
-                                </path>
-                            </svg>
-                            Sign Out
-                        </button>
-                    </form>
+                        <form class="flex-grow-1 whitespace-nowrap text-red-500 hover_bg-gray-50 cursor-pointer p-2 flex" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Page("/", new { area = "" })" method="post">
+                            <button type="submit" class="flex" onclick="hide_user_menu()">
+                                <svg width="14px" height="14px" aria-hidden="true" focusable="false" data-prefix="fas"
+                                    data-icon="sign-out" class="mr-1 mt-1.5  fill-current" role="img"
+                                    xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                                    <path
+                                        d="M180 448H96c-53 0-96-43-96-96V160c0-53 43-96 96-96h84c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12H96c-17.7 0-32 14.3-32 32v192c0 17.7 14.3 32 32 32h84c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12zm117.9-303.1l77.6 71.1H184c-13.3 0-24 10.7-24 24v32c0 13.3 10.7 24 24 24h191.5l-77.6 71.1c-10.1 9.2-10.4 25-.8 34.7l21.9 21.9c9.3 9.3 24.5 9.4 33.9.1l152-150.8c9.5-9.4 9.5-24.7 0-34.1L353 88.3c-9.4-9.3-24.5-9.3-33.9.1l-21.9 21.9c-9.7 9.6-9.3 25.4.7 34.6z">
+                                    </path>
+                                </svg>
+                                Sign Out
+                            </button>
+                        </form>
+                    </div>
                 </div>
             </div>
 
+
+
+            <script type="text/javascript">
+
+                const click_outside_listener = (e) => {
+                    const user_options = document.getElementById("user-options");
+                    if(!user_options.contains(e.target)) {
+                        document.getElementById("user-menu").classList.add("hidden");
+                        document.removeEventListener("click", click_outside_listener);
+                    }
+                }
+
+                const hide_user_menu = () => {
+                    document.getElementById("user-menu").classList.add("hidden");
+                    document.removeEventListener("click", click_outside_listener);
+                }
+                const show_user_menu = () => {
+                    document.getElementById("user-menu").classList.remove("hidden");
+                    document.addEventListener("click", click_outside_listener);
+                }
+            </script>
+
         </div>
 
-        @* <div class="ml-auto flex-shrink-0 flex flex-col md:flex-row pt-2">
+        @* <div class="ml-auto flex-shrink-0 flex flex-col md_flex-row pt-2">
             <div class="ml-auto flex-shrink-0 flex">
-            <div class="text-gray-400 hover:text-black text-center text-sm">
+            <div class="text-gray-400 hover_text-black text-center text-sm">
             <a class="flex justify-end" asp-area="Identity" asp-page="/Account/Logout"
             asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
             <svg width="18px" height="18px" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="sign-out"
@@ -121,7 +141,7 @@
             </div>
             </div>
             <div class="ml-2 flex-shrink-0 pl-2 flex">
-            <div class="text-gray-600 hover:text-black text-center text-sm">
+            <div class="text-gray-600 hover_text-black text-center text-sm">
             <a asp-area="Identity" asp-page="/Account/Manage/Index" class="flex justify-end">
             <svg width="13px" height="13px" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="user"
             class="svg-inline--fa fa-user fa-w-14" role="img" xmlns="http://www.w3.org/2000/svg"
