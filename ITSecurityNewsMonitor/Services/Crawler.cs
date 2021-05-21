@@ -36,7 +36,7 @@ namespace ITSecurityNewsMonitor.Services
         private readonly IMemoryCache _cache;
         private readonly ILogger _logger;
 
-        private double threshold = 0.7;
+        private double threshold = 0.8;
         private string _url;
         private bool migrateData = true;
 
@@ -96,15 +96,15 @@ namespace ITSecurityNewsMonitor.Services
                     List<News> news = context.News.ToList();
                     List<News> notDuplicates = new List<News>();
                     List<News> duplicates = new List<News>();
-                    foreach (News n in news)
+                    foreach (News ne in news)
                     {
-                        if(notDuplicates.Where(n => n.Link.Equals(n.Link)).Any())
+                        if(notDuplicates.Where(n => n.Link.Equals(ne.Link)).Any())
                         {
-                            duplicates.Add(n);
+                            duplicates.Add(ne);
                         } else
                         {
-                            notDuplicates.Add(n);
-                            n.AssignedToStory = false;
+                            notDuplicates.Add(ne);
+                            ne.AssignedToStory = false;
                         }
                     }
 
@@ -112,7 +112,8 @@ namespace ITSecurityNewsMonitor.Services
 
                     context.SaveChanges();
                     _logger.LogInformation("Deleted " + newsGroupCount + " stories");
-                    _logger.LogInformation("Cleared the similaritiy scores for all news stories");
+                    _logger.LogInformation("Deleted " + duplicates.Count() + " dupicate news");
+                    _logger.LogInformation("Cleared the similaritiy scores for " + notDuplicates.Count() + " stories");
                 }
             }
         }
