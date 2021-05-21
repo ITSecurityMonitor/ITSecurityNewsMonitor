@@ -19,82 +19,15 @@ namespace ITSecurityNewsMonitor.Migrations.SecNewsDb
                 .HasAnnotation("ProductVersion", "5.0.4")
                 .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
-            modelBuilder.Entity("HighLevelTagView", b =>
-                {
-                    b.Property<int>("HighLevelTagsID")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("ViewsID")
-                        .HasColumnType("integer");
-
-                    b.HasKey("HighLevelTagsID", "ViewsID");
-
-                    b.HasIndex("ViewsID");
-
-                    b.ToTable("HighLevelTagView");
-                });
-
-            modelBuilder.Entity("ITSecurityNewsMonitor.Models.HighLevelTag", b =>
-                {
-                    b.Property<int>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
-
-                    b.Property<string>("Name")
-                        .HasColumnType("text");
-
-                    b.HasKey("ID");
-
-                    b.ToTable("HighLevelTags");
-                });
-
-            modelBuilder.Entity("ITSecurityNewsMonitor.Models.Keyword", b =>
-                {
-                    b.Property<int>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
-
-                    b.Property<int>("LowLevelTagId")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("text");
-
-                    b.HasKey("ID");
-
-                    b.HasIndex("LowLevelTagId");
-
-                    b.ToTable("Keywords");
-                });
-
-            modelBuilder.Entity("ITSecurityNewsMonitor.Models.LowLevelTag", b =>
-                {
-                    b.Property<int>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
-
-                    b.Property<int>("HighLevelTagId")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("text");
-
-                    b.HasKey("ID");
-
-                    b.HasIndex("HighLevelTagId");
-
-                    b.ToTable("LowLevelTags");
-                });
-
             modelBuilder.Entity("ITSecurityNewsMonitor.Models.News", b =>
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<bool>("AssignedToStory")
+                        .HasColumnType("boolean");
 
                     b.Property<string>("Content")
                         .HasColumnType("text");
@@ -111,9 +44,6 @@ namespace ITSecurityNewsMonitor.Migrations.SecNewsDb
                     b.Property<bool>("ManuallyAssigned")
                         .HasColumnType("boolean");
 
-                    b.Property<int>("NewsGroupId")
-                        .HasColumnType("integer");
-
                     b.Property<int>("SourceId")
                         .HasColumnType("integer");
 
@@ -124,8 +54,6 @@ namespace ITSecurityNewsMonitor.Migrations.SecNewsDb
                         .HasColumnType("timestamp without time zone");
 
                     b.HasKey("ID");
-
-                    b.HasIndex("NewsGroupId");
 
                     b.HasIndex("SourceId");
 
@@ -175,6 +103,31 @@ namespace ITSecurityNewsMonitor.Migrations.SecNewsDb
                     b.HasKey("ID");
 
                     b.ToTable("Sources");
+                });
+
+            modelBuilder.Entity("ITSecurityNewsMonitor.Models.Tag", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<string>("Name")
+                        .HasColumnType("text");
+
+                    b.Property<int?>("NewsID")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("ViewID")
+                        .HasColumnType("integer");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("NewsID");
+
+                    b.HasIndex("ViewID");
+
+                    b.ToTable("Tags");
                 });
 
             modelBuilder.Entity("ITSecurityNewsMonitor.Models.View", b =>
@@ -241,75 +194,41 @@ namespace ITSecurityNewsMonitor.Migrations.SecNewsDb
                     b.ToTable("VoteRequests");
                 });
 
-            modelBuilder.Entity("LowLevelTagNews", b =>
+            modelBuilder.Entity("NewsNewsGroup", b =>
                 {
-                    b.Property<int>("LowLevelTagsID")
+                    b.Property<int>("NewsGroupsID")
                         .HasColumnType("integer");
 
                     b.Property<int>("NewsID")
                         .HasColumnType("integer");
 
-                    b.HasKey("LowLevelTagsID", "NewsID");
+                    b.HasKey("NewsGroupsID", "NewsID");
 
                     b.HasIndex("NewsID");
 
-                    b.ToTable("LowLevelTagNews");
-                });
-
-            modelBuilder.Entity("HighLevelTagView", b =>
-                {
-                    b.HasOne("ITSecurityNewsMonitor.Models.HighLevelTag", null)
-                        .WithMany()
-                        .HasForeignKey("HighLevelTagsID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ITSecurityNewsMonitor.Models.View", null)
-                        .WithMany()
-                        .HasForeignKey("ViewsID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("ITSecurityNewsMonitor.Models.Keyword", b =>
-                {
-                    b.HasOne("ITSecurityNewsMonitor.Models.LowLevelTag", "LowLevelTag")
-                        .WithMany("Keywords")
-                        .HasForeignKey("LowLevelTagId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("LowLevelTag");
-                });
-
-            modelBuilder.Entity("ITSecurityNewsMonitor.Models.LowLevelTag", b =>
-                {
-                    b.HasOne("ITSecurityNewsMonitor.Models.HighLevelTag", "HighLevelTag")
-                        .WithMany("LowLevelTags")
-                        .HasForeignKey("HighLevelTagId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("HighLevelTag");
+                    b.ToTable("NewsNewsGroup");
                 });
 
             modelBuilder.Entity("ITSecurityNewsMonitor.Models.News", b =>
                 {
-                    b.HasOne("ITSecurityNewsMonitor.Models.NewsGroup", "NewsGroup")
-                        .WithMany("News")
-                        .HasForeignKey("NewsGroupId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("ITSecurityNewsMonitor.Models.Source", "Source")
                         .WithMany("News")
                         .HasForeignKey("SourceId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("NewsGroup");
-
                     b.Navigation("Source");
+                });
+
+            modelBuilder.Entity("ITSecurityNewsMonitor.Models.Tag", b =>
+                {
+                    b.HasOne("ITSecurityNewsMonitor.Models.News", null)
+                        .WithMany("Tags")
+                        .HasForeignKey("NewsID");
+
+                    b.HasOne("ITSecurityNewsMonitor.Models.View", null)
+                        .WithMany("Tags")
+                        .HasForeignKey("ViewID");
                 });
 
             modelBuilder.Entity("ITSecurityNewsMonitor.Models.Vote", b =>
@@ -334,11 +253,11 @@ namespace ITSecurityNewsMonitor.Migrations.SecNewsDb
                     b.Navigation("NewsGroup");
                 });
 
-            modelBuilder.Entity("LowLevelTagNews", b =>
+            modelBuilder.Entity("NewsNewsGroup", b =>
                 {
-                    b.HasOne("ITSecurityNewsMonitor.Models.LowLevelTag", null)
+                    b.HasOne("ITSecurityNewsMonitor.Models.NewsGroup", null)
                         .WithMany()
-                        .HasForeignKey("LowLevelTagsID")
+                        .HasForeignKey("NewsGroupsID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -349,26 +268,24 @@ namespace ITSecurityNewsMonitor.Migrations.SecNewsDb
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("ITSecurityNewsMonitor.Models.HighLevelTag", b =>
+            modelBuilder.Entity("ITSecurityNewsMonitor.Models.News", b =>
                 {
-                    b.Navigation("LowLevelTags");
-                });
-
-            modelBuilder.Entity("ITSecurityNewsMonitor.Models.LowLevelTag", b =>
-                {
-                    b.Navigation("Keywords");
+                    b.Navigation("Tags");
                 });
 
             modelBuilder.Entity("ITSecurityNewsMonitor.Models.NewsGroup", b =>
                 {
-                    b.Navigation("News");
-
                     b.Navigation("VoteRequests");
                 });
 
             modelBuilder.Entity("ITSecurityNewsMonitor.Models.Source", b =>
                 {
                     b.Navigation("News");
+                });
+
+            modelBuilder.Entity("ITSecurityNewsMonitor.Models.View", b =>
+                {
+                    b.Navigation("Tags");
                 });
 #pragma warning restore 612, 618
         }

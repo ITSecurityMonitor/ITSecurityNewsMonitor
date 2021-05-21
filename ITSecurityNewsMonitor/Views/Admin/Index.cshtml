@@ -6,7 +6,7 @@
     <h1>@ViewData["Title"]</h1>
 </div>
 
-<div class="px-5 md:px-10 py-10 pt-5 flex flex-wrap">
+<div class="px-5 md_px-10 py-10 pt-5 flex flex-wrap">
      <div class="nav-group mr-2">
         <button class="nav-item" onclick="window.location.href='@Url.Action("NewsGroupAssignment", "Admin")'">
             News Group Assignment
@@ -14,8 +14,8 @@
         <button class="nav-item" onclick="window.location.href='@Url.Action("SimilarityCheck", "Admin")'">
             News Similarity Check
         </button>
-     </div>
-     <div class="nav-group mr-2">
+    </div>
+    <div class="nav-group mr-2">
         <button class="nav-item" onclick="window.location.href='@Url.Action("NewsSources", "Admin")'">
             News Sources
         </button>
@@ -23,6 +23,11 @@
     <div class="nav-group">
         <button class="nav-item" onclick="window.location.href='@Url.Action("UserManagement", "Admin")'">
             User Management
+        </button>
+    </div>
+    <div class="nav-group">
+        <button class="nav-item" onclick="window.location.href='@Url.Action("Tags", "Admin")'">
+            Tags
         </button>
     </div>
 </div>

@@ -9,9 +9,7 @@ namespace ITSecurityNewsMonitor.Models
     {
         public int ID { get; set; }
         public string Name { get; set; }
-
         public string OwnerID { get; set; }
-
-        public ICollection<HighLevelTag> HighLevelTags { get; set; }
+        public ICollection<Tag> Tags { get; set; }
     }
 }
