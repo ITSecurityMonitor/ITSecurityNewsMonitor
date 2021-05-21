@@ -1,4 +1,5 @@
 using Hangfire;
+using Hangfire.Console;
 using Hangfire.Dashboard;
 using Hangfire.PostgreSql;
 using ITSecurityNewsMonitor.Data;
@@ -83,7 +84,8 @@ namespace ITSecurityNewsMonitor
              .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
              .UseSimpleAssemblyNameTypeSerializer()
              .UseRecommendedSerializerSettings()
-             .UsePostgreSqlStorage(Configuration.GetConnectionString("Hangfire")));
+             .UsePostgreSqlStorage(Configuration.GetConnectionString("Hangfire"))
+             .UseConsole());
 
             services.AddHangfireServer();
 
@@ -98,6 +100,7 @@ namespace ITSecurityNewsMonitor
             services.AddTransient<IEmailSender, EmailSender>();
 
             services.AddMemoryCache();
+            services.AddLogging();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -129,13 +132,15 @@ namespace ITSecurityNewsMonitor
                 Authorization = new[] { new MyAuthorizationFilter() }
             });
 
+            BackgroundJob.Enqueue<Crawler>(c => c.MigrateData(null));
+
             if (!env.IsDevelopment())
             {
-                RecurringJob.AddOrUpdate<Crawler>(c => c.ExecuteCrawl(), "*/10 * * * *");
-                RecurringJob.AddOrUpdate<Crawler>(c => c.DeleteOld(), "0 1 * * *");
+                RecurringJob.AddOrUpdate<Crawler>(c => c.ExecuteCrawl(null), "*/10 * * * *");
+                RecurringJob.AddOrUpdate<Crawler>(c => c.DeleteOld(null), "0 1 * * *");
             } else
             {
-                BackgroundJob.Enqueue<Crawler>(c => c.ExecuteCrawl());
+                BackgroundJob.Enqueue<Crawler>(c => c.ExecuteCrawl(null));
             }
 
 
