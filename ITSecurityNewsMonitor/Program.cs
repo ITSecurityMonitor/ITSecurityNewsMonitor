@@ -18,27 +18,47 @@ namespace ITSecurityNewsMonitor
         {
             var host = CreateHostBuilder(args).Build();
 
-            CreateDbIfNotExists(host);
+            ApplyPendingMigrations(host);
 
             host.Run();
         }
 
-        private static void CreateDbIfNotExists(IHost host)
+        private static async void ApplyPendingMigrations(IHost host)
         {
             using (var scope = host.Services.CreateScope())
             {
                 var services = scope.ServiceProvider;
+                var logger = services.GetRequiredService<ILogger<Program>>();
                 try
                 {
                     var identityContext = services.GetService<ApplicationDbContext>();
-                    identityContext.Database.Migrate();
+                    var pendingMigration = await identityContext.Database.GetPendingMigrationsAsync();
+
+                    if(pendingMigration.Any())
+                    {
+                        logger.LogInformation("Pending migration found for identityContext");
+                        await identityContext.Database.MigrateAsync();
+                        logger.LogInformation("Pending migration applied for identityContext");
+                    } else
+                    {
+                        logger.LogInformation("No pending migration found for identityContext");
+                    }
 
                     var secNewsContext = services.GetService<SecNewsDbContext>();
-                    secNewsContext.Database.Migrate();
+
+                    pendingMigration = await secNewsContext.Database.GetPendingMigrationsAsync();
+                    if(pendingMigration.Any())
+                    {
+                        logger.LogInformation("Pending migration found for secNewsContext");
+                        secNewsContext.Database.Migrate();
+                        logger.LogInformation("Pending migration applied for secNewsContext");
+                    } else
+                    {
+                        logger.LogInformation("No pending migration found for secNewsContext");
+                    }
                 }
                 catch (Exception ex)
                 {
-                    var logger = services.GetRequiredService<ILogger<Program>>();
                     logger.LogError(ex, "An error occurred creating the DB.");
                 }
             }
