@@ -12,7 +12,7 @@
 </div>
 
 
-<div class="px-5 md:px-10 py-10">
+<div class="px-5 md_px-10 py-10">
     <div class="table w-full bg-white">
         <div class="grid grid-cols-4">
             <div class="col-span-2">
@@ -39,7 +39,7 @@
                     <div class="btn-group" role="group">
                         <div aria-labelledby="btnGroupDrop1">
                             <button class="button mb-1" href="#" onclick="changeRole('@userRole.User.Id')">@(userRole.Roles.FirstOrDefault() == null ? "Make Admin" : "Remove Admin")</button>
-                            <button class="button-danger" href="#" onclick="deleteUser('@userRole.User.Id')">Delete user</button>
+                            <button class="button danger" href="#" onclick="deleteUser('@userRole.User.Id')">Delete user</button>
                         </div>
                     </div>
                 </div>

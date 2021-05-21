@@ -49,7 +49,8 @@ namespace ITSecurityNewsMonitor
 
             services.AddDatabaseDeveloperPageExceptionFilter();
 
-            services.AddDefaultIdentity<IdentityUser>(options => {
+            services.AddDefaultIdentity<IdentityUser>(options =>
+            {
                 options.SignIn.RequireConfirmedAccount = true;
                 options.Password.RequiredLength = 8;
                 options.Password.RequireDigit = true;
@@ -58,7 +59,7 @@ namespace ITSecurityNewsMonitor
                 options.User.RequireUniqueEmail = true;
 
                 options.SignIn.RequireConfirmedEmail = true;
-                })
+            })
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             var mvcBuilder = services.AddControllersWithViews();
@@ -95,6 +96,8 @@ namespace ITSecurityNewsMonitor
             });
 
             services.AddTransient<IEmailSender, EmailSender>();
+
+            services.AddMemoryCache();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -126,15 +129,21 @@ namespace ITSecurityNewsMonitor
                 Authorization = new[] { new MyAuthorizationFilter() }
             });
 
-            // BackgroundJob.Enqueue<Crawler>(c => c.ExecuteCrawl());
-            RecurringJob.AddOrUpdate<Crawler>(c => c.ExecuteCrawl(), "*/30 * * * *");
-            RecurringJob.AddOrUpdate<Crawler>(c => c.DeleteOld(), "0 1 * * *");
+            if (!env.IsDevelopment())
+            {
+                RecurringJob.AddOrUpdate<Crawler>(c => c.ExecuteCrawl(), "*/10 * * * *");
+                RecurringJob.AddOrUpdate<Crawler>(c => c.DeleteOld(), "0 1 * * *");
+            } else
+            {
+                BackgroundJob.Enqueue<Crawler>(c => c.ExecuteCrawl());
+            }
+
 
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
+                    pattern: "{controller=News}/{action=Index}/{id?}");
                 endpoints.MapRazorPages();
                 endpoints.MapHangfireDashboard();
             });
@@ -165,7 +174,7 @@ namespace ITSecurityNewsMonitor
                 }
             }
 
-            if(Configuration.GetValue<string>("DefaultUser:Name") != null && Configuration.GetValue<string>("DefaultUser:Name") != null)
+            if (Configuration.GetValue<string>("DefaultUser:Name") != null && Configuration.GetValue<string>("DefaultUser:Name") != null)
             {
                 IdentityUser defaultUser = new IdentityUser { UserName = Configuration.GetValue<string>("DefaultUser:Name"), Email = Configuration.GetValue<string>("DefaultUser:Name"), EmailConfirmed = true };
                 IdentityResult result = await userManager.CreateAsync(defaultUser, Configuration.GetValue<string>("DefaultUser:Password"));

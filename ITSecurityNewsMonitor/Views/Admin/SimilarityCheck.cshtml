@@ -11,27 +11,24 @@
     </a>
 </div>
 
-<div class="px-5 md:px-10 py-5">
+<div class="px-5 md_px-10 py-5">
     <div class="grid grid-cols-2 rounded border bg-white">
         <div class="flex items-center p-2 col-span-2 text-xs uppercase font-bold text-gray-400 bg-gray-100 border-b">
             Result
-            <button class="ml-auto button text-xs">
-                Calculate
-            </button>
         </div>
         <div class="p-2 text-xs border-r">
-            First News here
+            @Model.SelectionLeft?.Headline
         </div>
-         <div class="p-2 text-xs">
-            Second news here
+        <div class="p-2 text-xs">
+            @Model.SelectionRight?.Headline
         </div>
-        <div class="border-t col-span-2 p-2 uppercase font-bold text-xs text-center">
-            Similarity score: 89.123
+        <div class="border-t col-span-2 p-2 uppercase font-bold text-xs text-center" id="similarity-score">
+            Computing similarity score
         </div>
     </div>
 </div>
 
-<div class="px-5 md:px-10 grid md:grid-cols-2 gap-5">
+<div class="px-5 md_px-10 grid md_grid-cols-2 gap-5">
     <!-- Select A -->
         <div class="table bg-white w-full">
             <div class="grid grid-cols-2">
@@ -47,7 +44,7 @@
                 <div class="grid grid-cols-2">
                     <span class="text-xs">@news.Headline</span>
                     <div class="text-right">
-                        <button class="button text-xs">Select</button>
+                        <button class="button text-xs" onclick="select(@news.ID, 'selectionLeft')">Select</button>
                     </div>
                 </div>
             }
@@ -68,7 +65,7 @@
             <div class="grid grid-cols-2">
                 <span class="text-xs">@news.Headline</span>
                 <div class="text-right">
-                    <button class="button text-xs">Select</button>
+                    <button class="button text-xs" onclick="select(@news.ID, 'selectionRight')">Select</button>
                 </div>
             </div>
         }
@@ -84,6 +81,32 @@
             urlParams.set('searchTermLeft', searchTermLeft);
             urlParams.set('searchTermRight', searchTermRight);
             window.location.search = urlParams;
+        }
+
+        let select = (id, pos) => {
+            const urlParams = new URLSearchParams(window.location.search);
+            urlParams.set(pos, id);
+            window.location.search = urlParams;
+        }
+
+        let pollForScore = () => {
+            const xhr = new XMLHttpRequest();
+            xhr.open("POST", "@Url.Action("PollSimilarity", "Admin")", true);
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.onload = () => {
+                if (xhr.status == 200) {
+                    clearInterval(interval);
+                    document.getElementById("similarity-score").innerHTML = "SIMILARITY SCORE: " + xhr.responseText;
+                }
+            };
+            xhr.send(JSON.stringify({
+                id: "@Model.JobID"
+            }));
+        }
+
+        @if(Model.JobID != null)
+        {
+        @:const interval = setInterval(pollForScore, 5000);
         }
     </script>
 }

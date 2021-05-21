@@ -3,6 +3,7 @@ using ITSecurityNewsMonitor.Helper;
 using ITSecurityNewsMonitor.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
@@ -30,14 +31,17 @@ namespace ITSecurityNewsMonitor.Services
             Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
         };
         private readonly IConfiguration _config;
+        private readonly IMemoryCache _cache;
 
+        private double threshold = 0.75;
         private string _url;
 
         IServiceProvider _serviceProvider;
-        public Crawler(IServiceProvider serviceProvider, IConfiguration config)
+        public Crawler(IServiceProvider serviceProvider, IConfiguration config, IMemoryCache memoryCache)
         {
             _serviceProvider = serviceProvider;
             _config = config;
+            _cache = memoryCache;
 
             _url = "http://" + _config.GetValue<string>("Connections:Crawler:IP") + ":" + _config.GetValue<string>("Connections:Crawler:Port");
         }
@@ -64,7 +68,7 @@ namespace ITSecurityNewsMonitor.Services
             using (IServiceScope scope = _serviceProvider.CreateScope())
             using (SecNewsDbContext context = scope.ServiceProvider.GetRequiredService<SecNewsDbContext>())
             {
-                List<LowLevelTag> lowLevelTags = context.LowLevelTags.Include(llt => llt.Keywords).ToList();
+                List<Tag> tags = context.Tags.ToList();
                 List<Source> sources = context.Sources.ToList();
                 // Get new articles
                 foreach (Source source in sources)
@@ -81,15 +85,60 @@ namespace ITSecurityNewsMonitor.Services
                             news.CreatedDate = DateTime.Now;
                             news.Summary = entry.Summary;
                             news.Content = entry.Content;
+                            news.AssignedToStory = false;
                             news.Source = source;
                             news.ManuallyAssigned = false;
 
-                            List<int> tags = await ExtractTags(news.Content, lowLevelTags);
+                            /*List<string> foundTags = await ExtractTags(news.Content, tags);
 
-                            news.LowLevelTags = context.LowLevelTags.Where(llt => tags.Contains(llt.ID)).ToList();
+                            news.Tags = context.Tags.Where(tag => foundTags.Contains(tag.Name)).ToList();*/
+                            news.Tags = new List<Tag>();
 
                             context.News.Add(news);
+                        }
+                    }
+                }
 
+                context.SaveChanges();
+
+                if (context.News.Any())
+                {
+                    DateTime ninetyDaysAgo = DateTime.Now.AddDays(-90);
+                    // check similarity for anything that is new comparing it to any news assigned to a news group that was updated in the last 90 days.
+                    Dictionary<int, Dictionary<int, double>> similarities = await ComputeSimilarities(context.News.Include(n => n.NewsGroups).Where(n => n.AssignedToStory != true || n.NewsGroups.Any(ng => ninetyDaysAgo < ng.UpdatedDate)).ToList());
+
+                    foreach (KeyValuePair<int, Dictionary<int, double>> similarity in similarities)
+                    {
+                        News news = context.News.Where(n => n.AssignedToStory == false && n.ID == similarity.Key).FirstOrDefault();
+                        if(news == null)
+                        {
+                            continue;
+                        }
+
+                        List<NewsGroup> similarNewsGroups = context.News
+                            .Include(n => n.NewsGroups)
+                            .ThenInclude(ng => ng.News)
+                            .Where(ng => ninetyDaysAgo < ng.UpdatedDate)
+                            .SelectMany(n => n.NewsGroups, (n, ng) => new {ID = n.ID, NewsGroup = ng})
+                            .ToList()
+                            .GroupBy(n => n.NewsGroup)
+                            .Select(agg => new
+                            {
+                                NewsGroup = agg.Key,
+                                SimilarityScore = agg.Average(n => similarity.Value[n.ID])
+                            })
+                            .Where(ng => ng.SimilarityScore > threshold)
+                            .Select(ng => ng.NewsGroup)
+                            .ToList();
+
+                        if(similarNewsGroups.Any()) // the article will be added to existing groups
+                        {
+                            foreach(NewsGroup newsGroup in similarNewsGroups)
+                            {
+                                newsGroup.News.Add(news);
+                            }
+                        } else // a new group should be created
+                        {
                             NewsGroup newsGroup = new NewsGroup();
                             newsGroup.Score = 0;
                             newsGroup.CreatedDate = DateTime.Now;
@@ -100,33 +149,11 @@ namespace ITSecurityNewsMonitor.Services
 
                             context.NewsGroups.Add(newsGroup);
                         }
+
+                        news.AssignedToStory = true;
+
+                        context.SaveChanges();
                     }
-                }
-
-                context.SaveChanges();
-
-                if (context.News.Any())
-                {
-                    Dictionary<int, int> similarities = await ComputeSimilarities(context.News.ToList());
-
-                    foreach (KeyValuePair<int, int> similarity in similarities)
-                    {
-                        News news = context.News.Where(n => n.ID == similarity.Key).Include(n => n.NewsGroup).ThenInclude(ng => ng.News).First();
-
-                        if (news.NewsGroup.News.Count() > 1) // don't assign a news to a group if it is already in a group with other news
-                        {
-                            continue;
-                        }
-
-                        NewsGroup oldNewsGroup = news.NewsGroup; // save old news group so that it can be deleted
-                        NewsGroup newNewsGroup = context.News.Where(n => n.ID == similarity.Value).Include(n => n.NewsGroup).First().NewsGroup;
-                        news.NewsGroup = newNewsGroup;
-                        news.NewsGroup.UpdatedDate = newNewsGroup.News.Max(n => n.CreatedDate) > news.CreatedDate ? newNewsGroup.News.Max(n => n.CreatedDate) : news.CreatedDate;
-
-                        context.NewsGroups.Remove(oldNewsGroup);
-                    }
-
-                    context.SaveChanges();
                 }
             }
         }
@@ -154,16 +181,12 @@ namespace ITSecurityNewsMonitor.Services
             }
         }
 
-        public async Task<List<int>> ExtractTags(string text, List<LowLevelTag> lowLevelTags)
+        public async Task<List<string>> ExtractTags(string text, List<Tag> tags)
         {
             var input = System.Text.Json.JsonSerializer.Serialize(new
             {
                 text = text,
-                keywords = lowLevelTags.Select(llt => new
-                {
-                    name = llt.ID,
-                    keywords = llt.Keywords.ToList()
-                })
+                keywords = tags.Select(tag => tag.Name).ToList()
             }, _options);
 
             var content = new StringContent(input, Encoding.UTF8, "application/json");
@@ -172,7 +195,7 @@ namespace ITSecurityNewsMonitor.Services
             if (response.IsSuccessStatusCode)
             {
                 var responseContent = await response.Content.ReadAsStringAsync();
-                List<int> responseObject = System.Text.Json.JsonSerializer.Deserialize<List<int>>(responseContent);
+                List<string> responseObject = System.Text.Json.JsonSerializer.Deserialize<List<string>>(responseContent);
 
                 return responseObject;
             }
@@ -182,7 +205,45 @@ namespace ITSecurityNewsMonitor.Services
             }
         }
 
-        public async Task<Dictionary<int, int>> ComputeSimilarities(List<News> news)
+        public async Task ComputeSimilarity(string id, News news1, News news2)
+        {
+            if (news1 != null && news2 != null)
+            {
+                var input = System.Text.Json.JsonSerializer.Serialize(new
+                {
+                    text1 = news1.Content,
+                    text2 = news2.Content
+                }, _options);
+
+                var content = new StringContent(input, Encoding.UTF8, "application/json");
+                var response = await _client.PostAsync(_url + "/similarity", content);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var responseContent = await response.Content.ReadAsStringAsync();
+                    double responseObject = JsonConvert.DeserializeObject<double>(responseContent);
+
+                    var cacheExpiryOptions = new MemoryCacheEntryOptions
+                    {
+                        AbsoluteExpiration = DateTime.Now.AddMinutes(5),
+                        Priority = CacheItemPriority.High,
+                        SlidingExpiration = TimeSpan.FromMinutes(2),
+                        Size = 1024,
+                    };
+                    _cache.Set(id, responseObject.ToString(), cacheExpiryOptions);
+
+                    string value = string.Empty;
+                    _cache.TryGetValue(id, out value);
+                }
+                else
+                {
+                    throw new System.ArgumentException("API returned status code: " + response.StatusCode);
+                }
+                
+            }
+        }
+
+        public async Task<Dictionary<int, Dictionary<int, double>>> ComputeSimilarities(List<News> news)
         {
             var input = System.Text.Json.JsonSerializer.Serialize(new
             {
@@ -199,7 +260,7 @@ namespace ITSecurityNewsMonitor.Services
             if (response.IsSuccessStatusCode)
             {
                 var responseContent = await response.Content.ReadAsStringAsync();
-                Dictionary<int, int> responseObject = JsonConvert.DeserializeObject<Dictionary<int, int>>(responseContent);
+                Dictionary<int, Dictionary<int, double>> responseObject = JsonConvert.DeserializeObject <Dictionary<int, Dictionary<int, double>>> (responseContent);
 
                 return responseObject;
             }

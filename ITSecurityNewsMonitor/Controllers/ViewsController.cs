@@ -25,7 +25,7 @@ namespace ITSecurityNewsMonitor.Controllers
         // GET: Views
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Views.Where(v => v.OwnerID.Equals(_userManager.GetUserId(User))).Include(v => v.HighLevelTags).ToListAsync());
+            return View(await _context.Views.Where(v => v.OwnerID.Equals(_userManager.GetUserId(User))).Include(v => v.Tags).ToListAsync());
         }
 
         public async Task<IActionResult> Create()
@@ -50,13 +50,13 @@ namespace ITSecurityNewsMonitor.Controllers
                 return NotFound();
             }
 
-            var view = _context.Views.Where(v => v.ID == id && v.OwnerID.Equals(_userManager.GetUserId(User))).Include(v => v.HighLevelTags).FirstOrDefault();
+            var view = _context.Views.Where(v => v.ID == id && v.OwnerID.Equals(_userManager.GetUserId(User))).Include(v => v.Tags).FirstOrDefault();
             if (view == null)
             {
                 return NotFound();
             }
 
-            ViewData["HighLevelTags"] = _context.HighLevelTags.ToList();
+            ViewData["Tags"] = _context.Tags.ToList();
             return View(view);
         }
 
@@ -133,14 +133,14 @@ namespace ITSecurityNewsMonitor.Controllers
             {
                 return StatusCode(403);
             }
-            HighLevelTag tag = await _context.HighLevelTags.FindAsync(body?.tagId);
+            Tag tag = await _context.Tags.FindAsync(body?.tagId);
 
             if(view == null || tag == null)
             {
                 return NotFound();
             }
 
-            view.HighLevelTags.Add(tag);
+            view.Tags.Add(tag);
             await _context.SaveChangesAsync();
             return StatusCode(200);
         }

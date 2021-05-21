@@ -14,8 +14,7 @@ namespace ITSecurityNewsMonitor.Models
         public DateTime UpdatedDate { get; set; }
         public bool Archived { get; set; }
 
-        public List<News> News { get; set; }
-
+        public ICollection<News> News { get; set; }
         public List<VoteRequest> VoteRequests { get; set; }
     }
 }
