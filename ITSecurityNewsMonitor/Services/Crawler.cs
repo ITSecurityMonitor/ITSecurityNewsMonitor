@@ -1,4 +1,5 @@
-﻿using ITSecurityNewsMonitor.Data;
+﻿using Hangfire.Server;
+using ITSecurityNewsMonitor.Data;
 using ITSecurityNewsMonitor.Helper;
 using ITSecurityNewsMonitor.Models;
 using Microsoft.AspNetCore.Http;
@@ -6,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -32,127 +34,198 @@ namespace ITSecurityNewsMonitor.Services
         };
         private readonly IConfiguration _config;
         private readonly IMemoryCache _cache;
+        private readonly ILogger _logger;
 
-        private double threshold = 0.75;
+        private double threshold = 0.7;
         private string _url;
+        private bool migrateData = true;
+
 
         IServiceProvider _serviceProvider;
-        public Crawler(IServiceProvider serviceProvider, IConfiguration config, IMemoryCache memoryCache)
+        public Crawler(IServiceProvider serviceProvider, IConfiguration config, IMemoryCache memoryCache, ILogger<Crawler> logger)
         {
             _serviceProvider = serviceProvider;
             _config = config;
             _cache = memoryCache;
+            _logger = logger;
 
             _url = "http://" + _config.GetValue<string>("Connections:Crawler:IP") + ":" + _config.GetValue<string>("Connections:Crawler:Port");
         }
 
-        public async Task DeleteOld()
+        public async Task DeleteOld(PerformContext pc)
         {
-            using (IServiceScope scope = _serviceProvider.CreateScope())
-            using (SecNewsDbContext context = scope.ServiceProvider.GetRequiredService<SecNewsDbContext>())
+            using (HangfireConsoleLogger.InContext(pc))
             {
-                DateTime thiryDaysAgo = DateTime.Now.AddDays(-30);
-                List<NewsGroup> newsGroups = context.NewsGroups.Where(ng => ng.UpdatedDate < thiryDaysAgo).ToList();
+                _logger.LogInformation("Starting the archiving of old stories");
 
-                foreach(NewsGroup newsGroup in newsGroups)
+                using (IServiceScope scope = _serviceProvider.CreateScope())
+                using (SecNewsDbContext context = scope.ServiceProvider.GetRequiredService<SecNewsDbContext>())
                 {
-                    newsGroup.Archived = true;
-                }
+                    DateTime thiryDaysAgo = DateTime.Now.AddDays(-30);
+                    List<NewsGroup> newsGroups = context.NewsGroups.Where(ng => ng.UpdatedDate < thiryDaysAgo).ToList();
 
-                context.SaveChanges();
+                    foreach (NewsGroup newsGroup in newsGroups)
+                    {
+                        newsGroup.Archived = true;
+                    }
+
+                    context.SaveChanges();
+                    _logger.LogInformation("Archived " + newsGroups.Count() + " stories that were older than 30 days");
+                }
             }
         }
 
-        public async Task ExecuteCrawl()
+        public async Task MigrateData(PerformContext pc)
         {
-            using (IServiceScope scope = _serviceProvider.CreateScope())
-            using (SecNewsDbContext context = scope.ServiceProvider.GetRequiredService<SecNewsDbContext>())
+            using (HangfireConsoleLogger.InContext(pc))
             {
-                List<Tag> tags = context.Tags.ToList();
-                List<Source> sources = context.Sources.ToList();
-                // Get new articles
-                foreach (Source source in sources)
+                if (!migrateData)
                 {
-                    List<Entry> entries = await GetEntries(source);
-
-                    foreach (Entry entry in entries)
-                    {
-                        if (!context.News.Where(n => n.Link.Equals(entry.Link)).Any())
-                        { // no news article matching to the RSS entry in DB
-                            News news = new News();
-                            news.Headline = entry.Headline;
-                            news.Link = entry.Link;
-                            news.CreatedDate = DateTime.Now;
-                            news.Summary = entry.Summary;
-                            news.Content = entry.Content;
-                            news.AssignedToStory = false;
-                            news.Source = source;
-                            news.ManuallyAssigned = false;
-
-                            /*List<string> foundTags = await ExtractTags(news.Content, tags);
-
-                            news.Tags = context.Tags.Where(tag => foundTags.Contains(tag.Name)).ToList();*/
-                            news.Tags = new List<Tag>();
-
-                            context.News.Add(news);
-                        }
-                    }
+                    _logger.LogInformation("Skipping data migration");
+                    return;
                 }
 
-                context.SaveChanges();
-
-                if (context.News.Any())
+                // write a migration logic here
+                using (IServiceScope scope = _serviceProvider.CreateScope())
+                using (SecNewsDbContext context = scope.ServiceProvider.GetRequiredService<SecNewsDbContext>())
                 {
-                    DateTime ninetyDaysAgo = DateTime.Now.AddDays(-90);
-                    // check similarity for anything that is new comparing it to any news assigned to a news group that was updated in the last 90 days.
-                    Dictionary<int, Dictionary<int, double>> similarities = await ComputeSimilarities(context.News.Include(n => n.NewsGroups).Where(n => n.AssignedToStory != true || n.NewsGroups.Any(ng => ninetyDaysAgo < ng.UpdatedDate)).ToList());
+                    List<NewsGroup> newsGroups = context.NewsGroups.ToList();
+                    int newsGroupCount = newsGroups.Count();
+                    context.NewsGroups.RemoveRange(newsGroups);
 
-                    foreach (KeyValuePair<int, Dictionary<int, double>> similarity in similarities)
+                    List<News> news = context.News.ToList();
+                    List<News> notDuplicates = new List<News>();
+                    List<News> duplicates = new List<News>();
+                    foreach (News n in news)
                     {
-                        News news = context.News.Where(n => n.AssignedToStory == false && n.ID == similarity.Key).FirstOrDefault();
-                        if(news == null)
+                        if(notDuplicates.Where(n => n.Link.Equals(n.Link)).Any())
                         {
-                            continue;
+                            duplicates.Add(n);
+                        } else
+                        {
+                            notDuplicates.Add(n);
+                            n.AssignedToStory = false;
                         }
+                    }
 
-                        List<NewsGroup> similarNewsGroups = context.News
-                            .Include(n => n.NewsGroups)
-                            .ThenInclude(ng => ng.News)
-                            .Where(ng => ninetyDaysAgo < ng.UpdatedDate)
-                            .SelectMany(n => n.NewsGroups, (n, ng) => new {ID = n.ID, NewsGroup = ng})
-                            .ToList()
-                            .GroupBy(n => n.NewsGroup)
-                            .Select(agg => new
-                            {
-                                NewsGroup = agg.Key,
-                                SimilarityScore = agg.Average(n => similarity.Value[n.ID])
-                            })
-                            .Where(ng => ng.SimilarityScore > threshold)
-                            .Select(ng => ng.NewsGroup)
-                            .ToList();
+                    context.News.RemoveRange(duplicates);
 
-                        if(similarNewsGroups.Any()) // the article will be added to existing groups
+                    context.SaveChanges();
+                    _logger.LogInformation("Deleted " + newsGroupCount + " stories");
+                    _logger.LogInformation("Cleared the similaritiy scores for all news stories");
+                }
+            }
+        }
+
+        public async Task ExecuteCrawl(PerformContext pc)
+        {
+            using (HangfireConsoleLogger.InContext(pc))
+            {
+                _logger.LogInformation("Started crawling for new news");
+
+                using (IServiceScope scope = _serviceProvider.CreateScope())
+                using (SecNewsDbContext context = scope.ServiceProvider.GetRequiredService<SecNewsDbContext>())
+                {
+                    List<Tag> tags = context.Tags.ToList();
+                    List<Source> sources = context.Sources.ToList();
+                    _logger.LogInformation("Found " + sources.Count() + " sources to be crawled");
+
+                    // Get new articles
+                    foreach (Source source in sources)
+                    {
+                        _logger.LogInformation("Started crawling " + source.Name);
+
+                        List<Entry> entries = await GetEntries(source);
+
+                        _logger.LogInformation("Found " + entries.Count() + " news");
+
+                        foreach (Entry entry in entries)
                         {
-                            foreach(NewsGroup newsGroup in similarNewsGroups)
-                            {
-                                newsGroup.News.Add(news);
+                            if (!context.News.Where(n => n.Link.Equals(entry.Link)).Any())
+                            { // no news article matching to the RSS entry in DB
+                                News news = new News();
+                                news.Headline = entry.Headline;
+                                news.Link = entry.Link;
+                                news.CreatedDate = DateTime.Now;
+                                news.Summary = entry.Summary;
+                                news.Content = entry.Content;
+                                news.AssignedToStory = false;
+                                news.Source = source;
+                                news.ManuallyAssigned = false;
+
+                                /*List<string> foundTags = await ExtractTags(news.Content, tags);
+
+                                news.Tags = context.Tags.Where(tag => foundTags.Contains(tag.Name)).ToList();*/
+                                news.Tags = new List<Tag>();
+
+                                context.News.Add(news);
+                                _logger.LogInformation("Added new news: " + news.Headline);
                             }
-                        } else // a new group should be created
-                        {
-                            NewsGroup newsGroup = new NewsGroup();
-                            newsGroup.Score = 0;
-                            newsGroup.CreatedDate = DateTime.Now;
-                            newsGroup.UpdatedDate = DateTime.Now;
-                            newsGroup.News = new List<News>();
-
-                            newsGroup.News.Add(news);
-
-                            context.NewsGroups.Add(newsGroup);
                         }
+                    }
 
-                        news.AssignedToStory = true;
+                    context.SaveChanges();
+                    _logger.LogInformation("Saved new news articles to DB");
 
-                        context.SaveChanges();
+                    if (context.News.Any())
+                    {
+                        _logger.LogInformation("Started check for similarity");
+                        DateTime ninetyDaysAgo = DateTime.Now.AddDays(-90);
+                        // check similarity for anything that is new comparing it to any news assigned to a news group that was updated in the last 90 days.
+                        Dictionary<int, Dictionary<int, double>> similarities = await ComputeSimilarities(context.News.Include(n => n.NewsGroups).Where(n => n.AssignedToStory != true || n.NewsGroups.Any(ng => ninetyDaysAgo < ng.UpdatedDate)).ToList());
+
+                        foreach (KeyValuePair<int, Dictionary<int, double>> similarity in similarities)
+                        {
+                            News news = context.News.Where(n => n.AssignedToStory == false && n.ID == similarity.Key).FirstOrDefault();
+                            if (news == null)
+                            {
+                                continue;
+                            }
+
+                            _logger.LogInformation("Computing similarity for " + news.ID);
+
+                            List<NewsGroup> similarNewsGroups = context.NewsGroups
+                                .Where(ng => ninetyDaysAgo < ng.UpdatedDate)
+                                .Include(ng => ng.News)
+                                .ToList()
+                                .Select(ng => new
+                                {
+                                    NewsGroup = ng,
+                                    SimilarityScore = ng.News.Average(n => similarity.Value[n.ID])
+                                })
+                                .Where(ng => ng.SimilarityScore > threshold)
+                                .Select(ng => ng.NewsGroup)
+                                .ToList();
+
+                            _logger.LogInformation("Found " + similarNewsGroups.Count() + " similar stories");
+
+                            if (similarNewsGroups.Any()) // the article will be added to existing groups
+                            {
+                                foreach (NewsGroup newsGroup in similarNewsGroups)
+                                {
+                                    newsGroup.News.Add(news);
+                                }
+                                _logger.LogInformation("Assigned news " + news.ID + " to stories.");
+                            }
+                            else // a new group should be created
+                            {
+                                NewsGroup newsGroup = new NewsGroup();
+                                newsGroup.Score = 0;
+                                newsGroup.CreatedDate = DateTime.Now;
+                                newsGroup.UpdatedDate = DateTime.Now;
+                                newsGroup.News = new List<News>();
+
+                                newsGroup.News.Add(news);
+
+                                context.NewsGroups.Add(newsGroup);
+                                _logger.LogInformation("Create new story");
+                            }
+
+                            news.AssignedToStory = true;
+
+                            context.SaveChanges();
+                            _logger.LogInformation("Saved changes in the DB");
+                        }
                     }
                 }
             }

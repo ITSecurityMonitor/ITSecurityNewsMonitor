@@ -273,7 +273,7 @@
                         <span class=" px-8 text-xs text-gray-500">Related</span>
                     }
 
-                    @foreach (News news in newsGroup.News.OrderByDescending(n => n.CreatedDate).Skip(1))
+                    @foreach (News news in newsGroup.News.OrderBy(n => n.CreatedDate).Skip(1))
                     {
                         <div class="px-8 mb-2 flex">
 
