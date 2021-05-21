@@ -1,4 +1,5 @@
 using ITSecurityNewsMonitor.Data;
+using ITSecurityNewsMonitor.Helper;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -66,6 +67,11 @@ namespace ITSecurityNewsMonitor
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
+                .ConfigureLogging(logging =>
+                {
+                    logging.ClearProviders();
+                    logging.AddProvider(new HangfireConsoleLoggerProvider());
+                })                    
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
