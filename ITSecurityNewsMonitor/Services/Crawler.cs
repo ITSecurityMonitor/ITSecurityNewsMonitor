@@ -36,7 +36,7 @@ namespace ITSecurityNewsMonitor.Services
         private readonly IMemoryCache _cache;
         private readonly ILogger _logger;
 
-        private double threshold = 0.7;
+        private double threshold = 0.8;
         private string _url;
         private bool migrateData = true;
 
