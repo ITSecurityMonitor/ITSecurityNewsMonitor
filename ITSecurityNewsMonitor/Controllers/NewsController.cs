@@ -37,7 +37,7 @@ namespace ITSecurityNewsMonitor.Controllers
             List<NewsGroup> newsGroups = await _context.NewsGroups
                 .Include(ng => ng.News).ThenInclude(n => n.Source)
                 .Include(ng => ng.News).ThenInclude(n => n.Tags)
-                .Include(ng => ng.VoteRequests)
+                .Include(ng => ng.News).ThenInclude(n => n.LinkViewed)
                 .Where(ng => !ng.Archived)
                 .Where(ng => ng.News.Any(n => n.Headline.ToLower().Contains((search ?? "").ToLower())))
                 .ToListAsync();
@@ -85,29 +85,30 @@ namespace ITSecurityNewsMonitor.Controllers
             return View(newsIndexViewModel);
         }
 
-        public async Task<IActionResult> Trackout(int newsGroupId, string link)
+        public async Task<IActionResult> Trackout(int newsId, string link)
         {
-            NewsGroup newsGroup = await _context.NewsGroups.Include(ng => ng.VoteRequests).Where(ng => ng.ID == newsGroupId).FirstOrDefaultAsync();
+            News news = await _context.News.Include(n => n.LinkViewed).Where(n => n.ID == newsId).FirstOrDefaultAsync();
             string ownerID = _userManager.GetUserId(User);
 
-            if (newsGroup == null)
+            if (news == null)
             {
                 return NotFound();
             }
 
-            if(!newsGroup.VoteRequests.Where(vr => vr.OwnerID.Equals(ownerID)).Any()) {
-                VoteRequest voteRequest = new VoteRequest();
+            if(!news.LinkViewed.Any(lv => lv.OwnerID.Equals(ownerID))) {
+                LinkViewed linkViewed = new LinkViewed();
+                linkViewed.Date = DateTime.Now;
+                linkViewed.OwnerID = ownerID;
+                linkViewed.News = news;
 
-                voteRequest.Completed = false;
-                voteRequest.OwnerID = ownerID;
-                voteRequest.NewsGroup = newsGroup;
-
-                _context.VoteRequests.Add(voteRequest);
+                _context.LinksViewed.Add(linkViewed);
 
                 try
                 {
                     await _context.SaveChangesAsync();
-                } catch(Exception e) {
+                }
+                catch (Exception e)
+                {
                     return StatusCode(500);
                 }
             }
@@ -122,7 +123,7 @@ namespace ITSecurityNewsMonitor.Controllers
                 .Where(ng => ng.ID == newsGroupId)
                 .Include(ng => ng.News).ThenInclude(n => n.Source)
                 .Include(ng => ng.News).ThenInclude(n => n.Tags)
-                .Include(ng => ng.VoteRequests)
+                .Include(ng => ng.News).ThenInclude(n => n.LinkViewed)
                 .Where(ng => !ng.Archived)
                 .FirstOrDefaultAsync();
 
@@ -141,45 +142,6 @@ namespace ITSecurityNewsMonitor.Controllers
         {
             public int newsGroupId { get; set; }
             public bool vote { get; set; }
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> UserVote([FromBody] UserVoteInput input)
-        {
-            NewsGroup newsGroup = await _context.NewsGroups.Include(ng => ng.VoteRequests).Where(ng => ng.ID == input.newsGroupId).FirstOrDefaultAsync();
-            string ownerID = _userManager.GetUserId(User);
-
-            if(newsGroup == null)
-            {
-                return NotFound("NewsGroup not found");
-            }
-
-            VoteRequest voteRequest = newsGroup.VoteRequests.Where(vr => vr.OwnerID == ownerID).FirstOrDefault();
-
-            if(voteRequest == null)
-            {
-                return NotFound("VoteRequest not found");
-            }
-
-            Vote vote = new Vote();
-
-            vote.OwnerID = ownerID;
-            vote.Criticality = input.vote;
-            vote.NewsGroup = newsGroup;
-
-            _context.Add(vote);
-
-            voteRequest.Completed = true;
-            try
-            {
-                await _context.SaveChangesAsync();
-
-                return StatusCode(200);
-            } catch(Exception e)
-            {
-                return StatusCode(500);
-            }
-
         }
     }
 }

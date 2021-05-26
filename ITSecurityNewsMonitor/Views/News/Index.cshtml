@@ -3,86 +3,6 @@
     ViewData["Title"] = "News";
 }
 
-@* <div class="site-header">
-    <h1>@ViewData["Title"]</h1>
-</div> *@
-
-@* 
-<div class="px-5 md_px-10 pt-4" id="view-picker">
-    <!-- All -->
-    <div class="bg-gray-50 rounded p-3">
-        <div class="flex -mb-2">
-            <div class="uppercase font-bold text-xs text-gray-400 mb-2 mr-2">Views</div>
-            @if (Model.SelectedView == null) {
-                <button class="ml-auto button uppercase font-bold text-xs mb-2 mr-2 cursor-pointer" disabled>
-                    Clear
-                </button>
-            }
-            @if (Model.SelectedView != null) {
-                <button onclick='window.location.href = "@Url.Action("Index", "News")"' class="ml-auto button uppercase font-bold text-xs mb-2 mr-2 @(Model.SelectedView == null ? "selected" : "") cursor-pointer">
-                    Clear
-                </button>
-            }
-        </div>
-        <div class="flex overflow-hidden" id="tabs-container">
-            <div class="flex flex-wrap ">
-
-                <!-- All tab -->
-                <!-- this was commented out -->
-                <a href="@Url.Action("Index", "News")">
-                    <div class="view-tab uppercase @(Model.SelectedView == null ? "selected" : "") cursor-pointer w-16">All</div>
-                </a> 
-                
-                <!-- Current Tab -->
-                @if (@Model.SelectedView != null) {
-                    <a href="@Url.Action("Index", "News", new { view = @Model.SelectedView.ID})">
-                        <div class="view-tab @(Model.SelectedView != null && Model.SelectedView.ID.Equals(@Model.SelectedView.ID) ? "selected" : "") cursor-pointer">
-                            @Model.SelectedView.Name
-                        </div>
-                    </a>
-                }
-
-                <!-- Tabs -->
-                @foreach (View view in Model.Views)
-                {   
-                    @if (@Model.SelectedView == null || view.ID != @Model.SelectedView.ID) {
-                        <a href="@Url.Action("Index", "News", new { view = view.ID})">
-                            <div class="view-tab  @(Model.SelectedView != null && @Model.SelectedView.ID.Equals(view.ID) ? "selected" : "") cursor-pointer">
-                                @view.Name
-                            </div>
-                        </a>
-                    }
-                }
-                <!-- New -->
-                <!-- this was commented out -->
-                <button class="px-2 pt-4 flex items-start justify-center flex-shrink-0 font-bold hover_text-purple-600" onclick="window.location.href='@Url.Action("Create", "Views")'">
-                    + New
-                </button> 
-            </div>
-
-            <!-- dont apply text-button here  -->
-            <button class="show-all-button ml-auto px-2 pt-3 pb-4 flex items-start justify-center flex-shrink-0 font-bold hover_text-purple-600" onclick="toggle_show_all_tabs()">
-                <svg class="pt-1 w-3 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="currentColor" d="M207.029 381.476L12.686 187.132c-9.373-9.373-9.373-24.569 0-33.941l22.667-22.667c9.357-9.357 24.522-9.375 33.901-.04L224 284.505l154.745-154.021c9.379-9.335 24.544-9.317 33.901.04l22.667 22.667c9.373 9.373 9.373 24.569 0 33.941L240.971 381.476c-9.373 9.372-24.569 9.372-33.942 0z"></path></svg>
-                View All
-            </button>
-        </div>
-
-        <button id="hide-all-button" class="hidden ml-auto px-2 pt-4 pb-2 flex items-start justify-center flex-shrink-0 font-bold hover_text-purple-600" onclick="toggle_show_all_tabs()">
-            <svg class="pt-1 w-3 mr-1" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="chevron-up" class="svg-inline--fa fa-chevron-up fa-w-14" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="currentColor" d="M240.971 130.524l194.343 194.343c9.373 9.373 9.373 24.569 0 33.941l-22.667 22.667c-9.357 9.357-24.522 9.375-33.901.04L224 227.495 69.255 381.516c-9.379 9.335-24.544 9.317-33.901-.04l-22.667-22.667c-9.373-9.373-9.373-24.569 0-33.941L207.03 130.525c9.372-9.373 24.568-9.373 33.941-.001z"></path></svg>
-            Hide All
-        </button>
-    </div>
-
-     <!-- Search (When on mobile) -->
-    <div class="mt-3 block sm_hidden">
-        <form method="get" class="ml-auto flex">
-            <input type="text" name="search" class="rounded border p-1 w-full sm_w-auto" value="@(Model.Search == null ? "" : Model.Search)" />
-            <input type="submit" value="Search" class="ml-1 button" />
-        </form>
-    </div>
-</div>
- *@
-
 <div class="sticky z-20 -top-1 px-5 md_px-10 bg-white pt-4 pb-4" id="view-picker">
     <div class="flex">
         <a class="view-tab @(ViewBag.order.Equals("popular") ? "selected" : "")" href="@Url.Action("Index", "News", new { order = "popular" })"> 
@@ -113,75 +33,14 @@
     </div>
 </div>
 
-<!-- Search (when not on mobile) -->
-@* <div class="hidden sm_flex sticky z-30 top-14 md_top-14 pt-4 px-5 md_px-10 bg-white pb-4 flex flex-row border-b shadow-2xl" id="sticky-searchbar-and-pages">
-    <div class="">
-        <form method="get" class="ml-auto flex">
-            <input type="text" name="search" class="rounded border p-1 w-full sm_w-auto" value="@(Model.Search == null ? "" : Model.Search)" />
-            <input type="submit" value="Search" class="ml-1 button" />
-        </form>
-    </div>
-
-    <div class="ml-auto flex items-center">
-        <a href="@Url.Action("Index", "News", new { page = Model.Page > 1 ? Model.Page - 1 : 1, search = Model.Search, view = Model.SelectedView?.ID })" class="ml-2 mr-1 flex @(Model.Page > 1 ? "text-gray-400 hover_text-black" : "text-gray-100 pointer-events-none")">
-            <div class="ml-1 self-center ">← Prev</div>
-        </a>
-        &middot;
-        Page @Model.Page of @Model.MaxPage
-        &middot;
-        <a href="@Url.Action("Index", "News", new { page = Model.Page < Model.MaxPage ? Model.Page + 1 : Model.MaxPage, search = Model.Search, view = Model.SelectedView?.ID })" class="ml-1 flex @(Model.Page < Model.MaxPage ? "text-gray-400 hover_text-black" : "text-gray-100 pointer-events-none")">
-            <div class="mr-1">Next →</div>
-        </a>
-    </div>
-</div> *@
-
 <div class="px-5 md_px-10 pt-5">
     @foreach (NewsGroup newsGroup in Model.NewsGroups)
     {
         News latestNews = newsGroup.News.OrderBy(n => n.CreatedDate).FirstOrDefault();
+        LinkViewed linkViewedLatest = latestNews.LinkViewed.Where(lv => lv.OwnerID.Equals(Model.OwnerId)).FirstOrDefault();
 
         <!-- News Group -->
-        <div class="shadow-md rounded-lg border overflow-hidden bg-white bg-opacity-80 pb-1 @(newsGroup.VoteRequests.Where(vr => vr.OwnerID.Equals(Model.OwnerId) && !vr.Completed).Any() ? "show-vote-tracker" : "")" id="@newsGroup.ID">
-
-            @* <!-- Voting  -->
-            <div class="p-8 news-group-vote-tracker">
-                    <div class="px-8">
-                        <h5 class="text-2xl font-bold text-purple-900">
-                            Is this group of articles
-                            <span class="border-purple-300 border-b-4">relevant</span>
-                            for you or others?
-                        </h5>
-                    </div>
-                    <div class="px-8 flex mt-4">
-                        <div class="mr-10 text-xl flex items-center cursor-pointer text-purple-400 hover_text-purple-600" onclick="user_voted(@newsGroup.ID, true)">
-                            <span class="mr-3 text-3xl">Yes</span>
-                            <svg width="2.25em" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="vote-yea" class="svg-inline--fa fa-vote-yea fa-w-20" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512">
-                                <path fill="currentColor" d="M608 320h-64v64h22.4c5.3 0 9.6 3.6 9.6 8v16c0 4.4-4.3 8-9.6 8H73.6c-5.3 0-9.6-3.6-9.6-8v-16c0-4.4 4.3-8 9.6-8H96v-64H32c-17.7 0-32 14.3-32 32v96c0 17.7 14.3 32 32 32h576c17.7 0 32-14.3 32-32v-96c0-17.7-14.3-32-32-32zm-96 64V64.3c0-17.9-14.5-32.3-32.3-32.3H160.4C142.5 32 128 46.5 128 64.3V384h384zM211.2 202l25.5-25.3c4.2-4.2 11-4.2 15.2.1l41.3 41.6 95.2-94.4c4.2-4.2 11-4.2 15.2.1l25.3 25.5c4.2 4.2 4.2 11-.1 15.2L300.5 292c-4.2 4.2-11 4.2-15.2-.1l-74.1-74.7c-4.3-4.2-4.2-11 0-15.2z"></path>
-                            </svg>
-                        </div>
-                        <div class="mr-10 text-xl flex items-center cursor-pointer text-purple-400 hover_text-purple-600" onclick="user_voted(@newsGroup.ID, false)">
-                            <span class="mr-3 text-3xl">No</span>
-                            <svg width="2.25em" aria-hidden="true" focusable="false" data-prefix="fal" data-icon="vote-nay" class="svg-inline--fa fa-vote-nay fa-w-20" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512">
-                                <path fill="currentColor" d="M393.5 153.8l-11.3-11.3c-1.6-1.6-3.6-2.3-5.7-2.3s-4.1.8-5.7 2.3L320 193.4l-50.9-50.9c-1.6-1.6-3.6-2.3-5.7-2.3s-4.1.8-5.7 2.3l-11.3 11.3c-3.1 3.1-3.1 8.2 0 11.3l50.9 50.9-50.9 50.9c-3.1 3.1-3.1 8.2 0 11.3l11.3 11.3c1.6 1.6 3.6 2.3 5.7 2.3s4.1-.8 5.7-2.3l50.9-50.9 50.9 50.9c1.6 1.6 3.6 2.3 5.7 2.3s4.1-.8 5.7-2.3l11.3-11.3c3.1-3.1 3.1-8.2 0-11.3l-51-50.9 50.9-50.9c3.2-3.1 3.2-8.2 0-11.3zM608 288h-64V62.5c0-16.8-14.3-30.5-32-30.5H128c-17.7 0-32 13.7-32 30.5V288H32c-17.7 0-32 14.3-32 32v128c0 17.7 14.3 32 32 32h576c17.7 0 32-14.3 32-32V320c0-17.7-14.3-32-32-32zM128 64h384v304H128V64zm480 384H32V320h64v48H73.6c-5.3 0-9.6 3.6-9.6 8v16c0 4.4 4.3 8 9.6 8h492.8c5.3 0 9.6-3.6 9.6-8v-16c0-4.4-4.3-8-9.6-8H544v-48h64v128z"></path>
-                            </svg>
-                        </div>
-                    </div>
-                    <div class="px-8 mt-4">
-                        <h3 class="font-bold text-base">
-                            <a href="@latestNews.Link" class="text-gray-500 hover_text-black" target=":_blank">
-                                @latestNews.Headline
-                            </a>
-                        </h3>
-                        <h3 class="flex flex-col text-base">
-                            @foreach (News news in newsGroup.News.OrderByDescending(n => n.CreatedDate).Skip(1))
-                            {
-                                <a href="@news.Link" class="text-gray-500 hover_text-black" target=":_blank">
-                                    @news.Headline
-                                </a>
-                            }
-                        </h3>
-                </div>
-            </div> *@
+        <div class="shadow-md rounded-lg border overflow-hidden bg-white bg-opacity-80 pb-1" id="@latestNews.ID">
 
             <div class="news-group-content">
                 <!-- News -->
@@ -190,7 +49,7 @@
                         <div class="flex flex-col sm_flex-row">
                             @* Headline *@
                             <span>
-                                <a class="trackout-link" href="@Url.Action("Trackout", "News", new { newsGroupId = newsGroup.ID, link = latestNews.Link })" target=":_blank" onclick="@(newsGroup.VoteRequests.Where(vr => vr.OwnerID.Equals(Model.OwnerId)).Any() ? "" : "user_followed_link(" + newsGroup.ID + ")")">
+                                <a class="trackout-link" href="@Url.Action("Trackout", "News", new { newsId = latestNews.ID, link = latestNews.Link })" target=":_blank" onclick="@(linkViewedLatest == null ? "" : "user_followed_link(" + latestNews.ID + ")")">
                                     <span class="font-bold text-2xl">
                                         @latestNews.Headline
                                     </span>
@@ -227,10 +86,12 @@
                         </div>
                     </div>
                     <div class="flex -mt-3 items-center">
-                        <div class="ml-8 h-6 flex items-center text-xs bg-white px-2 rounded-md border text-purple-500">
-                            <svg class="mb-0.5 inline-block h-3 mr-1" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="check-square" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="currentColor" d="M400 480H48c-26.51 0-48-21.49-48-48V80c0-26.51 21.49-48 48-48h352c26.51 0 48 21.49 48 48v352c0 26.51-21.49 48-48 48zm-204.686-98.059l184-184c6.248-6.248 6.248-16.379 0-22.627l-22.627-22.627c-6.248-6.248-16.379-6.249-22.628 0L184 302.745l-70.059-70.059c-6.248-6.248-16.379-6.248-22.628 0l-22.627 22.627c-6.248 6.248-6.248 16.379 0 22.627l104 104c6.249 6.25 16.379 6.25 22.628.001z"></path></svg>
-                            All read
-                        </div>
+                        @if (newsGroup.News.All(n => n.LinkViewed.Any(lv => lv.OwnerID.Equals(Model.OwnerId)))) {
+                            <div class="ml-8 h-6 flex items-center text-xs bg-white px-2 rounded-md border text-purple-500">
+                                <svg class="mb-0.5 inline-block h-3 mr-1" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="check-square" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="currentColor" d="M400 480H48c-26.51 0-48-21.49-48-48V80c0-26.51 21.49-48 48-48h352c26.51 0 48 21.49 48 48v352c0 26.51-21.49 48-48 48zm-204.686-98.059l184-184c6.248-6.248 6.248-16.379 0-22.627l-22.627-22.627c-6.248-6.248-16.379-6.249-22.628 0L184 302.745l-70.059-70.059c-6.248-6.248-16.379-6.248-22.628 0l-22.627 22.627c-6.248 6.248-6.248 16.379 0 22.627l104 104c6.249 6.25 16.379 6.25 22.628.001z"></path></svg>
+                                All read
+                            </div>
+                        }
                         <div class="ml-auto"></div>
                         <div class="story-tag py-0.5 border group recently-updated">
                             <svg class="h-2.5 w-3" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="sparkles" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M324.42 103.15L384 128l24.84 59.58a8 8 0 0 0 14.32 0L448 128l59.58-24.85a8 8 0 0 0 0-14.31L448 64 423.16 4.42a8 8 0 0 0-14.32 0L384 64l-59.58 24.84a8 8 0 0 0 0 14.31zm183.16 305.69L448 384l-24.84-59.58a8 8 0 0 0-14.32 0L384 384l-59.58 24.84a8 8 0 0 0 0 14.32L384 448l24.84 59.58a8 8 0 0 0 14.32 0L448 448l59.58-24.84a8 8 0 0 0 0-14.32zM384 255.64a16.06 16.06 0 0 0-8.84-14.33l-112.57-56.39-56.28-112.77c-5.44-10.87-23.19-10.87-28.62 0l-56.28 112.77L8.84 241.31a16 16 0 0 0 0 28.67l112.57 56.39 56.28 112.77a16 16 0 0 0 28.62 0l56.28-112.77L375.16 270a16.07 16.07 0 0 0 8.84-14.36z"></path></svg>
@@ -246,10 +107,14 @@
                     <div class="px-8 pt-4">
 
                         @latestNews.Summary
-                        <span class="text-purple-300 text-xs whitespace-nowrap">
-                            <svg class="mb-0.5 inline-block h-3" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="check-square" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="currentColor" d="M400 480H48c-26.51 0-48-21.49-48-48V80c0-26.51 21.49-48 48-48h352c26.51 0 48 21.49 48 48v352c0 26.51-21.49 48-48 48zm-204.686-98.059l184-184c6.248-6.248 6.248-16.379 0-22.627l-22.627-22.627c-6.248-6.248-16.379-6.249-22.628 0L184 302.745l-70.059-70.059c-6.248-6.248-16.379-6.248-22.628 0l-22.627 22.627c-6.248 6.248-6.248 16.379 0 22.627l104 104c6.249 6.25 16.379 6.25 22.628.001z"></path></svg>
-                            Read on 25/04
-                        </span>
+
+                        @if (linkViewedLatest != null)
+                        {
+                            <span class="text-purple-300 text-xs whitespace-nowrap">
+                                <svg class="mb-0.5 inline-block h-3" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="check-square" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="currentColor" d="M400 480H48c-26.51 0-48-21.49-48-48V80c0-26.51 21.49-48 48-48h352c26.51 0 48 21.49 48 48v352c0 26.51-21.49 48-48 48zm-204.686-98.059l184-184c6.248-6.248 6.248-16.379 0-22.627l-22.627-22.627c-6.248-6.248-16.379-6.249-22.628 0L184 302.745l-70.059-70.059c-6.248-6.248-16.379-6.248-22.628 0l-22.627 22.627c-6.248 6.248-6.248 16.379 0 22.627l104 104c6.249 6.25 16.379 6.25 22.628.001z"></path></svg>
+                                Read on @linkViewedLatest.Date.ToString("dd/MM")
+                            </span>
+                        }
 
                         @if (latestNews.Tags.Any())
                         {
@@ -265,59 +130,60 @@
                     </div>
                 </div>
 
-                @if (!newsGroup.VoteRequests.Where(vr => vr.OwnerID.Equals(Model.OwnerId) && !vr.Completed).Any())
+                <!-- Related news -->
+                @if (newsGroup.News.Count() > 1)
                 {
-                    <!-- Related news -->
-                    @if (newsGroup.News.Count() > 1)
-                    {
-                        <span class=" px-8 text-xs text-gray-500">Related</span>
-                    }
+                    <span class=" px-8 text-xs text-gray-500">Related</span>
+                }
 
-                    @foreach (News news in newsGroup.News.OrderBy(n => n.CreatedDate).Skip(1))
-                    {
-                        <div class="px-8 mb-2 flex">
+                @foreach (News news in newsGroup.News.OrderBy(n => n.CreatedDate).Skip(1))
+                {
+                    LinkViewed linkViewed = news.LinkViewed.Where(lv => lv.OwnerID.Equals(Model.OwnerId)).FirstOrDefault();
 
-                            <div class="w-4">
-                                @if (newsGroup.ID > 20) {
-                                    <svg class="mb-1 inline-block h-3 text-purple-300" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="check-square" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path class="fill-current" d="M400 480H48c-26.51 0-48-21.49-48-48V80c0-26.51 21.49-48 48-48h352c26.51 0 48 21.49 48 48v352c0 26.51-21.49 48-48 48zm-204.686-98.059l184-184c6.248-6.248 6.248-16.379 0-22.627l-22.627-22.627c-6.248-6.248-16.379-6.249-22.628 0L184 302.745l-70.059-70.059c-6.248-6.248-16.379-6.248-22.628 0l-22.627 22.627c-6.248 6.248-6.248 16.379 0 22.627l104 104c6.249 6.25 16.379 6.25 22.628.001z"></path></svg>
-                                } else {
-                                    <svg class="mb-1 inline-block h-3.5 text-purple-500" aria-hidden="true" focusable="false" data-prefix="fad" data-icon="circle" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">                                    
-                                        <path class="fill-current" d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm0 424c-97.06 0-176-79-176-176S158.94 80 256 80s176 79 176 176-78.94 176-176 176z" opacity="0.4"></path>
-                                        <path class="fill-current" d="M256 432c-97.06 0-176-79-176-176S158.94 80 256 80s176 79 176 176-78.94 176-176 176z"></path>
-                                    </svg>
-                                }
-                            </div>
+                    <div class="px-8 mb-2 flex">
 
-                            <div class="flex flex-col sm_flex-row">
-                                <div class="flex mt-0.5 ml-2 items-top">
-                                    <div class="mr-1 mt-0.5 text-xs sm_mt-0 sm_text-sm flex sm_w-36 sm_flex-col">
-                                        @news.CreatedDate
-                                        <span class="sm_hidden border-r h-3 mt-0.5 ml-1 mr-1"></span>
-                                        @if (newsGroup.ID > 20) {
-                                            <span class="text-purple-300 text-xs">
-                                                Read on 24.03
-                                            </span>
-                                        }
-                                    </div>
-                                    <span class="-mt-0.5 mr-2 invisible sm_visible">
-                                        →
-                                    </span>
+                        <div class="w-4">
+                            @if (linkViewed != null) {
+                                <svg class="mb-1 inline-block h-3 text-purple-300" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="check-square" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path class="fill-current" d="M400 480H48c-26.51 0-48-21.49-48-48V80c0-26.51 21.49-48 48-48h352c26.51 0 48 21.49 48 48v352c0 26.51-21.49 48-48 48zm-204.686-98.059l184-184c6.248-6.248 6.248-16.379 0-22.627l-22.627-22.627c-6.248-6.248-16.379-6.249-22.628 0L184 302.745l-70.059-70.059c-6.248-6.248-16.379-6.248-22.628 0l-22.627 22.627c-6.248 6.248-6.248 16.379 0 22.627l104 104c6.249 6.25 16.379 6.25 22.628.001z"></path></svg>
+                            } else {
+                                <svg class="mb-1 inline-block h-3.5 text-purple-500" aria-hidden="true" focusable="false" data-prefix="fad" data-icon="circle" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">                                    
+                                    <path class="fill-current" d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm0 424c-97.06 0-176-79-176-176S158.94 80 256 80s176 79 176 176-78.94 176-176 176z" opacity="0.4"></path>
+                                    <path class="fill-current" d="M256 432c-97.06 0-176-79-176-176S158.94 80 256 80s176 79 176 176-78.94 176-176 176z"></path>
+                                </svg>
+                            }
+                        </div>
+
+                        <div class="flex flex-col sm_flex-row">
+                            <div class="flex mt-0.5 ml-2 items-top">
+                                <div class="mr-1 mt-0.5 text-xs sm_mt-0 sm_text-sm flex sm_w-36 sm_flex-col">
+                                    @news.CreatedDate.ToString("dd.MM.yyyy")
+                                    <span class="sm_hidden border-r h-3 mt-0.5 ml-1 mr-1"></span>
+                                    
+                                    @if (linkViewed != null)
+                                    {
+                                        <span class="text-purple-300 text-xs">
+                                            Read on @linkViewed.Date.ToString("dd/MM")
+                                        </span>
+                                    }
                                 </div>
-                                <span class="ml-2 sm_ml-0 sm_mt-0.5 leading-4">
-                                    <span class="font-bold hover_underline cursor-pointer">
-                                        <a class="trackout-link" href="@Url.Action("Trackout", "News", new { newsGroupId = newsGroup.ID, link = news.Link })" target=":_blank" onclick="@(newsGroup.VoteRequests.Where(vr => vr.OwnerID.Equals(Model.OwnerId)).Any() ? "" : "user_followed_link(" + newsGroup.ID + ")")">
-                                            @news.Headline
-                                        </a>
-                                    </span>
-                                    <span class="text-xs whitespace-nowrap">
-                                        <a href="@news.Source.Homepage" target=":_blank" class="link">
-                                            via @news.Source.Name
-                                        </a>
-                                    </span>
+                                <span class="-mt-0.5 mr-2 invisible sm_visible">
+                                    →
                                 </span>
                             </div>
+                            <span class="ml-2 sm_ml-0 sm_mt-0.5 leading-4">
+                                <span class="font-bold hover_underline cursor-pointer">
+                                    <a class="trackout-link" href="@Url.Action("Trackout", "News", new { newsId = news.ID, link = news.Link })" target=":_blank" onclick="@(linkViewed == null ? "" : "user_followed_link(" + news.ID + ")")">
+                                        @news.Headline
+                                    </a>
+                                </span>
+                                <span class="text-xs whitespace-nowrap">
+                                    <a href="@news.Source.Homepage" target=":_blank" class="link">
+                                        via @news.Source.Name
+                                    </a>
+                                </span>
+                            </span>
                         </div>
-                    }
+                    </div>
                 }
             </div>
 
@@ -383,21 +249,6 @@
         }
 
         handle_scroll();
-
-
-        const user_voted = (newsGroupId, vote) => {
-            const xhr = new XMLHttpRequest();
-            xhr.open("POST", "@Url.Action("UserVote", "News")", true);
-            xhr.setRequestHeader('Content-Type', 'application/json');
-            xhr.send(JSON.stringify({
-                newsGroupId: newsGroupId,
-                vote: vote
-            }));
-
-            const elem = document.getElementById(newsGroupId);
-
-            elem.classList.remove("show-vote-tracker");
-        }
 
         const user_followed_link = (newsGroupId) => {
             const elem = document.getElementById(newsGroupId);

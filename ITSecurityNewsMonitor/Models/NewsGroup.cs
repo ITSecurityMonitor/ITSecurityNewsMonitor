@@ -15,6 +15,5 @@ namespace ITSecurityNewsMonitor.Models
         public bool Archived { get; set; }
 
         public ICollection<News> News { get; set; }
-        public List<VoteRequest> VoteRequests { get; set; }
     }
 }
