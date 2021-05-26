@@ -61,11 +61,15 @@
                                 </span>
                             </span>
 
+                            @{
+                                bool favorite = newsGroup.Favorites.Any(f => f.OwnerID.Equals(Model.OwnerId));
+                            }
+
                             @* Tags + Favorite *@
                             <div class="flex md_ml-auto mb-2 md_mb-0 flex-row sm_flex-col">
                                 <div class="ml-auto flex order-2 sm_order-1">
-                                    <button class="ml-auto">
-                                        @if (newsGroup.ID > 20) {
+                                    <button class="ml-auto" onclick="user_favorited(event, @newsGroup.ID, @(favorite ? "true" : "false"))">
+                                        @if (!favorite) {
                                             <svg class="w-5 h-3.5 text-purple-200" aria-hidden="true" stroke="red" focusable="false" data-prefix="fas" data-icon="heart" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
                                                 <path class="stroke-current" fill="transparent" stroke-width="50" d="M462.3 62.6C407.5 15.9 326 24.3 275.7 76.2L256 96.5l-19.7-20.3C186.1 24.3 104.5 15.9 49.7 62.6c-62.8 53.6-66.1 149.8-9.9 207.9l193.5 199.8c12.5 12.9 32.8 12.9 45.3 0l193.5-199.8c56.3-58.1 53-154.3-9.8-207.9z"></path>
                                             </svg>
@@ -215,7 +219,7 @@
 
 @section Scripts {
     <script type="text/javascript">
-        
+
         const is_scrolled_into_view = (el) => {
             let rect = el.getBoundingClientRect();
             let elemTop = rect.top;
@@ -227,19 +231,19 @@
             //isVisible = elemTop < window.innerHeight && elemBottom >= 0;
             return isVisible;
         }
-        
+
         const handle_scroll = () => {
             let is_in_view = is_scrolled_into_view(document.getElementById("view-picker"));
 
             const view_name_in_navbar = document.getElementById("view-name-in-navbar");
             const sticky_searchbar_and_pages = document.getElementById("sticky-searchbar-and-pages");
-            if(!view_name_in_navbar || !sticky_searchbar_and_pages) return 
+            if(!view_name_in_navbar || !sticky_searchbar_and_pages) return
 
             if(is_in_view) {
-                view_name_in_navbar.classList.add("hidden"); 
+                view_name_in_navbar.classList.add("hidden");
                 sticky_searchbar_and_pages.classList.remove("bg-white");
             } else  {
-                view_name_in_navbar.classList.remove("hidden"); 
+                view_name_in_navbar.classList.remove("hidden");
                 sticky_searchbar_and_pages.classList.add("bg-white");
             }
         }
@@ -257,8 +261,30 @@
             for (const link of links) {
                 link.onclick = null;
             }
-            
-            elem.classList.add("show-vote-tracker");
+        }
+
+        const user_favorited = (e, id, set) => {
+            const xhr = new XMLHttpRequest();
+            xhr.open("POST", "@Url.Action("Favorite", "News")", true);
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.send(JSON.stringify({
+                id: id
+            }));
+
+            const elem = e.currentTarget;
+
+
+            if (set) {
+                elem.innerHTML = `<svg class="w-5 h-3.5 text-purple-200" aria-hidden="true" stroke="red" focusable="false" data-prefix="fas" data-icon="heart" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                    <path class="stroke-current" fill="transparent" stroke-width="50" d="M462.3 62.6C407.5 15.9 326 24.3 275.7 76.2L256 96.5l-19.7-20.3C186.1 24.3 104.5 15.9 49.7 62.6c-62.8 53.6-66.1 149.8-9.9 207.9l193.5 199.8c12.5 12.9 32.8 12.9 45.3 0l193.5-199.8c56.3-58.1 53-154.3-9.8-207.9z"></path>
+                </svg>`;
+            } else {
+                elem.innerHTML = `<svg class="w-5 h-3.5 text-purple-500" aria-hidden="true" stroke="red" focusable="false" data-prefix="fas" data-icon="heart" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                    <path class="stroke-current fill-current" stroke-width="50" d="M462.3 62.6C407.5 15.9 326 24.3 275.7 76.2L256 96.5l-19.7-20.3C186.1 24.3 104.5 15.9 49.7 62.6c-62.8 53.6-66.1 149.8-9.9 207.9l193.5 199.8c12.5 12.9 32.8 12.9 45.3 0l193.5-199.8c56.3-58.1 53-154.3-9.8-207.9z"></path>
+                </svg>`;
+            }
+
+            elem.setAttribute("onClick", `user_favorited(event, ${id}, ${!set})`);
         }
 
         const toggle_show_all_tabs = () => {

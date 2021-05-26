@@ -38,7 +38,7 @@ namespace ITSecurityNewsMonitor.Services
 
         private double threshold = 0.8;
         private string _url;
-        private bool migrateData = true;
+        private bool migrateData = false;
 
 
         IServiceProvider _serviceProvider;

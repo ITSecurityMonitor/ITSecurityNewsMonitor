@@ -38,6 +38,7 @@ namespace ITSecurityNewsMonitor.Controllers
                 .Include(ng => ng.News).ThenInclude(n => n.Source)
                 .Include(ng => ng.News).ThenInclude(n => n.Tags)
                 .Include(ng => ng.News).ThenInclude(n => n.LinkViewed)
+                .Include(ng => ng.Favorites)
                 .Where(ng => !ng.Archived)
                 .Where(ng => ng.News.Any(n => n.Headline.ToLower().Contains((search ?? "").ToLower())))
                 .ToListAsync();
@@ -114,6 +115,50 @@ namespace ITSecurityNewsMonitor.Controllers
             }
 
             return Redirect(link);
+        }
+
+        public class FavoriteInput
+        {
+            public int id { get; set; }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Favorite([FromBody] FavoriteInput input)
+        {
+            NewsGroup newsGroup = await _context.NewsGroups.Include(ng => ng.Favorites).Where(ng => ng.ID == input.id).FirstOrDefaultAsync();
+
+            if(newsGroup == null)
+            {
+                return NotFound();
+            }
+
+            string userId = _userManager.GetUserId(User);
+
+            Favorite favorite = newsGroup.Favorites.Where(f => f.OwnerID.Equals(userId)).FirstOrDefault();
+
+            if (favorite == null)
+            {
+                favorite = new Favorite();
+                favorite.Date = DateTime.Now;
+                favorite.OwnerID = userId;
+
+                _context.Favorites.Add(favorite);
+
+                newsGroup.Favorites.Add(favorite);
+            } else 
+            {
+                _context.Favorites.Remove(favorite);
+            }
+
+            try
+            {
+                await _context.SaveChangesAsync();
+                return StatusCode(200);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500);
+            }
         }
 
         public async Task<IActionResult> Details(int newsGroupId)
