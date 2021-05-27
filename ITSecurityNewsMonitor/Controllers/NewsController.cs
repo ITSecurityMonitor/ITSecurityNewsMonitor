@@ -26,7 +26,7 @@ namespace ITSecurityNewsMonitor.Controllers
         {
             NewsIndexViewModel newsIndexViewModel = new NewsIndexViewModel();
 
-            if(order == null || (!order.Equals("new") && !order.Equals("favorite")))
+            if(order == null || (!order.Equals("new") && !order.Equals("favorite") && !order.Equals("developing")))
             {
                 order = "popular";
             }
@@ -45,10 +45,16 @@ namespace ITSecurityNewsMonitor.Controllers
 
             if(order.Equals("new"))
             {
-                newsGroups = newsGroups.OrderByDescending(ng => ng.CreatedDate).ToList();
+                newsGroups = newsGroups.OrderByDescending(ng => ng.UpdatedDate).ToList();
+            } else if(order.Equals("developing"))
+            {
+                newsGroups = newsGroups.Where(ng => ng.News.Count() >= 2).OrderByDescending(ng => ng.CreatedDate).ToList();
+            } else if (order.Equals("favorite"))
+            {
+                newsGroups = newsGroups.Where(ng => ng.Favorites.Any(f => f.OwnerID.Equals(_userManager.GetUserId(User)))).OrderByDescending(ng => ng.UpdatedDate).ToList();
             } else
             {
-                newsGroups = newsGroups.OrderByDescending(ng => ng.Score).ThenByDescending(ng => ng.News.Count()).ThenByDescending(ng => ng.UpdatedDate).ToList();
+                newsGroups = newsGroups.OrderByDescending(ng => ng.News.SelectMany(n => n.LinkViewed).Count(lv => lv.OwnerID.Equals(_userManager.GetUserId(User)))).ThenByDescending(ng => ng.News.Count()).ThenByDescending(ng => ng.UpdatedDate).ToList();
             }
 
             double pageSize = 10.0;

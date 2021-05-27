@@ -5,7 +5,7 @@
 
 <div class="sticky z-20 -top-1 px-5 md_px-10 bg-white pt-4 pb-4" id="view-picker">
     <div class="flex">
-        <a class="view-tab @(ViewBag.order.Equals("popular") ? "selected" : "")" href="@Url.Action("Index", "News", new { order = "popular" })"> 
+        <a class="view-tab @(ViewBag.order.Equals("popular") ? "selected" : "")" href="@Url.Action("Index", "News", new { order = "popular" })">
             <div class="flex">
                 <svg aria-hidden="true" focusable="false" data-prefix="far" data-icon="fire-alt" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="currentColor" d="M323.56 51.2c-20.8 19.3-39.58 39.59-56.22 59.97C240.08 73.62 206.28 35.53 168 0 69.74 91.17 0 209.96 0 281.6 0 408.85 100.29 512 224 512s224-103.15 224-230.4c0-53.27-51.98-163.14-124.44-230.4zM224 464c-97.05 0-176-81.83-176-182.4 0-45.37 44.3-133.21 120.16-214.09 22.34 23.36 42.82 47.72 60.34 71.86l36.62 50.44 39.41-48.29c5.83-7.15 11.85-14.15 18.01-20.97C368.89 177.96 400 250.42 400 281.6 400 382.17 321.05 464 224 464zm89.47-220.84l-51.3 58.52S181.75 198.98 175.69 192C133.27 242.86 112 272.62 112 306.41 112 374.23 163.37 416 226.5 416c25.26 0 48.62-7.87 67.58-21.13 43.08-30.14 53.18-88.58 29.26-134.24-2.95-5.62-6.24-11.48-9.87-17.47z"></path></svg>
                 <span class="name">Popular</span>
@@ -17,7 +17,13 @@
                 <span class="name">New</span>
             </div>
         </a>
-         <a class="view-tab @(ViewBag.order.Equals("favorite") ? "selected" : "")" href="@Url.Action("Index", "News", new { order = "favorite" })">
+        <a class="view-tab @(ViewBag.order.Equals("developing") ? "selected" : "")" href="@Url.Action("Index", "News", new { order = "developing" })">
+            <div class="flex">
+                <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="sparkles" class="svg-inline--fa fa-sparkles fa-w-16" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M324.42 103.15L384 128l24.84 59.58a8 8 0 0 0 14.32 0L448 128l59.58-24.85a8 8 0 0 0 0-14.31L448 64 423.16 4.42a8 8 0 0 0-14.32 0L384 64l-59.58 24.84a8 8 0 0 0 0 14.31zm183.16 305.69L448 384l-24.84-59.58a8 8 0 0 0-14.32 0L384 384l-59.58 24.84a8 8 0 0 0 0 14.32L384 448l24.84 59.58a8 8 0 0 0 14.32 0L448 448l59.58-24.84a8 8 0 0 0 0-14.32zM384 255.64a16.06 16.06 0 0 0-8.84-14.33l-112.57-56.39-56.28-112.77c-5.44-10.87-23.19-10.87-28.62 0l-56.28 112.77L8.84 241.31a16 16 0 0 0 0 28.67l112.57 56.39 56.28 112.77a16 16 0 0 0 28.62 0l56.28-112.77L375.16 270a16.07 16.07 0 0 0 8.84-14.36z"></path></svg>
+                <span class="name">Developing</span>
+            </div>
+        </a>
+        <a class="view-tab @(ViewBag.order.Equals("favorite") ? "selected" : "")" href="@Url.Action("Index", "News", new { order = "favorite" })">
             <div class="flex">
                 <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="heart" class="svg-inline--fa fa-heart fa-w-16" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M462.3 62.6C407.5 15.9 326 24.3 275.7 76.2L256 96.5l-19.7-20.3C186.1 24.3 104.5 15.9 49.7 62.6c-62.8 53.6-66.1 149.8-9.9 207.9l193.5 199.8c12.5 12.9 32.8 12.9 45.3 0l193.5-199.8c56.3-58.1 53-154.3-9.8-207.9z"></path></svg>
                 <span class="name">Favorites</span>
@@ -90,23 +96,47 @@
                         </div>
                     </div>
                     <div class="flex -mt-3 items-center">
-                        @if (newsGroup.News.All(n => n.LinkViewed.Any(lv => lv.OwnerID.Equals(Model.OwnerId)))) {
+                        @if (newsGroup.News.All(n => n.LinkViewed.Any(lv => lv.OwnerID.Equals(Model.OwnerId))))
+                        {
                             <div class="ml-8 h-6 flex items-center text-xs bg-white px-2 rounded-md border text-purple-500">
                                 <svg class="mb-0.5 inline-block h-3 mr-1" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="check-square" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="currentColor" d="M400 480H48c-26.51 0-48-21.49-48-48V80c0-26.51 21.49-48 48-48h352c26.51 0 48 21.49 48 48v352c0 26.51-21.49 48-48 48zm-204.686-98.059l184-184c6.248-6.248 6.248-16.379 0-22.627l-22.627-22.627c-6.248-6.248-16.379-6.249-22.628 0L184 302.745l-70.059-70.059c-6.248-6.248-16.379-6.248-22.628 0l-22.627 22.627c-6.248 6.248-6.248 16.379 0 22.627l104 104c6.249 6.25 16.379 6.25 22.628.001z"></path></svg>
                                 All read
                             </div>
                         }
                         <div class="ml-auto"></div>
-                        <div class="story-tag py-0.5 border group recently-updated">
-                            <svg class="h-2.5 w-3" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="sparkles" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M324.42 103.15L384 128l24.84 59.58a8 8 0 0 0 14.32 0L448 128l59.58-24.85a8 8 0 0 0 0-14.31L448 64 423.16 4.42a8 8 0 0 0-14.32 0L384 64l-59.58 24.84a8 8 0 0 0 0 14.31zm183.16 305.69L448 384l-24.84-59.58a8 8 0 0 0-14.32 0L384 384l-59.58 24.84a8 8 0 0 0 0 14.32L384 448l24.84 59.58a8 8 0 0 0 14.32 0L448 448l59.58-24.84a8 8 0 0 0 0-14.32zM384 255.64a16.06 16.06 0 0 0-8.84-14.33l-112.57-56.39-56.28-112.77c-5.44-10.87-23.19-10.87-28.62 0l-56.28 112.77L8.84 241.31a16 16 0 0 0 0 28.67l112.57 56.39 56.28 112.77a16 16 0 0 0 28.62 0l56.28-112.77L375.16 270a16.07 16.07 0 0 0 8.84-14.36z"></path></svg>
-                            <span class="icon transition-all max-w-0 group-hover_max-w-7xl whitespace-nowrap">Recently Updated</span>
-                            @* <span class="icon whitespace-nowrap ml-0.5">Recently Updated</span> *@
-                        </div>
-                        <div class="ml-1 mr-8 story-tag py-0.5 border group long-running">
-                            <svg class="h-2.5 w-3" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="newspaper" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path fill="currentColor" d="M552 64H88c-13.255 0-24 10.745-24 24v8H24c-13.255 0-24 10.745-24 24v272c0 30.928 25.072 56 56 56h472c26.51 0 48-21.49 48-48V88c0-13.255-10.745-24-24-24zM56 400a8 8 0 0 1-8-8V144h16v248a8 8 0 0 1-8 8zm236-16H140c-6.627 0-12-5.373-12-12v-8c0-6.627 5.373-12 12-12h152c6.627 0 12 5.373 12 12v8c0 6.627-5.373 12-12 12zm208 0H348c-6.627 0-12-5.373-12-12v-8c0-6.627 5.373-12 12-12h152c6.627 0 12 5.373 12 12v8c0 6.627-5.373 12-12 12zm-208-96H140c-6.627 0-12-5.373-12-12v-8c0-6.627 5.373-12 12-12h152c6.627 0 12 5.373 12 12v8c0 6.627-5.373 12-12 12zm208 0H348c-6.627 0-12-5.373-12-12v-8c0-6.627 5.373-12 12-12h152c6.627 0 12 5.373 12 12v8c0 6.627-5.373 12-12 12zm0-96H140c-6.627 0-12-5.373-12-12v-40c0-6.627 5.373-12 12-12h360c6.627 0 12 5.373 12 12v40c0 6.627-5.373 12-12 12z"></path></svg>
-                            <span class="icon transition-all max-w-0 group-hover_max-w-7xl whitespace-nowrap">Developing Story</span>
-                            @* <span class="icon whitespace-nowrap ml-0.5">Developing Story</span> *@
-                        </div>
+                        @{
+                            bool recentlyUpdated = newsGroup.UpdatedDate > DateTime.Now.AddDays(-3);
+                            bool developingStory = newsGroup.CreatedDate > DateTime.Now.AddDays(-3) && newsGroup.News.Count() >= 2;
+
+                        }
+                        @if (recentlyUpdated && developingStory)
+                        {
+                            <div class="story-tag py-0.5 border group recently-updated">
+                                <svg class="h-2.5 w-3" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="sparkles" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M324.42 103.15L384 128l24.84 59.58a8 8 0 0 0 14.32 0L448 128l59.58-24.85a8 8 0 0 0 0-14.31L448 64 423.16 4.42a8 8 0 0 0-14.32 0L384 64l-59.58 24.84a8 8 0 0 0 0 14.31zm183.16 305.69L448 384l-24.84-59.58a8 8 0 0 0-14.32 0L384 384l-59.58 24.84a8 8 0 0 0 0 14.32L384 448l24.84 59.58a8 8 0 0 0 14.32 0L448 448l59.58-24.84a8 8 0 0 0 0-14.32zM384 255.64a16.06 16.06 0 0 0-8.84-14.33l-112.57-56.39-56.28-112.77c-5.44-10.87-23.19-10.87-28.62 0l-56.28 112.77L8.84 241.31a16 16 0 0 0 0 28.67l112.57 56.39 56.28 112.77a16 16 0 0 0 28.62 0l56.28-112.77L375.16 270a16.07 16.07 0 0 0 8.84-14.36z"></path></svg>
+                                <span class="icon transition-all max-w-0 group-hover_max-w-7xl whitespace-nowrap">Recently Updated</span>
+                            </div>
+
+                            <div class="ml-1 mr-8 story-tag py-0.5 border group long-running">
+                                <svg class="h-2.5 w-3" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="newspaper" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path fill="currentColor" d="M552 64H88c-13.255 0-24 10.745-24 24v8H24c-13.255 0-24 10.745-24 24v272c0 30.928 25.072 56 56 56h472c26.51 0 48-21.49 48-48V88c0-13.255-10.745-24-24-24zM56 400a8 8 0 0 1-8-8V144h16v248a8 8 0 0 1-8 8zm236-16H140c-6.627 0-12-5.373-12-12v-8c0-6.627 5.373-12 12-12h152c6.627 0 12 5.373 12 12v8c0 6.627-5.373 12-12 12zm208 0H348c-6.627 0-12-5.373-12-12v-8c0-6.627 5.373-12 12-12h152c6.627 0 12 5.373 12 12v8c0 6.627-5.373 12-12 12zm-208-96H140c-6.627 0-12-5.373-12-12v-8c0-6.627 5.373-12 12-12h152c6.627 0 12 5.373 12 12v8c0 6.627-5.373 12-12 12zm208 0H348c-6.627 0-12-5.373-12-12v-8c0-6.627 5.373-12 12-12h152c6.627 0 12 5.373 12 12v8c0 6.627-5.373 12-12 12zm0-96H140c-6.627 0-12-5.373-12-12v-40c0-6.627 5.373-12 12-12h360c6.627 0 12 5.373 12 12v40c0 6.627-5.373 12-12 12z"></path></svg>
+                                <span class="icon transition-all max-w-0 group-hover_max-w-7xl whitespace-nowrap">Developing Story</span>
+                            </div>
+                        }
+
+                        @if (recentlyUpdated && !developingStory)
+                        {
+                            <div class="ml-1 mr-8 story-tag py-0.5 border group long-running">
+                                <svg class="h-2.5 w-3" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="sparkles" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M324.42 103.15L384 128l24.84 59.58a8 8 0 0 0 14.32 0L448 128l59.58-24.85a8 8 0 0 0 0-14.31L448 64 423.16 4.42a8 8 0 0 0-14.32 0L384 64l-59.58 24.84a8 8 0 0 0 0 14.31zm183.16 305.69L448 384l-24.84-59.58a8 8 0 0 0-14.32 0L384 384l-59.58 24.84a8 8 0 0 0 0 14.32L384 448l24.84 59.58a8 8 0 0 0 14.32 0L448 448l59.58-24.84a8 8 0 0 0 0-14.32zM384 255.64a16.06 16.06 0 0 0-8.84-14.33l-112.57-56.39-56.28-112.77c-5.44-10.87-23.19-10.87-28.62 0l-56.28 112.77L8.84 241.31a16 16 0 0 0 0 28.67l112.57 56.39 56.28 112.77a16 16 0 0 0 28.62 0l56.28-112.77L375.16 270a16.07 16.07 0 0 0 8.84-14.36z"></path></svg>
+                                <span class="icon transition-all max-w-0 group-hover_max-w-7xl whitespace-nowrap">Recently Updated</span>
+                            </div>
+                        }
+
+                        @if (!recentlyUpdated && developingStory)
+                        {
+                            <div class="ml-1 mr-8 story-tag py-0.5 border group long-running">
+                                <svg class="h-2.5 w-3" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="newspaper" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path fill="currentColor" d="M552 64H88c-13.255 0-24 10.745-24 24v8H24c-13.255 0-24 10.745-24 24v272c0 30.928 25.072 56 56 56h472c26.51 0 48-21.49 48-48V88c0-13.255-10.745-24-24-24zM56 400a8 8 0 0 1-8-8V144h16v248a8 8 0 0 1-8 8zm236-16H140c-6.627 0-12-5.373-12-12v-8c0-6.627 5.373-12 12-12h152c6.627 0 12 5.373 12 12v8c0 6.627-5.373 12-12 12zm208 0H348c-6.627 0-12-5.373-12-12v-8c0-6.627 5.373-12 12-12h152c6.627 0 12 5.373 12 12v8c0 6.627-5.373 12-12 12zm-208-96H140c-6.627 0-12-5.373-12-12v-8c0-6.627 5.373-12 12-12h152c6.627 0 12 5.373 12 12v8c0 6.627-5.373 12-12 12zm208 0H348c-6.627 0-12-5.373-12-12v-8c0-6.627 5.373-12 12-12h152c6.627 0 12 5.373 12 12v8c0 6.627-5.373 12-12 12zm0-96H140c-6.627 0-12-5.373-12-12v-40c0-6.627 5.373-12 12-12h360c6.627 0 12 5.373 12 12v40c0 6.627-5.373 12-12 12z"></path></svg>
+                                <span class="icon transition-all max-w-0 group-hover_max-w-7xl whitespace-nowrap">Developing Story</span>
+                            </div>
+                        }
                     </div>
                     <div class="px-8 pt-4">
 
@@ -193,10 +223,10 @@
 
             <div class="px-8 pb-2 flex flex-col mt-4 mb-1">
                 <div class="ml-auto text-xs flex flex-col md_flex-row justify-right text-gray-500">
-                    <span>Last updated: @newsGroup.UpdatedDate</span>
+                    <span>Last updated: @newsGroup.UpdatedDate.ToString("dd.MM.yyyy")</span>
                     @if ((@newsGroup.UpdatedDate - @newsGroup.CreatedDate).TotalSeconds > 10) {
                         <span class="hidden px-1 md_block">&middot;</span>
-                        <span>Story started: @newsGroup.CreatedDate</span>
+                        <span>Story started: @newsGroup.CreatedDate.ToString("dd.MM.yyyy")</span>
                     }
                 </div>
             </div>
@@ -272,7 +302,6 @@
             }));
 
             const elem = e.currentTarget;
-
 
             if (set) {
                 elem.innerHTML = `<svg class="w-5 h-3.5 text-purple-200" aria-hidden="true" stroke="red" focusable="false" data-prefix="fas" data-icon="heart" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
