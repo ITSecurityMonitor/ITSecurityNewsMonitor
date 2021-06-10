@@ -22,5 +22,7 @@ namespace ITSecurityNewsMonitor.Models
 
         public ICollection<NewsGroup> NewsGroups { get; set; }
         public ICollection<Tag> Tags { get; set; }
+        public List<LinkViewed> LinkViewed { get; set; }
+
     }
 }

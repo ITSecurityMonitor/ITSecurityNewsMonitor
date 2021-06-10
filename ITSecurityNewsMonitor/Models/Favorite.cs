@@ -5,11 +5,11 @@ using System.Threading.Tasks;
 
 namespace ITSecurityNewsMonitor.Models
 {
-    public class VoteRequest
+    public class Favorite
     {
         public int ID { get; set; }
         public string OwnerID { get; set; }
-        public bool Completed { get; set; }
+        public DateTime Date { get; set; }
 
         public int NewsGroupId { get; set; }
         public NewsGroup NewsGroup { get; set; }

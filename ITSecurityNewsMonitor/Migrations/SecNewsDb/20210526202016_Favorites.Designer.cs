@@ -3,15 +3,17 @@ using System;
 using ITSecurityNewsMonitor.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace ITSecurityNewsMonitor.Migrations.SecNewsDb
 {
     [DbContext(typeof(SecNewsDbContext))]
-    partial class SecNewsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210526202016_Favorites")]
+    partial class Favorites
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -212,7 +214,7 @@ namespace ITSecurityNewsMonitor.Migrations.SecNewsDb
             modelBuilder.Entity("ITSecurityNewsMonitor.Models.Favorite", b =>
                 {
                     b.HasOne("ITSecurityNewsMonitor.Models.NewsGroup", "NewsGroup")
-                        .WithMany("Favorites")
+                        .WithMany()
                         .HasForeignKey("NewsGroupId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -273,11 +275,6 @@ namespace ITSecurityNewsMonitor.Migrations.SecNewsDb
                     b.Navigation("LinkViewed");
 
                     b.Navigation("Tags");
-                });
-
-            modelBuilder.Entity("ITSecurityNewsMonitor.Models.NewsGroup", b =>
-                {
-                    b.Navigation("Favorites");
                 });
 
             modelBuilder.Entity("ITSecurityNewsMonitor.Models.Source", b =>

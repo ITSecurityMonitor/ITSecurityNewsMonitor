@@ -3,44 +3,23 @@ using System;
 using ITSecurityNewsMonitor.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace ITSecurityNewsMonitor.Migrations.SecNewsDb
 {
     [DbContext(typeof(SecNewsDbContext))]
-    partial class SecNewsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210526200310_LinksViewedDate")]
+    partial class LinksViewedDate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Relational:MaxIdentifierLength", 63)
                 .HasAnnotation("ProductVersion", "5.0.6")
                 .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
-
-            modelBuilder.Entity("ITSecurityNewsMonitor.Models.Favorite", b =>
-                {
-                    b.Property<int>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
-
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<int>("NewsGroupId")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("OwnerID")
-                        .HasColumnType("text");
-
-                    b.HasKey("ID");
-
-                    b.HasIndex("NewsGroupId");
-
-                    b.ToTable("Favorites");
-                });
 
             modelBuilder.Entity("ITSecurityNewsMonitor.Models.LinkViewed", b =>
                 {
@@ -209,17 +188,6 @@ namespace ITSecurityNewsMonitor.Migrations.SecNewsDb
                     b.ToTable("NewsNewsGroup");
                 });
 
-            modelBuilder.Entity("ITSecurityNewsMonitor.Models.Favorite", b =>
-                {
-                    b.HasOne("ITSecurityNewsMonitor.Models.NewsGroup", "NewsGroup")
-                        .WithMany("Favorites")
-                        .HasForeignKey("NewsGroupId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("NewsGroup");
-                });
-
             modelBuilder.Entity("ITSecurityNewsMonitor.Models.LinkViewed", b =>
                 {
                     b.HasOne("ITSecurityNewsMonitor.Models.News", "News")
@@ -273,11 +241,6 @@ namespace ITSecurityNewsMonitor.Migrations.SecNewsDb
                     b.Navigation("LinkViewed");
 
                     b.Navigation("Tags");
-                });
-
-            modelBuilder.Entity("ITSecurityNewsMonitor.Models.NewsGroup", b =>
-                {
-                    b.Navigation("Favorites");
                 });
 
             modelBuilder.Entity("ITSecurityNewsMonitor.Models.Source", b =>

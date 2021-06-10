@@ -18,8 +18,8 @@ namespace ITSecurityNewsMonitor.Data
         public DbSet<NewsGroup> NewsGroups { get; set; }
         public DbSet<Source> Sources { get; set; }
         public DbSet<View> Views { get; set; }
-        public DbSet<Vote> Votes { get; set; }
-        public DbSet<VoteRequest> VoteRequests { get; set; }
+        public DbSet<LinkViewed> LinksViewed { get; set; }
+        public DbSet<Favorite> Favorites { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -28,8 +28,8 @@ namespace ITSecurityNewsMonitor.Data
             modelBuilder.Entity<NewsGroup>().ToTable("NewsGroup");
             modelBuilder.Entity<Source>().ToTable("Sources");
             modelBuilder.Entity<View>().ToTable("Views");
-            modelBuilder.Entity<Vote>().ToTable("Votes");
-            modelBuilder.Entity<VoteRequest>().ToTable("VoteRequests");
+            modelBuilder.Entity<LinkViewed>().ToTable("LinksViewed");
+            modelBuilder.Entity<Favorite>().ToTable("Favorites");
         }
     }
 }

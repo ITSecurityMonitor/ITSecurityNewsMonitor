@@ -26,7 +26,7 @@ namespace ITSecurityNewsMonitor.Controllers
         {
             NewsIndexViewModel newsIndexViewModel = new NewsIndexViewModel();
 
-            if(order == null || (!order.Equals("new") && !order.Equals("favorite")))
+            if(order == null || (!order.Equals("new") && !order.Equals("favorite") && !order.Equals("developing")))
             {
                 order = "popular";
             }
@@ -37,17 +37,24 @@ namespace ITSecurityNewsMonitor.Controllers
             List<NewsGroup> newsGroups = await _context.NewsGroups
                 .Include(ng => ng.News).ThenInclude(n => n.Source)
                 .Include(ng => ng.News).ThenInclude(n => n.Tags)
-                .Include(ng => ng.VoteRequests)
+                .Include(ng => ng.News).ThenInclude(n => n.LinkViewed)
+                .Include(ng => ng.Favorites)
                 .Where(ng => !ng.Archived)
                 .Where(ng => ng.News.Any(n => n.Headline.ToLower().Contains((search ?? "").ToLower())))
                 .ToListAsync();
 
             if(order.Equals("new"))
             {
-                newsGroups = newsGroups.OrderByDescending(ng => ng.CreatedDate).ToList();
+                newsGroups = newsGroups.OrderByDescending(ng => ng.UpdatedDate).ToList();
+            } else if(order.Equals("developing"))
+            {
+                newsGroups = newsGroups.Where(ng => ng.News.Count() >= 2).OrderByDescending(ng => ng.CreatedDate).ToList();
+            } else if (order.Equals("favorite"))
+            {
+                newsGroups = newsGroups.Where(ng => ng.Favorites.Any(f => f.OwnerID.Equals(_userManager.GetUserId(User)))).OrderByDescending(ng => ng.UpdatedDate).ToList();
             } else
             {
-                newsGroups = newsGroups.OrderByDescending(ng => ng.Score).ThenByDescending(ng => ng.News.Count()).ThenByDescending(ng => ng.UpdatedDate).ToList();
+                newsGroups = newsGroups.OrderByDescending(ng => ng.News.SelectMany(n => n.LinkViewed).Count(lv => lv.OwnerID.Equals(_userManager.GetUserId(User)))).ThenByDescending(ng => ng.News.Count()).ThenByDescending(ng => ng.UpdatedDate).ToList();
             }
 
             double pageSize = 10.0;
@@ -85,34 +92,79 @@ namespace ITSecurityNewsMonitor.Controllers
             return View(newsIndexViewModel);
         }
 
-        public async Task<IActionResult> Trackout(int newsGroupId, string link)
+        public async Task<IActionResult> Trackout(int newsId, string link)
         {
-            NewsGroup newsGroup = await _context.NewsGroups.Include(ng => ng.VoteRequests).Where(ng => ng.ID == newsGroupId).FirstOrDefaultAsync();
+            News news = await _context.News.Include(n => n.LinkViewed).Where(n => n.ID == newsId).FirstOrDefaultAsync();
             string ownerID = _userManager.GetUserId(User);
 
-            if (newsGroup == null)
+            if (news == null)
             {
                 return NotFound();
             }
 
-            if(!newsGroup.VoteRequests.Where(vr => vr.OwnerID.Equals(ownerID)).Any()) {
-                VoteRequest voteRequest = new VoteRequest();
+            if(!news.LinkViewed.Any(lv => lv.OwnerID.Equals(ownerID))) {
+                LinkViewed linkViewed = new LinkViewed();
+                linkViewed.Date = DateTime.Now;
+                linkViewed.OwnerID = ownerID;
+                linkViewed.News = news;
 
-                voteRequest.Completed = false;
-                voteRequest.OwnerID = ownerID;
-                voteRequest.NewsGroup = newsGroup;
-
-                _context.VoteRequests.Add(voteRequest);
+                _context.LinksViewed.Add(linkViewed);
 
                 try
                 {
                     await _context.SaveChangesAsync();
-                } catch(Exception e) {
+                }
+                catch (Exception e)
+                {
                     return StatusCode(500);
                 }
             }
 
             return Redirect(link);
+        }
+
+        public class FavoriteInput
+        {
+            public int id { get; set; }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Favorite([FromBody] FavoriteInput input)
+        {
+            NewsGroup newsGroup = await _context.NewsGroups.Include(ng => ng.Favorites).Where(ng => ng.ID == input.id).FirstOrDefaultAsync();
+
+            if(newsGroup == null)
+            {
+                return NotFound();
+            }
+
+            string userId = _userManager.GetUserId(User);
+
+            Favorite favorite = newsGroup.Favorites.Where(f => f.OwnerID.Equals(userId)).FirstOrDefault();
+
+            if (favorite == null)
+            {
+                favorite = new Favorite();
+                favorite.Date = DateTime.Now;
+                favorite.OwnerID = userId;
+
+                _context.Favorites.Add(favorite);
+
+                newsGroup.Favorites.Add(favorite);
+            } else 
+            {
+                _context.Favorites.Remove(favorite);
+            }
+
+            try
+            {
+                await _context.SaveChangesAsync();
+                return StatusCode(200);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500);
+            }
         }
 
         public async Task<IActionResult> Details(int newsGroupId)
@@ -122,7 +174,7 @@ namespace ITSecurityNewsMonitor.Controllers
                 .Where(ng => ng.ID == newsGroupId)
                 .Include(ng => ng.News).ThenInclude(n => n.Source)
                 .Include(ng => ng.News).ThenInclude(n => n.Tags)
-                .Include(ng => ng.VoteRequests)
+                .Include(ng => ng.News).ThenInclude(n => n.LinkViewed)
                 .Where(ng => !ng.Archived)
                 .FirstOrDefaultAsync();
 
@@ -141,45 +193,6 @@ namespace ITSecurityNewsMonitor.Controllers
         {
             public int newsGroupId { get; set; }
             public bool vote { get; set; }
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> UserVote([FromBody] UserVoteInput input)
-        {
-            NewsGroup newsGroup = await _context.NewsGroups.Include(ng => ng.VoteRequests).Where(ng => ng.ID == input.newsGroupId).FirstOrDefaultAsync();
-            string ownerID = _userManager.GetUserId(User);
-
-            if(newsGroup == null)
-            {
-                return NotFound("NewsGroup not found");
-            }
-
-            VoteRequest voteRequest = newsGroup.VoteRequests.Where(vr => vr.OwnerID == ownerID).FirstOrDefault();
-
-            if(voteRequest == null)
-            {
-                return NotFound("VoteRequest not found");
-            }
-
-            Vote vote = new Vote();
-
-            vote.OwnerID = ownerID;
-            vote.Criticality = input.vote;
-            vote.NewsGroup = newsGroup;
-
-            _context.Add(vote);
-
-            voteRequest.Completed = true;
-            try
-            {
-                await _context.SaveChangesAsync();
-
-                return StatusCode(200);
-            } catch(Exception e)
-            {
-                return StatusCode(500);
-            }
-
         }
     }
 }
