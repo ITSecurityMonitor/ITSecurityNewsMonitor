@@ -26,7 +26,7 @@ namespace ITSecurityNewsMonitor.Controllers
         {
             NewsIndexViewModel newsIndexViewModel = new NewsIndexViewModel();
 
-            if(order == null || (!order.Equals("new") && !order.Equals("favorite") && !order.Equals("developing")))
+            if (order == null || (!order.Equals("new") && !order.Equals("favorite") && !order.Equals("developing")))
             {
                 order = "popular";
             }
@@ -43,16 +43,19 @@ namespace ITSecurityNewsMonitor.Controllers
                 .Where(ng => ng.News.Any(n => n.Headline.ToLower().Contains((search ?? "").ToLower())))
                 .ToListAsync();
 
-            if(order.Equals("new"))
+            if (order.Equals("new"))
             {
                 newsGroups = newsGroups.OrderByDescending(ng => ng.UpdatedDate).ToList();
-            } else if(order.Equals("developing"))
+            }
+            else if (order.Equals("developing"))
             {
                 newsGroups = newsGroups.Where(ng => ng.News.Count() >= 2).OrderByDescending(ng => ng.CreatedDate).ToList();
-            } else if (order.Equals("favorite"))
+            }
+            else if (order.Equals("favorite"))
             {
                 newsGroups = newsGroups.Where(ng => ng.Favorites.Any(f => f.OwnerID.Equals(_userManager.GetUserId(User)))).OrderByDescending(ng => ng.UpdatedDate).ToList();
-            } else
+            }
+            else
             {
                 newsGroups = newsGroups.OrderByDescending(ng => ng.News.SelectMany(n => n.LinkViewed).Count(lv => lv.OwnerID.Equals(_userManager.GetUserId(User)))).ThenByDescending(ng => ng.News.Count()).ThenByDescending(ng => ng.UpdatedDate).ToList();
             }
@@ -60,7 +63,7 @@ namespace ITSecurityNewsMonitor.Controllers
             double pageSize = 10.0;
 
             newsIndexViewModel.Views = views;
-            newsIndexViewModel.MaxPage = newsGroups.Any() ? (int) Math.Ceiling(newsGroups.Count() / pageSize) : 1;
+            newsIndexViewModel.MaxPage = newsGroups.Any() ? (int)Math.Ceiling(newsGroups.Count() / pageSize) : 1;
             newsIndexViewModel.OwnerId = _userManager.GetUserId(User);
 
             if (page > newsIndexViewModel.MaxPage)
@@ -68,7 +71,7 @@ namespace ITSecurityNewsMonitor.Controllers
                 page = newsIndexViewModel.MaxPage;
             }
 
-            if(page < 1)
+            if (page < 1)
             {
                 page = 1;
             }
@@ -80,7 +83,8 @@ namespace ITSecurityNewsMonitor.Controllers
             if (view == null || !selectedViews.Any())
             {
                 newsIndexViewModel.SelectedView = null;
-            } else
+            }
+            else
             {
                 newsIndexViewModel.SelectedView = selectedViews.First();
             }
@@ -92,6 +96,79 @@ namespace ITSecurityNewsMonitor.Controllers
             return View(newsIndexViewModel);
         }
 
+        public async Task<IActionResult> Landing(int? view, int page = 1, string search = "", string order = "popular")
+        {
+            NewsIndexViewModel newsIndexViewModel = new NewsIndexViewModel();
+
+            if (order == null || (!order.Equals("new") && !order.Equals("favorite") && !order.Equals("developing")))
+            {
+                order = "popular";
+            }
+
+            ViewBag.order = order;
+
+            List<View> views = await _context.Views.Where(v => v.OwnerID.Equals(_userManager.GetUserId(User))).ToListAsync();
+            List<NewsGroup> newsGroups = await _context.NewsGroups
+                .Include(ng => ng.News).ThenInclude(n => n.Source)
+                .Include(ng => ng.News).ThenInclude(n => n.Tags)
+                .Include(ng => ng.News).ThenInclude(n => n.LinkViewed)
+                .Include(ng => ng.Favorites)
+                .Where(ng => !ng.Archived)
+                .Where(ng => ng.News.Any(n => n.Headline.ToLower().Contains((search ?? "").ToLower())))
+                .ToListAsync();
+
+            if (order.Equals("new"))
+            {
+                newsGroups = newsGroups.OrderByDescending(ng => ng.UpdatedDate).ToList();
+            }
+            else if (order.Equals("developing"))
+            {
+                newsGroups = newsGroups.Where(ng => ng.News.Count() >= 2).OrderByDescending(ng => ng.CreatedDate).ToList();
+            }
+            else if (order.Equals("favorite"))
+            {
+                newsGroups = newsGroups.Where(ng => ng.Favorites.Any(f => f.OwnerID.Equals(_userManager.GetUserId(User)))).OrderByDescending(ng => ng.UpdatedDate).ToList();
+            }
+            else
+            {
+                newsGroups = newsGroups.OrderByDescending(ng => ng.News.SelectMany(n => n.LinkViewed).Count(lv => lv.OwnerID.Equals(_userManager.GetUserId(User)))).ThenByDescending(ng => ng.News.Count()).ThenByDescending(ng => ng.UpdatedDate).ToList();
+            }
+
+            double pageSize = 10.0;
+
+            newsIndexViewModel.Views = views;
+            newsIndexViewModel.MaxPage = newsGroups.Any() ? (int)Math.Ceiling(newsGroups.Count() / pageSize) : 1;
+            newsIndexViewModel.OwnerId = _userManager.GetUserId(User);
+
+            if (page > newsIndexViewModel.MaxPage)
+            {
+                page = newsIndexViewModel.MaxPage;
+            }
+
+            if (page < 1)
+            {
+                page = 1;
+            }
+
+            newsIndexViewModel.Page = page;
+
+            List<View> selectedViews = views.Where(v => v.ID == view).ToList();
+
+            if (view == null || !selectedViews.Any())
+            {
+                newsIndexViewModel.SelectedView = null;
+            }
+            else
+            {
+                newsIndexViewModel.SelectedView = selectedViews.First();
+            }
+
+            newsIndexViewModel.Search = search;
+
+            newsIndexViewModel.NewsGroups = newsGroups.Skip((int)pageSize * (newsIndexViewModel.Page - 1)).Take((int)pageSize).ToList();
+
+            return View(newsIndexViewModel);
+        }
         public async Task<IActionResult> Trackout(int newsId, string link)
         {
             News news = await _context.News.Include(n => n.LinkViewed).Where(n => n.ID == newsId).FirstOrDefaultAsync();
@@ -102,7 +179,8 @@ namespace ITSecurityNewsMonitor.Controllers
                 return NotFound();
             }
 
-            if(!news.LinkViewed.Any(lv => lv.OwnerID.Equals(ownerID))) {
+            if (!news.LinkViewed.Any(lv => lv.OwnerID.Equals(ownerID)))
+            {
                 LinkViewed linkViewed = new LinkViewed();
                 linkViewed.Date = DateTime.Now;
                 linkViewed.OwnerID = ownerID;
@@ -133,7 +211,7 @@ namespace ITSecurityNewsMonitor.Controllers
         {
             NewsGroup newsGroup = await _context.NewsGroups.Include(ng => ng.Favorites).Where(ng => ng.ID == input.id).FirstOrDefaultAsync();
 
-            if(newsGroup == null)
+            if (newsGroup == null)
             {
                 return NotFound();
             }
@@ -151,7 +229,8 @@ namespace ITSecurityNewsMonitor.Controllers
                 _context.Favorites.Add(favorite);
 
                 newsGroup.Favorites.Add(favorite);
-            } else 
+            }
+            else
             {
                 _context.Favorites.Remove(favorite);
             }
