@@ -1,314 +1,322 @@
 @{
     ViewData["Title"] = "News";
 }
-<div class="md_px-10" id="view-picker">
-    <div class="flex flex-col bg-white m-auto p-auto">
-        <span class="uppercase font-bold text-xs text-gray-400 mb-2">Just in</span>
-        <div class="flex overflow-x-scroll pb-10 hide-scroll-bar">
-            <div class="flex flex-nowrap">
-                <div class="inline-block mr-3 w-64 h-16 overflow-hidden border rounded-md flex p-1">
+<div class="md_px-10 flex flex-col" id="view-picker">
+    <div class="flex bg-white m-auto p-auto w-full">
+        <div class="flex-shrink-0 mt-2 uppercase font-bold text-xs text-gray-400 mb-2 pr-2 border-r h-4">Just in</div>
+        <div class="flex overflow-x-scroll pb-1 pointer-events-none" id="breaking-news-container">
+            <div class="flex flex-nowrap" id="">
+                <div class="inline-block mr-3 overflow-hidden flex items-center p-1" style="width: max-content">
                     <div class="w-12 flex items-center justify-center flex-shrink-0">
                         <img src="https://media.threatpost.com/wp-content/uploads/sites/103/2018/04/12084846/tp_twitter.png"
                             class="" />
                     </div>
-                    <div class="text-xs flex flex-col justify-center ml-1">
-                        <p class="font-bold">Super urgent news of highest urgency!</p>
-                        <span>5 Minutes ago</span>
+                    <div class="text-xs ml-1">
+                        <span class="font-bold">Super urgent news of highest urgency!</span>
+                        <span style="font-size: 6pt;">5 Minutes ago</span>
                     </div>
                 </div>
-                <div class="inline-block mr-3 w-64 h-16 overflow-hidden border rounded-md flex p-1">
+                <div class="inline-block mr-3 overflow-hidden flex items-center p-1" style="width: max-content">
                     <div class="w-12 flex items-center justify-center flex-shrink-0">
                         <img src="https://media.threatpost.com/wp-content/uploads/sites/103/2018/04/12084846/tp_twitter.png"
                             class="" />
                     </div>
-                    <div class="text-xs flex flex-col justify-center ml-1">
-                        <p class="font-bold">Super urgent news of highest urgency!</p>
-                        <span>5 Minutes ago</span>
+                    <div class="text-xs ml-1">
+                        <span class="font-bold">Super urgent news of highest urgency!</span>
+                        <span style="font-size: 6pt;">5 Minutes ago</span>
                     </div>
                 </div>
-                <div class="inline-block mr-3 w-64 h-16 overflow-hidden border rounded-md flex p-1">
+                <div class="inline-block mr-3 overflow-hidden flex items-center p-1" style="width: max-content">
                     <div class="w-12 flex items-center justify-center flex-shrink-0">
                         <img src="https://media.threatpost.com/wp-content/uploads/sites/103/2018/04/12084846/tp_twitter.png"
                             class="" />
                     </div>
-                    <div class="text-xs flex flex-col justify-center ml-1">
-                        <p class="font-bold">Super urgent news of highest urgency!</p>
-                        <span>5 Minutes ago</span>
+                    <div class="text-xs ml-1">
+                        <span class="font-bold">Super urgent news of highest urgency!</span>
+                        <span style="font-size: 6pt;">5 Minutes ago</span>
                     </div>
                 </div>
-                <div class="inline-block mr-3 w-64 h-16 overflow-hidden border rounded-md flex p-1">
+                <div class="inline-block mr-3 overflow-hidden flex items-center p-1" style="width: max-content">
                     <div class="w-12 flex items-center justify-center flex-shrink-0">
                         <img src="https://media.threatpost.com/wp-content/uploads/sites/103/2018/04/12084846/tp_twitter.png"
                             class="" />
                     </div>
-                    <div class="text-xs flex flex-col justify-center ml-1">
-                        <p class="font-bold">Super urgent news of highest urgency!</p>
-                        <span>5 Minutes ago</span>
+                    <div class="text-xs ml-1">
+                        <span class="font-bold">Super urgent news of highest urgency!</span>
+                        <span style="font-size: 6pt;">5 Minutes ago</span>
                     </div>
                 </div>
-                <div class="inline-block mr-3 w-64 h-16 overflow-hidden border rounded-md flex p-1">
+                <div class="inline-block mr-3 overflow-hidden flex items-center p-1" style="width: max-content">
                     <div class="w-12 flex items-center justify-center flex-shrink-0">
                         <img src="https://media.threatpost.com/wp-content/uploads/sites/103/2018/04/12084846/tp_twitter.png"
                             class="" />
                     </div>
-                    <div class="text-xs flex flex-col justify-center ml-1">
-                        <p class="font-bold">Super urgent news of highest urgency!</p>
-                        <span>5 Minutes ago</span>
+                    <div class="text-xs ml-1">
+                        <span class="font-bold">Super urgent news of highest urgency!</span>
+                        <span style="font-size: 6pt;">5 Minutes ago</span>
                     </div>
                 </div>
-                <div class="inline-block mr-3 w-64 h-16 overflow-hidden border rounded-md flex p-1">
+                <div class="inline-block mr-3 overflow-hidden flex items-center p-1" style="width: max-content">
                     <div class="w-12 flex items-center justify-center flex-shrink-0">
                         <img src="https://media.threatpost.com/wp-content/uploads/sites/103/2018/04/12084846/tp_twitter.png"
                             class="" />
                     </div>
-                    <div class="text-xs flex flex-col justify-center ml-1">
-                        <p class="font-bold">Super urgent news of highest urgency!</p>
-                        <span>5 Minutes ago</span>
+                    <div class="text-xs ml-1">
+                        <span class="font-bold">Super urgent news of highest urgency!</span>
+                        <span style="font-size: 6pt;">5 Minutes ago</span>
                     </div>
                 </div>
-                <div class="inline-block mr-3 w-64 h-16 overflow-hidden border rounded-md flex p-1">
+                <div class="inline-block mr-3 overflow-hidden flex items-center p-1" style="width: max-content">
                     <div class="w-12 flex items-center justify-center flex-shrink-0">
                         <img src="https://media.threatpost.com/wp-content/uploads/sites/103/2018/04/12084846/tp_twitter.png"
                             class="" />
                     </div>
-                    <div class="text-xs flex flex-col justify-center ml-1">
-                        <p class="font-bold">Super urgent news of highest urgency!</p>
-                        <span>5 Minutes ago</span>
+                    <div class="text-xs ml-1">
+                        <span class="font-bold">Super urgent news of highest urgency!</span>
+                        <span style="font-size: 6pt;">5 Minutes ago</span>
                     </div>
                 </div>
-                <div class="inline-block mr-3 w-64 h-16 overflow-hidden border rounded-md flex p-1">
+                <div class="inline-block mr-3 overflow-hidden flex items-center p-1" style="width: max-content">
                     <div class="w-12 flex items-center justify-center flex-shrink-0">
                         <img src="https://media.threatpost.com/wp-content/uploads/sites/103/2018/04/12084846/tp_twitter.png"
                             class="" />
                     </div>
-                    <div class="text-xs flex flex-col justify-center ml-1">
-                        <p class="font-bold">Super urgent news of highest urgency!</p>
-                        <span>5 Minutes ago</span>
+                    <div class="text-xs ml-1">
+                        <span class="font-bold">Super urgent news of highest urgency!</span>
+                        <span style="font-size: 6pt;">5 Minutes ago</span>
                     </div>
                 </div>
+
             </div>
         </div>
     </div>
+    <div class="w-full h-4 bg-white -mt-4 z-50"></div>
 </div>
 
+<script>
+    const breakingNewsContainer = document.getElementById('breaking-news-container');
+    const breakingNewsScrollWidth = breakingNewsContainer.scrollWidth;
+    window.addEventListener('load', () => {
+        self.setInterval(() => {
+            console.log("Scrolling")
+            if (breakingNewsContainer.scrollLeft !== breakingNewsScrollWidth) {
+                breakingNewsContainer.scrollTo(breakingNewsContainer.scrollLeft + 1, 0);
+            }
+        }, 75);
+    });
+</script>
+
 <div class="md_px-10">
-    @* <div class="text-2xl font-bold mb-4">Stories of the day</div> *@
-    <div class="grid grid-cols-3 gap-5">
+    <div class="grid grid-cols-3 gap-10">
         <div class="col-span-3">
-            <div class="grid grid-cols-4 gap-10">
-                <div class="w-72 h-72 bg-purple-400 text-white flex items-center font-bold text-4xl p-5 flex-shrink-0">
-                    STORY <br />
-                    OF <br />
-                    THE <br />
-                    DAY
-                </div>
-                <div class="col-span-3">
-                    <div class="text-4xl font-bold">SolarWinds Hackers Target Think Tanks With New Backdoor</div>
-                    <div>
-                        Microsoft on Thursday disclosed that the threat actor behind the SolarWinds supply chain
-                        hack
-                        returned
-                        to the threat landscape to target government agencies, think tanks, consultants, and
-                        non-governmental
-                        organizations located across 24 countries, including the U.S. "This wave of attacks targeted
-                        approximately 3,000 email accounts at more than 150 different organizations," Tom Burt,
-                        Microsoft's
-                    </div>
-                </div>
-                <div class="col-span-4 -mt-16">
-                    <div class="w-full bg-purple-400 h-1"></div>
-                    <div class="rounded-full h-4 w-4 bg-purple-400 -mt-2.5 ml-96"></div>
-                    <div class="rounded-full h-4 w-4 bg-purple-400 -mt-4 ml-96"></div>
+            <div class="text-purple-400 font-bold">
+                FOCUS STORY <span class="font-normal">OF THE DAY</span>
+            </div>
+            <div class="col-span-3">
+                <div class="text-4xl font-bold">Researchers Leak PoC Exploit for a Critical Windows RCE
+                    Vulnerability</div>
+                <div>
+                    Microsoft on Thursday disclosed that the threat actor behind the SolarWinds supply chain hack
+                    returned
+                    to the threat landscape to target government agencies, think tanks, consultants, and
+                    non-governmental
+                    organizations located across 24 countries, including the U.S. "This wave of attacks targeted
+                    approximately 3,000 email accounts at more than 150 different organizations," Tom Burt,
+                    Microsoft's
                 </div>
             </div>
-
-            <div class="grid grid-cols-4 gap-10">
-                <div class="w-72 h-72 bg-red-400 text-white flex items-center font-bold text-4xl p-5 flex-shrink-0">
-                    NEW <br />
-                    STORY <br />
-                </div>
-                <div class="col-span-3">
-                    <div class="text-4xl font-bold">SolarWinds Hackers Target Think Tanks With New Backdoor</div>
-                    <div>
-                        Microsoft on Thursday disclosed that the threat actor behind the SolarWinds supply chain
-                        hack
-                        returned
-                        to the threat landscape to target government agencies, think tanks, consultants, and
-                        non-governmental
-                        organizations located across 24 countries, including the U.S. "This wave of attacks targeted
-                        approximately 3,000 email accounts at more than 150 different organizations," Tom Burt,
-                        Microsoft's
+            <div class="mt-3">
+                <div class="uppercase font-bold text-xs text-gray-400 mb-2">RELATED</div>
+                <div class="grid grid-cols-3 gap-3">
+                    <div class="flex rounded-md p-2 transition-all border hover_shadow-xl h-16">
+                        <div class="w-6 font-bold text-xl text-purple-400">1<span class="font-normal">.</span></div>
+                        <div class="overflow-hidden w-full text-xs">
+                            <p class="overflow-hidden" style="max-height: 2.5em">Microsoft: New Unpatched Bug in Windows
+                                Print Spooler via Threatpost</p>
+                            <span class="underline" style="font-size: 6pt;">via Threatpost</span>
+                        </div>
+                    </div>
+                    <div class="flex rounded-md p-2 transition-all border hover_shadow-xl h-16">
+                        <div class="w-6 font-bold text-xl text-purple-400">2<span class="font-normal">.</span></div>
+                        <div class="overflow-hidden w-full text-xs">
+                            <p class="overflow-hidden" style="max-height: 2.5em">Microsoft Warns of New Unpatched
+                                Windows Print Spooler Vulnerability via The HackerNews</p>
+                            <span class="underline" style="font-size: 6pt;">via Threatpost</span>
+                        </div>
+                    </div>
+                    <div class="flex rounded-md p-2 transition-all border hover_shadow-xl h-16">
+                        <div class="w-6 font-bold text-xl text-purple-400">3<span class="font-normal">.</span></div>
+                        <div class="overflow-hidden w-full text-xs">
+                            <p class="overflow-hidden" style="max-height: 2.5em">PrintNightmare Zero-Day Vulnerability:
+                                Patch Released by Microsoft Unsuccessful via E Hacking News</p>
+                            <span class="underline" style="font-size: 6pt;">via Threatpost</span>
+                        </div>
                     </div>
                 </div>
-                <div class="col-span-4 -mt-16">
-                    <div class="w-full bg-red-400 h-1"></div>
-                    <div class="rounded-full h-4 w-4 bg-red-400 -mt-2.5 ml-96"></div>
-                    <div class="rounded-full h-4 w-4 bg-red-400 -mt-4 ml-96"></div>
-                </div>
-            </div>
-
-            <div class="grid grid-cols-4 gap-10">
-                <div class="w-72 h-72 bg-green-400 text-white flex items-center font-bold text-4xl p-5 flex-shrink-0">
-                    NEVER <br />
-                    ENDING <br />
-                    STORY <br />
-                </div>
-                <div class="col-span-3">
-                    <div class="text-4xl font-bold">SolarWinds Hackers Target Think Tanks With New Backdoor</div>
-                    <div>
-                        Microsoft on Thursday disclosed that the threat actor behind the SolarWinds supply chain
-                        hack
-                        returned
-                        to the threat landscape to target government agencies, think tanks, consultants, and
-                        non-governmental
-                        organizations located across 24 countries, including the U.S. "This wave of attacks targeted
-                        approximately 3,000 email accounts at more than 150 different organizations," Tom Burt,
-                        Microsoft's
-                    </div>
-                </div>
-                <div class="col-span-4 -mt-16">
-                    <div class="w-full bg-green-400 h-1"></div>
-                    <div class="rounded-full h-4 w-4 bg-green-400 -mt-2.5 ml-96"></div>
-                    <div class="rounded-full h-4 w-4 bg-green-400 -mt-4 ml-96"></div>
-                </div>
-            </div>
-
-
-
-
-            <div class="mt-10">Living Dead</div>
-            <div class="grid grid-cols-4 gap-4">
-                <div class="col-span-3">
-                    <div class="text-4xl font-bold">SolarWinds Hackers Target Think Tanks With New Backdoor</div>
-                    <div class="mt-2 mb-2 bg-purple-400 text-xs text-white p-2 rounded-md">30 updates & half a year
-                        later</div>
-                    <div>
-                        Microsoft on Thursday disclosed that the threat actor behind the SolarWinds supply chain hack
-                        returned
-                        to the threat landscape to target government agencies, think tanks, consultants, and
-                        non-governmental
-                        organizations located across 24 countries, including the U.S. "This wave of attacks targeted
-                        approximately 3,000 email accounts at more than 150 different organizations," Tom Burt,
-                        Microsoft's
-                    </div>
-                </div>
-                <div class="grid gap-1">
-                    <div class="border border-purple-50 p-2 text-sm hover_bg-purple-50">Feds Secretly Ran a Fake
-                        Encrypted
-                        Chat App and Busted Over 800 Criminals</div>
-                    <div class="border border-purple-50 p-2 text-sm hover_bg-purple-50">Crackonosh virus mined $2
-                        million of
-                        Monero from 222,000 hacked computers</div>
-                    <div class="border border-purple-50 p-2 text-sm hover_bg-purple-50">Critical Chrome Browser Bug
-                        Under
-                        Active Attack</div>
+                <div class="mt-1 text-xs">
+                    <button class="text-purple-400 underline">show all (9)</button>
                 </div>
             </div>
         </div>
-        @* <div class="border">
-            <div class="flex justify-center h-96 overflow-hidden">
-            <img class="h-full max-w-none"
-            src="https://www.bleepstatic.com/content/hl-images/2021/06/24/western-digital.jpg" />
+
+
+        <div class="col-span-2">
+            <div class="text-red-400 font-bold">
+                NEW STORY <span class="font-normal">OF THE DAY</span>
             </div>
-            <h1>Urgent news</h1>
-            </div>
-            <div class="border">
-            <div class="flex justify-center h-96 overflow-hidden">
-            <img class="h-full max-w-none"
-            src="https://www.bleepstatic.com/content/hl-images/2021/06/24/western-digital.jpg" />
-            </div>
-            <h1>Urgent news</h1>
-            </div>
-            <div class="border">
-            <div class="flex justify-center h-96 overflow-hidden">
-            <img class="h-full max-w-none"
-            src="https://www.bleepstatic.com/content/hl-images/2021/06/24/western-digital.jpg" />
-            </div>
-            <h1>Urgent news</h1>
-            </div> *@
-        <div class="grid gap-4">
-            <div class="p-5 bg-purple-50 rounded-md">
-                <div class="uppercase font-bold text-xs text-gray-400 mb-5">Favorite Developments</div>
-                <div class="flex flex-col gap-3">
-                    <div class="flex items-center">
-                        Article 1
-                        &nbsp;
-                        <a class="text-xs" href="/">→</a>
-                        <a class="ml-auto text-xs" href="/">View as Story →</a>
-                    </div>
-                    <div class="flex items-center">
-                        Article 1
-                        &nbsp;
-                        <a class="text-xs" href="/">→</a>
-                        <a class="ml-auto text-xs" href="/">View as Story →</a>
-                    </div>
-                    <div class="flex items-center">
-                        Article 1
-                        &nbsp;
-                        <a class="text-xs" href="/">→</a>
-                        <a class="ml-auto text-xs" href="/">View as Story →</a>
-                    </div>
-                    <div class="flex items-center">
-                        Article 1
-                        &nbsp;
-                        <a class="text-xs" href="/">→</a>
-                        <a class="ml-auto text-xs" href="/">View as Story →</a>
-                    </div>
-                    <div class="flex items-center">
-                        Article 1
-                        &nbsp;
-                        <a class="text-xs" href="/">→</a>
-                        <a class="ml-auto text-xs" href="/">View as Story →</a>
-                    </div>
-                    <div class="flex items-center">
-                        Article 1
-                        &nbsp;
-                        <a class="text-xs" href="/">→</a>
-                        <a class="ml-auto text-xs" href="/">View as Story →</a>
-                    </div>
+            <div class="col-span-3">
+                <div class="text-xl font-bold">SolarWinds Hackers Target Think Tanks With New Backdoor</div>
+                <div>
+                    Microsoft on Thursday disclosed that the threat actor behind the SolarWinds supply chain
+                    hack
+                    returned
+                    to the threat landscape to target government agencies, think tanks, consultants, and
+                    non-governmental
+                    organizations located across 24 countries, including the U.S. "This wave of attacks targeted
+                    approximately 3,000 email accounts at more than 150 different organizations," Tom Burt,
+                    Microsoft's
                 </div>
             </div>
-            <div class="p-5 bg-purple-50 rounded-md">
-                <div class="uppercase font-bold text-xs text-gray-400 mb-5">Continued Stories</div>
-                <div class="flex flex-col gap-3">
-                    <div class="flex items-center">
-                        Article 1
-                        &nbsp;
-                        <a class="text-xs" href="/">→</a>
-                        <a class="ml-auto text-xs" href="/">View as Story →</a>
+            <div class="mt-3">
+                <div class="uppercase font-bold text-xs text-gray-400 mb-2">RELATED</div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="flex border rounded-md p-2 transition-all hover_shadow-xl">
+                        <div class="w-6 font-bold text-xl text-red-400">1<span class="font-normal">.</span></div>
+                        <div class="overflow-hidden w-full text-xs">
+                            Microsoft: New Unpatched Bug in Windows Print Spooler via Threatpost
+                            <span class="underline" style="font-size: 6pt;">via Threatpost</span>
+                        </div>
                     </div>
-                    <div class="flex items-center">
-                        Article 1
-                        &nbsp;
-                        <a class="text-xs" href="/">→</a>
-                        <a class="ml-auto text-xs" href="/">View as Story →</a>
+                    <div class="flex border rounded-md p-2 transition-all hover_shadow-xl">
+                        <div class="w-6 font-bold text-xl text-red-400">2<span class="font-normal">.</span></div>
+                        <div class="overflow-hidden w-full text-xs">
+                            Microsoft Warns of New Unpatched Windows Print Spooler Vulnerability via The HackerNews
+                            <span class="underline" style="font-size: 6pt;">via Threatpost</span>
+                        </div>
                     </div>
-                    <div class="flex items-center">
-                        Article 1
-                        &nbsp;
-                        <a class="text-xs" href="/">→</a>
-                        <a class="ml-auto text-xs" href="/">View as Story →</a>
-                    </div>
-                    <div class="flex items-center">
-                        Article 1
-                        &nbsp;
-                        <a class="text-xs" href="/">→</a>
-                        <a class="ml-auto text-xs" href="/">View as Story →</a>
-                    </div>
-                    <div class="flex items-center">
-                        Article 1
-                        &nbsp;
-                        <a class="text-xs" href="/">→</a>
-                        <a class="ml-auto text-xs" href="/">View as Story →</a>
-                    </div>
-                    <div class="flex items-center">
-                        Article 1
-                        &nbsp;
-                        <a class="text-xs" href="/">→</a>
-                        <a class="ml-auto text-xs" href="/">View as Story →</a>
-                    </div>
+                </div>
+                <div class="mt-1 text-xs">
+                    <button class="text-red-400 underline">show all (9)</button>
                 </div>
             </div>
         </div>
+
+        <div class="p-5 bg-purple-50 rounded-md text-xs border shadow-xl">
+            <div class="uppercase font-bold text-xs text-gray-400 mb-2">Favorite Developments</div>
+            <div class="flex flex-col gap-2">
+                <div class="flex items-center">
+                    <span class="font-bold">Article 1</span>
+                    &nbsp;
+                    <a class="ml-auto text-xs" href="/">View as Story →</a>
+                </div>
+                <div class="flex items-center">
+                    <span class="font-bold">Article 1</span>
+                    &nbsp;
+                    <a class="ml-auto text-xs" href="/">View as Story →</a>
+                </div>
+                <div class="flex items-center">
+                    <span class="font-bold">Article 1</span>
+                    &nbsp;
+                    <a class="ml-auto text-xs" href="/">View as Story →</a>
+                </div>
+                <div class="flex items-center">
+                    <span class="font-bold">Article 1</span>
+                    &nbsp;
+                    <a class="ml-auto text-xs" href="/">View as Story →</a>
+                </div>
+                <div class="flex items-center">
+                    <span class="font-bold">Article 1</span>
+                    &nbsp;
+                    <a class="ml-auto text-xs" href="/">View as Story →</a>
+                </div>
+                <div class="flex items-center">
+                    <span class="font-bold">Article 1</span>
+                    &nbsp;
+                    <a class="ml-auto text-xs" href="/">View as Story →</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="p-5 bg-purple-50 rounded-md border shadow-xl">
+            <div class="uppercase font-bold text-xs text-gray-400 mb-2">Continued Stories</div>
+            <div class="flex flex-col gap-2">
+                <div class="flex items-center">
+                    <span class="font-bold">Article 1</span>
+                    &nbsp;
+                    <a class="ml-auto text-xs" href="/">View as Story →</a>
+                </div>
+                <div class="flex items-center">
+                    <span class="font-bold">Article 1</span>
+                    &nbsp;
+                    <a class="ml-auto text-xs" href="/">View as Story →</a>
+                </div>
+                <div class="flex items-center">
+                    <span class="font-bold">Article 1</span>
+                    &nbsp;
+                    <a class="ml-auto text-xs" href="/">View as Story →</a>
+                </div>
+                <div class="flex items-center">
+                    <span class="font-bold">Article 1</span>
+                    &nbsp;
+                    <a class="ml-auto text-xs" href="/">View as Story →</a>
+                </div>
+                <div class="flex items-center">
+                    <span class="font-bold">Article 1</span>
+                    &nbsp;
+                    <a class="ml-auto text-xs" href="/">View as Story →</a>
+                </div>
+                <div class="flex items-center">
+                    <span class="font-bold">Article 1</span>
+                    &nbsp;
+                    <a class="ml-auto text-xs" href="/">View as Story →</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-span-2">
+            <div class="text-green-400 font-bold">
+                NEVER ENDING STORY <span class="font-normal">OF THE DAY</span>
+            </div>
+            <div class="col-span-3">
+                <div class="text-xl font-bold">SolarWinds Hackers Target Think Tanks With New Backdoor</div>
+                <div>
+                    Microsoft on Thursday disclosed that the threat actor behind the SolarWinds supply chain
+                    hack
+                    returned
+                    to the threat landscape to target government agencies, think tanks, consultants, and
+                    non-governmental
+                    organizations located across 24 countries, including the U.S. "This wave of attacks targeted
+                    approximately 3,000 email accounts at more than 150 different organizations," Tom Burt,
+                    Microsoft's
+                </div>
+            </div>
+            <div class="mt-3">
+                <div class="uppercase font-bold text-xs text-gray-400 mb-2">RELATED</div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="flex border rounded-md p-2 transition-all hover_shadow-xl">
+                        <div class="w-6 font-bold text-xl text-green-400">1<span class="font-normal">.</span></div>
+                        <div class="overflow-hidden w-full text-xs">
+                            Microsoft: New Unpatched Bug in Windows Print Spooler via Threatpost
+                            <span class="underline" style="font-size: 6pt;">via Threatpost</span>
+                        </div>
+                    </div>
+                    <div class="flex border rounded-md p-2 transition-all hover_shadow-xl">
+                        <div class="w-6 font-bold text-xl text-green-400">2<span class="font-normal">.</span></div>
+                        <div class="overflow-hidden w-full text-xs">
+                            Microsoft Warns of New Unpatched Windows Print Spooler Vulnerability via The HackerNews
+                            <span class="underline" style="font-size: 6pt;">via Threatpost</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-1 text-xs">
+                    <button class="text-green-400 underline">show all (9)</button>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="mb-36"></div>
+
     </div>
+</div>
 </div>
